@@ -2,13 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { INITIAL_COURSES, INITIAL_LIVE_SESSIONS } from "@/lib/mockData";
 import { ArrowUpRight, CheckCircle2, ShieldCheck, PlayCircle, Star, Terminal, Zap, Users } from "lucide-react";
-import { CrtSplash } from "@/components/CrtSplash";
 
 export default function HomePage() {
   return (
     <div className="w-full">
-      {/* CRT Boot Sequence Splash Overlay */}
-      <CrtSplash />
       {/* SECTION 1: HERO (SWISS ASYMMETRIC GRID) */}
       <section className="border-b-2 border-zinc-900 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
