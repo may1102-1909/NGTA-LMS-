@@ -10,25 +10,13 @@ const segment = (text: string, color: Segment["c"] = "p"): Segment => ({ t: text
 const dots = (count: number) => "·".repeat(count);
 
 export const ZION_LOG: Segment[][] = [
-  [segment("ZION MAINFRAME   v9.1.1"), segment("   (c) 2199 Nebuchadnezzar", "d")],
-  [segment("CONSTRUCT Broadcast  Rev M  S/N NX-0101-0011", "d")],
-  [],
-  [segment("Hacking Matrix grid nodes "), segment(dots(13) + " ", "d"), segment("OK", "a")],
-  [segment("Neural Jack  0x000-0x0FF "), segment(dots(13) + " ", "d"), segment("ONLINE OK", "a")],
-  [segment("Pinging agent signatures "), segment(dots(7) + " ", "d"), segment("3 found", "p")],
-  [segment("nav0   OPERATOR UPLINK SECURE "), segment(dots(6) + " ", "d"), segment("READY", "a")],
-  [segment("vis0   CODE RAIN DECRYPT 256bit "), segment("READY", "a")],
-  [segment("net0   HARDLINE CONNECTION MAX "), segment(dots(4) + " ", "d"), segment("LINK", "a")],
-  [segment("red0   RED PILL EXTRACTION "), segment(dots(5) + " ", "d"), segment("READY", "a")],
-  [segment("Mounting /dev/mind -> ROOT: "), segment(dots(6) + " ", "d"), segment("OK", "a")],
-  [segment("Loading weapon training program "), segment(dots(4) + " ", "d"), segment("OK", "a")],
-  [segment("Starting [ jmp spd str wpn ] "), segment(dots(4) + " ", "d"), segment("OK", "a")],
-  [segment("Locating the Oracle sector "), segment(dots(6) + " ", "d"), segment("99.9%", "p")],
-  [],
-  [segment("SYSTEM ANOMALY  ", "h"), segment("detected.", "a")],
-  [segment("subject Thomas A. Anderson   status asleep zZ", "d")],
-  [],
-  [segment("wake up:")],
+  [segment("[00.01s] ", "d"), segment("INITIALIZING NGTA CORE ENGINES...", "h")],
+  [segment("[00.35s] ", "d"), segment("> Loading Autonomous Learning Orchestrator........... "), segment("[OK]", "a")],
+  [segment("[00.62s] ", "d"), segment("> Mounting Course Storefront & DRM Protection.......... "), segment("[OK]", "a")],
+  [segment("[00.89s] ", "d"), segment("> Syncing Live Class & Consultation Calendars.......... "), segment("[OK]", "a")],
+  [segment("[01.12s] ", "d"), segment("> Restoring Learner Gamification & Leaderboards......... "), segment("[OK]", "a")],
+  [segment("[01.45s] ", "d"), segment("> Verifying Automated Certificate Engine.............. "), segment("[OK]", "a")],
+  [segment("[01.80s] ", "d"), segment("SYSTEM READY. ACCESS GRANTED.  ", "h"), segment("Visual Indicator: ", "p"), segment("[████████████████████████████████] 100%", "a")],
 ];
 
 const LOG = ZION_LOG;
