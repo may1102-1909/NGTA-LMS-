@@ -1,0 +1,204 @@
+import { CRT_SCREENS, CRT_STYLES, type CrtStyle, type CrtVariant } from "./crtScreens";
+import { CRT_FRAGMENT_SHADER, CRT_VERTEX_SHADER } from "./crtShaders";
+
+export const CRT_VARIANTS = ["terminal", "cinematic", "blue-screen", "nintendo"] as const;
+export type CrtOptions = { variant: CrtVariant; speed: number; typeSpeed: number; motion: number; brightness: number; opacity: number; hue: number; saturation: number };
+export const CRT_DEFAULTS: CrtOptions = { variant: "terminal", speed: 1, typeSpeed: 1, motion: 1, brightness: 1, opacity: 1, hue: 0, saturation: 1 };
+export const crtStyle = (variant: CrtVariant): CrtStyle => CRT_STYLES[variant] ?? CRT_STYLES.terminal;
+type Segment = { t: string; c: "p" | "d" | "a" | "h" };
+const segment = (text: string, color: Segment["c"] = "p"): Segment => ({ t: text, c: color });
+const dots = (count: number) => "·".repeat(count);
+
+export const ZION_LOG: Segment[][] = [
+  [segment("ZION MAINFRAME   v9.1.1"), segment("   (c) 2199 Nebuchadnezzar", "d")],
+  [segment("CONSTRUCT Broadcast  Rev M  S/N NX-0101-0011", "d")],
+  [],
+  [segment("Hacking Matrix grid nodes "), segment(dots(13) + " ", "d"), segment("OK", "a")],
+  [segment("Neural Jack  0x000-0x0FF "), segment(dots(13) + " ", "d"), segment("ONLINE OK", "a")],
+  [segment("Pinging agent signatures "), segment(dots(7) + " ", "d"), segment("3 found", "p")],
+  [segment("nav0   OPERATOR UPLINK SECURE "), segment(dots(6) + " ", "d"), segment("READY", "a")],
+  [segment("vis0   CODE RAIN DECRYPT 256bit "), segment("READY", "a")],
+  [segment("net0   HARDLINE CONNECTION MAX "), segment(dots(4) + " ", "d"), segment("LINK", "a")],
+  [segment("red0   RED PILL EXTRACTION "), segment(dots(5) + " ", "d"), segment("READY", "a")],
+  [segment("Mounting /dev/mind -> ROOT: "), segment(dots(6) + " ", "d"), segment("OK", "a")],
+  [segment("Loading weapon training program "), segment(dots(4) + " ", "d"), segment("OK", "a")],
+  [segment("Starting [ jmp spd str wpn ] "), segment(dots(4) + " ", "d"), segment("OK", "a")],
+  [segment("Locating the Oracle sector "), segment(dots(6) + " ", "d"), segment("99.9%", "p")],
+  [],
+  [segment("SYSTEM ANOMALY  ", "h"), segment("detected.", "a")],
+  [segment("subject Thomas A. Anderson   status asleep zZ", "d")],
+  [],
+  [segment("wake up:")],
+];
+
+const LOG = ZION_LOG;
+
+const COLORS = {
+  p: { fill: "#68ffa4", glow: "rgba(45,255,145,0.75)" },
+  d: { fill: "#3fa96e", glow: "rgba(45,255,145,0.25)" },
+  a: { fill: "#ffb43e", glow: "rgba(255,168,55,0.85)" },
+  h: { fill: "#e6fff2", glow: "rgba(200,255,230,0.90)" },
+};
+const lineLength = (line: Segment[]) => line.reduce((total, item) => total + item.t.length, 0);
+const TOTAL = LOG.reduce((total, line) => total + lineLength(line), 0);
+const MAX_CHARS = Math.max(...LOG.map(lineLength));
+/* backing-store ceiling: the composite is one triangle, so the cost that matters is
+   the 2D screen redraw and its upload, not the fragment pass */
+const MAX_BUFFER_WIDTH = 1920, MIN_BUFFER_WIDTH = 640, MAX_BUFFER_PIXELS = 2_400_000;
+function compile(gl: WebGLRenderingContext, type: number, source: string) { const shader = gl.createShader(type); if (!shader) throw new Error("Unable to create CRT shader"); gl.shaderSource(shader, source); gl.compileShader(shader); if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader) || "CRT shader compilation failed"); return shader; }
+
+function initWebGLRenderer(host: HTMLElement, canvas: HTMLCanvasElement, getOptions: () => CrtOptions) {
+  const gl = canvas.getContext("webgl", { antialias: false, alpha: false, depth: false, premultipliedAlpha: false }) || canvas.getContext("experimental-webgl") as WebGLRenderingContext | null;
+  if (!gl) throw new Error("CRT requires WebGL");
+  if (gl.isContextLost && gl.isContextLost()) throw new Error("WebGL context lost");
+  const textCanvas = document.createElement("canvas"), textContext = textCanvas.getContext("2d"); if (!textContext) throw new Error("CRT text canvas unavailable");
+  const vertex = compile(gl, gl.VERTEX_SHADER, CRT_VERTEX_SHADER), fragment = compile(gl, gl.FRAGMENT_SHADER, CRT_FRAGMENT_SHADER), program = gl.createProgram(); if (!program) throw new Error("Unable to create CRT program"); gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program); if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) || "CRT link failed"); gl.useProgram(program);
+  const buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buffer); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); const position = gl.getAttribLocation(program, "aPos"); gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+  const uniform = (name: string) => gl.getUniformLocation(program, name);
+  const uTexture = uniform("uTex"), uResolution = uniform("uRes"), uTime = uniform("uTime"), uMotion = uniform("uMotion"), uCurve = uniform("uCurve"), uScan = uniform("uScan"), uScanDepth = uniform("uScanDepth"), uTriad = uniform("uTriad"), uGrille = uniform("uGrille"), uChroma = uniform("uChroma"), uBar = uniform("uBar"), uFlicker = uniform("uFlicker"), uGrain = uniform("uGrain"), uNoise = uniform("uNoise"), uVignette = uniform("uVignette"), uMono = uniform("uMono"), uGain = uniform("uGain"), uHalo = uniform("uHalo"), uSheen = uniform("uSheen"), uRoom = uniform("uRoom");
+  const texture = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, texture); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); gl.uniform1i(uTexture, 0);
+  let width = 1, height = 1, cssWidth = 1, cssHeight = 1, fontSize = 16, lineHeight = 22, startY = 0, charWidth = 9, caretX = 0, caretY = 0, typed = 0, done = false, textDirty = true, lastTextAt = 0, lastReveal = -1, lastBlink = -1, variant: CrtVariant = "terminal", style = crtStyle(variant); const startedAt = performance.now();
+  const applyStyle = () => { gl.useProgram(program); gl.uniform2f(uCurve, style.curve[0], style.curve[1]); gl.uniform1f(uScanDepth, style.scanDepth); gl.uniform1f(uGrille, style.grille); gl.uniform1f(uChroma, style.chroma); gl.uniform1f(uBar, style.bar); gl.uniform1f(uFlicker, style.flicker); gl.uniform1f(uGrain, style.grain); gl.uniform1f(uNoise, style.noise); gl.uniform1f(uVignette, style.vignette); gl.uniform1f(uMono, style.mono); gl.uniform1f(uGain, style.gain); gl.uniform1f(uHalo, style.halo); gl.uniform3f(uSheen, style.sheen[0], style.sheen[1], style.sheen[2]); gl.uniform3f(uRoom, style.room[0], style.room[1], style.room[2]); const filter = style.filtering === "nearest" ? gl.NEAREST : gl.LINEAR; gl.bindTexture(gl.TEXTURE_2D, texture); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter); };
+  const layout = () => { startY = height * 0.10; lineHeight = (height * 0.80) / LOG.length; fontSize = Math.max(12, Math.min(lineHeight * 0.84, (width * 0.92) / (Math.max(MAX_CHARS, 1) * 0.58))); textContext.font = `600 ${fontSize.toFixed(2)}px ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace`; charWidth = textContext.measureText("M").width || fontSize * 0.58; };
+  const setStyle = (key: Segment["c"], glow: boolean) => { const color = COLORS[key]; textContext.fillStyle = color.fill; textContext.shadowColor = glow ? color.glow : "transparent"; textContext.shadowBlur = glow ? Math.min(fontSize * 0.22, 4) : 0; };
+  /* two passes per glyph: a soft phosphor halo, then the same glyph re-filled with
+     the shadow off so the stroke core stays crisp at any backing resolution */
+  const drawScreen = (reveal: number) => { textContext.setTransform(1, 0, 0, 1, 0, 0); textContext.fillStyle = "#03100a"; textContext.fillRect(0, 0, width, height); textContext.textAlign = "left"; textContext.textBaseline = "top"; textContext.font = `600 ${fontSize.toFixed(2)}px ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace`; let remaining = reveal, y = startY; caretX = Math.floor((width - MAX_CHARS * charWidth) / 2); caretY = startY;
+    for (const line of LOG) { const length = lineLength(line), visible = reveal === Infinity ? Infinity : Math.min(remaining, length); let x = Math.floor((width - MAX_CHARS * charWidth) / 2), drawn = 0; for (const item of line) { let text = item.t; if (visible !== Infinity) { const left = visible - drawn; if (left <= 0) break; if (left < text.length) text = text.slice(0, left); } if (text.length) { setStyle(item.c, true); textContext.fillText(text, x, y); setStyle(item.c, false); textContext.fillText(text, x, y); x += charWidth * text.length; } drawn += item.t.length; if (visible !== Infinity && drawn >= visible) break; } caretX = x; caretY = y; if (visible !== Infinity) remaining -= visible; y += lineHeight; if (visible !== Infinity && remaining <= 0) break; }
+  };
+  const drawCursor = () => { textContext.shadowColor = COLORS.p.glow; textContext.shadowBlur = fontSize * 0.42; textContext.fillStyle = "#bdf8d2"; textContext.fillRect(caretX, caretY + fontSize * 0.06, Math.max(charWidth * 0.92, 4), fontSize * 0.96); textContext.shadowBlur = 0; textContext.fillRect(caretX, caretY + fontSize * 0.06, Math.max(charWidth * 0.92, 4), fontSize * 0.96); };
+  const uploadTexture = () => { gl.bindTexture(gl.TEXTURE_2D, texture); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); textDirty = false; };
+  const resize = () => { const bounds = host.getBoundingClientRect(); cssWidth = Math.max(1, bounds.width); cssHeight = Math.max(1, bounds.height); const density = Math.min(typeof window === "undefined" ? 1 : window.devicePixelRatio || 1, 2); let nextWidth = Math.max(MIN_BUFFER_WIDTH, Math.round(Math.min(cssWidth * density, MAX_BUFFER_WIDTH))), nextHeight = Math.max(1, Math.round(nextWidth * cssHeight / cssWidth)); if (nextWidth * nextHeight > MAX_BUFFER_PIXELS) { const fit = Math.sqrt(MAX_BUFFER_PIXELS / (nextWidth * nextHeight)); nextWidth = Math.round(nextWidth * fit); nextHeight = Math.round(nextHeight * fit); }
+    const surface = style.surface, screenWidth = surface.mode === "fixed" ? surface.width : surface.mode === "cap" ? Math.min(nextWidth, surface.width) : nextWidth, screenHeight = surface.mode === "fixed" ? surface.height : Math.max(1, Math.round(screenWidth * nextHeight / nextWidth));
+    if (canvas.width !== nextWidth || canvas.height !== nextHeight) { canvas.width = nextWidth; canvas.height = nextHeight; }
+    if (textCanvas.width !== screenWidth || textCanvas.height !== screenHeight) { textCanvas.width = screenWidth; textCanvas.height = screenHeight; width = screenWidth; height = screenHeight; layout(); lastReveal = -1; lastBlink = -1; lastTextAt = 0; textDirty = true; }
+    gl.useProgram(program); gl.viewport(0, 0, nextWidth, nextHeight); gl.uniform2f(uResolution, nextWidth, nextHeight); gl.uniform1f(uScan, Math.max(120, Math.min(cssHeight * style.scanDensity, 900))); gl.uniform1f(uTriad, Math.max(2, style.triadCss * nextWidth / cssWidth)); };
+  const maybeRedrawText = (now: number) => { const reveal = done ? Infinity : Math.floor(typed), blink = Math.floor((now - startedAt) / 420) % 2 === 0 ? 1 : 0, due = !done ? now - lastTextAt > 42 : blink !== lastBlink; if (reveal === lastReveal && blink === lastBlink && !due) return; if (!done && now - lastTextAt <= 42 && reveal === lastReveal && blink === lastBlink) return; drawScreen(reveal); if (blink) drawCursor(); lastTextAt = now; lastReveal = reveal; lastBlink = blink; textDirty = true; };
+  applyStyle();
+  return {
+    resize,
+    render(now: number) {
+      const options = getOptions(), requested = CRT_STYLES[options.variant] ? options.variant : "terminal";
+      if (requested !== variant) { variant = requested; style = crtStyle(variant); applyStyle(); typed = 0; done = false; lastReveal = -1; lastBlink = -1; lastTextAt = 0; resize(); }
+      const seconds = (now - startedAt) * 0.001 * options.speed;
+      if (variant === "terminal") { if (!done) { typed += 4.4 * options.typeSpeed; if (typed >= TOTAL) { typed = TOTAL; done = true; } } maybeRedrawText(now); }
+      else if (now - lastTextAt >= style.redrawMs || textDirty) { CRT_SCREENS[variant](textContext, width, height, seconds); lastTextAt = now; textDirty = true; }
+      if (textDirty) uploadTexture();
+      gl.useProgram(program); gl.uniform1f(uTime, seconds); gl.uniform1f(uMotion, options.motion); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    },
+    dispose() { gl.deleteBuffer(buffer); gl.deleteTexture(texture); gl.deleteProgram(program); gl.deleteShader(vertex); gl.deleteShader(fragment); },
+  };
+}
+
+function init2DRenderer(host: HTMLElement, canvas: HTMLCanvasElement, getOptions: () => CrtOptions) {
+  const textContext = canvas.getContext("2d");
+  let width = 1, height = 1, fontSize = 14, lineHeight = 20, startY = 0, charWidth = 8, caretX = 0, caretY = 0, typed = 0, done = false;
+  const startedAt = performance.now();
+  if (!textContext) return { resize() {}, render() {}, dispose() {} };
+
+  const layout = () => {
+    startY = height * 0.10;
+    lineHeight = (height * 0.80) / LOG.length;
+    fontSize = Math.max(12, Math.min(lineHeight * 0.84, (width * 0.92) / (Math.max(MAX_CHARS, 1) * 0.58)));
+    textContext.font = `600 ${fontSize.toFixed(2)}px ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace`;
+    charWidth = textContext.measureText("M").width || fontSize * 0.58;
+  };
+
+  const setStyle = (key: Segment["c"], glow: boolean) => {
+    const color = COLORS[key];
+    textContext.fillStyle = color.fill;
+    textContext.shadowColor = glow ? color.glow : "transparent";
+    textContext.shadowBlur = glow ? Math.min(fontSize * 0.22, 4) : 0;
+  };
+
+  const drawScreen = (reveal: number) => {
+    textContext.setTransform(1, 0, 0, 1, 0, 0);
+    textContext.fillStyle = "#03100a";
+    textContext.fillRect(0, 0, width, height);
+    textContext.textAlign = "left";
+    textContext.textBaseline = "top";
+    textContext.font = `600 ${fontSize.toFixed(2)}px ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace`;
+    let remaining = reveal, y = startY;
+    caretX = Math.floor((width - MAX_CHARS * charWidth) / 2);
+    caretY = startY;
+    for (const line of LOG) {
+      const length = lineLength(line), visible = reveal === Infinity ? Infinity : Math.min(remaining, length);
+      let x = Math.floor((width - MAX_CHARS * charWidth) / 2), drawn = 0;
+      for (const item of line) {
+        let text = item.t;
+        if (visible !== Infinity) {
+          const left = visible - drawn;
+          if (left <= 0) break;
+          if (left < text.length) text = text.slice(0, left);
+        }
+        if (text.length) {
+          setStyle(item.c, true);
+          textContext.fillText(text, x, y);
+          setStyle(item.c, false);
+          textContext.fillText(text, x, y);
+          x += charWidth * text.length;
+        }
+        drawn += item.t.length;
+        if (visible !== Infinity && drawn >= visible) break;
+      }
+      caretX = x;
+      caretY = y;
+      if (visible !== Infinity) remaining -= visible;
+      y += lineHeight;
+      if (visible !== Infinity && remaining <= 0) break;
+    }
+  };
+
+  const drawCursor = () => {
+    textContext.shadowColor = COLORS.p.glow;
+    textContext.shadowBlur = fontSize * 0.42;
+    textContext.fillStyle = "#bdf8d2";
+    textContext.fillRect(caretX, caretY + fontSize * 0.06, Math.max(charWidth * 0.92, 4), fontSize * 0.96);
+    textContext.shadowBlur = 0;
+    textContext.fillRect(caretX, caretY + fontSize * 0.06, Math.max(charWidth * 0.92, 4), fontSize * 0.96);
+  };
+
+  const resize = () => {
+    const bounds = host.getBoundingClientRect();
+    const cssWidth = Math.max(1, bounds.width);
+    const cssHeight = Math.max(1, bounds.height);
+    const density = Math.min(typeof window === "undefined" ? 1 : window.devicePixelRatio || 1, 2);
+    const nextWidth = Math.round(cssWidth * density);
+    const nextHeight = Math.round(cssHeight * density);
+    if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+      canvas.width = nextWidth;
+      canvas.height = nextHeight;
+      width = nextWidth;
+      height = nextHeight;
+      layout();
+    }
+  };
+
+  return {
+    resize,
+    render(now: number) {
+      const options = getOptions();
+      if (!done) {
+        typed += 4.4 * options.typeSpeed;
+        if (typed >= TOTAL) {
+          typed = TOTAL;
+          done = true;
+        }
+      }
+      const reveal = done ? Infinity : Math.floor(typed);
+      const blink = Math.floor((now - startedAt) / 420) % 2 === 0 ? 1 : 0;
+      drawScreen(reveal);
+      if (blink) drawCursor();
+    },
+    dispose() {},
+  };
+}
+
+export function createCrtRenderer(host: HTMLElement, canvas: HTMLCanvasElement, getOptions: () => CrtOptions) {
+  try {
+    return initWebGLRenderer(host, canvas, getOptions);
+  } catch (err) {
+    console.warn("WebGL CRT initialization fallback to 2D Canvas:", err);
+    return init2DRenderer(host, canvas, getOptions);
+  }
+}
