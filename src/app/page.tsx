@@ -32,21 +32,6 @@ export default function LandingPage() {
 
           {/* High-Resolution Monitor Chassis */}
           <div className="relative rounded-2xl border-4 border-zinc-800/90 bg-[#060f08] p-2 sm:p-3 shadow-[0_30px_120px_rgba(0,0,0,1),0_0_90px_rgba(34,197,94,0.14)]">
-            {/* Monitor Bezel Header */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/80 bg-zinc-950/90 rounded-t-lg font-mono text-xs text-zinc-400 mb-2">
-              <div className="flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block shadow-[0_0_8px_rgba(239,68,68,0.7)]"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_rgba(245,158,11,0.7)]"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.7)]"></span>
-                <span className="text-zinc-200 font-bold ml-2 uppercase text-[11px] tracking-wider">
-                  ZION MAINFRAME // THREEUI CRT PHOSPHOR TERMINAL
-                </span>
-              </div>
-              <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>RAW_WEBGL // 60 FPS</span>
-              </div>
-            </div>
 
             {/* CRT Screen Display Area */}
             <div className="w-full h-[540px] sm:h-[620px] lg:h-[660px] rounded overflow-hidden">
