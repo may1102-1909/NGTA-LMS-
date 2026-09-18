@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
@@ -16,9 +17,18 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-zinc-200">
           <div className="space-y-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-black tracking-tighter text-zinc-950">NGTA</span>
-              <span className="text-[10px] font-bold px-1 bg-zinc-950 text-white">LMS</span>
+            <div className="flex items-center gap-2.5">
+              <Image
+                src="/logo.png"
+                alt="NGTA LMS Logo"
+                width={28}
+                height={28}
+                className="w-7 h-7 object-contain rounded-md"
+              />
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl font-black tracking-tighter text-zinc-950">NGTA</span>
+                <span className="text-[10px] font-bold px-1 bg-zinc-950 text-white">LMS</span>
+              </div>
             </div>
             <p className="text-zinc-600 leading-relaxed font-sans text-xs">
               NextGen Testing Academy is the premier technical training institute for Automation Engineers and SDETs.

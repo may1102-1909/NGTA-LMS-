@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { UserRole } from "@/types";
 import { ShieldCheck, BookOpen, Video, Users, Award, LayoutDashboard, ChevronDown } from "lucide-react";
@@ -80,13 +81,23 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-baseline gap-2 group">
-              <span className="text-2xl font-black tracking-tighter text-zinc-950 group-hover:text-blue-600 transition-colors">
-                NGTA
-              </span>
-              <span className="text-xs font-mono font-bold px-1.5 py-0.5 bg-zinc-900 text-white tracking-widest uppercase">
-                LMS
-              </span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <Image
+                src="/logo.png"
+                alt="NGTA LMS Logo"
+                width={36}
+                height={36}
+                className="w-9 h-9 object-contain rounded-md"
+                priority
+              />
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-black tracking-tighter text-zinc-950 group-hover:text-blue-600 transition-colors">
+                  NGTA
+                </span>
+                <span className="text-xs font-mono font-bold px-1.5 py-0.5 bg-zinc-900 text-white tracking-widest uppercase">
+                  LMS
+                </span>
+              </div>
             </Link>
             <span className="hidden md:inline-block text-[11px] font-mono text-zinc-400 tracking-tight">
               NEXTGEN TESTING ACADEMY
