@@ -38,18 +38,6 @@ export default function LandingPage() {
               <Scene />
             </div>
 
-            {/* Monitor Chassis Footer */}
-            <div className="mt-2 px-3 py-1.5 border-t border-zinc-800/60 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-              <div className="flex items-center gap-3">
-                <span>SYSTEM: 2199 NEBUCHADNEZZAR</span>
-                <span>•</span>
-                <span>CRT PHOSPHOR: GREEN</span>
-              </div>
-              <div className="text-emerald-400 font-bold flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>SYSTEM READY. ACCESS GRANTED.</span>
-              </div>
-            </div>
           </div>
         </div>
 
