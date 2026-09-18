@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Scene } from "@/components/CrtScene";
 
 export default function LandingPage() {
@@ -76,19 +76,6 @@ export default function LandingPage() {
           >
             <span>Enter LMS Platform</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <Link
-            href="/verify"
-            className="inline-flex items-center gap-2 px-6 py-3.5 border border-zinc-700/80 text-zinc-300 hover:text-white hover:border-emerald-500/60 font-mono text-xs uppercase tracking-wider rounded-full transition-all bg-zinc-900/70 backdrop-blur"
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Verify Certificate</span>
-          </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3.5 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs uppercase tracking-wider rounded-full transition-colors bg-zinc-950/80 backdrop-blur"
-          >
-            <span>Dashboard</span>
           </Link>
         </div>
       </main>
