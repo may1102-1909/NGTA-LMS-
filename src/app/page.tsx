@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Activity, Zap, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { Scene } from "@/components/CrtScene";
 
 export default function LandingPage() {
@@ -29,25 +29,6 @@ export default function LandingPage() {
       <main className="relative z-20 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12 text-center flex flex-col items-center justify-center flex-1">
         {/* Centerpiece High-Resolution ThreeUI Zion Mainframe CRT Terminal */}
         <div className="w-full max-w-5xl relative">
-          {/* Subtle Floating Telemetry Pill Left */}
-          <div className="hidden lg:flex absolute -left-12 top-20 z-30 flex-col items-start p-4 rounded-xl bg-zinc-950/80 border border-zinc-800/90 backdrop-blur-md shadow-2xl space-y-1 text-left animate-[bounce_6s_infinite]">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-emerald-400 font-bold">
-              <Activity className="w-3 h-3" />
-              <span>TEST VELOCITY</span>
-            </div>
-            <div className="text-xl font-mono font-black text-white">99.98%</div>
-            <div className="text-[10px] text-zinc-500 font-mono">Parallel Pass Target</div>
-          </div>
-
-          {/* Subtle Floating Telemetry Pill Right */}
-          <div className="hidden lg:flex absolute -right-12 top-32 z-30 flex-col items-start p-4 rounded-xl bg-zinc-950/80 border border-zinc-800/90 backdrop-blur-md shadow-2xl space-y-1 text-left animate-[bounce_7s_infinite]">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-emerald-400 font-bold">
-              <Zap className="w-3 h-3" />
-              <span>GRID LATENCY</span>
-            </div>
-            <div className="text-xl font-mono font-black text-white">&lt; 200ms</div>
-            <div className="text-[10px] text-zinc-500 font-mono">W3C WebDriver Nodes</div>
-          </div>
 
           {/* High-Resolution Monitor Chassis */}
           <div className="relative rounded-2xl border-4 border-zinc-800/90 bg-[#060f08] p-2 sm:p-3 shadow-[0_30px_120px_rgba(0,0,0,1),0_0_90px_rgba(34,197,94,0.14)]">
