@@ -16,7 +16,7 @@ export const ZION_LOG: Segment[][] = [
   [segment("[00.89s] ", "d"), segment("> Syncing Live Class & Consultation Calendars.......... "), segment("[OK]", "a")],
   [segment("[01.12s] ", "d"), segment("> Restoring Learner Gamification & Leaderboards......... "), segment("[OK]", "a")],
   [segment("[01.45s] ", "d"), segment("> Verifying Automated Certificate Engine.............. "), segment("[OK]", "a")],
-  [segment("[01.80s] ", "d"), segment("SYSTEM READY. ACCESS GRANTED.  ", "h"), segment("Visual Indicator: ", "p"), segment("[████████████████████████████████] 100%", "a")],
+  [segment("[01.80s] ", "d"), segment("SYSTEM READY. ACCESS GRANTED.", "h")],
 ];
 
 const LOG = ZION_LOG;
