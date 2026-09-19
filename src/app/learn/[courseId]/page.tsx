@@ -17,6 +17,7 @@ import {
   FileCode,
   Sparkles,
 } from "lucide-react";
+import RankTag from "@/components/gamification/RankTag";
 
 export default function LearnPlayerPage() {
   const params = useParams();
@@ -34,6 +35,8 @@ export default function LearnPlayerPage() {
   const [activeLessonId, setActiveLessonId] = useState<string>(allLessons[0]?.id || "les-1");
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
   const [playbackTime, setPlaybackTime] = useState<number>(0);
+  const [userPoints, setUserPoints] = useState<number>(420);
+  const [pointsToast, setPointsToast] = useState<string | null>(null);
 
   const activeLesson = allLessons.find((l) => l.id === activeLessonId) || allLessons[0];
 
@@ -44,10 +47,13 @@ export default function LearnPlayerPage() {
       ? Math.round((completedLessonIds.length / totalLessonsCount) * 100)
       : 0;
 
-  // Mark current lesson completed
+  // Mark current lesson completed & record gamification points
   const handleMarkCompleted = (lessonId: string) => {
     if (!completedLessonIds.includes(lessonId)) {
       setCompletedLessonIds((prev) => [...prev, lessonId]);
+      setUserPoints((prev) => prev + 10);
+      setPointsToast(`+10 PTS · Lesson completed · ${activeLesson.title}`);
+      setTimeout(() => setPointsToast(null), 4000);
     }
   };
 
@@ -72,12 +78,27 @@ export default function LearnPlayerPage() {
           </span>
         </div>
 
-        {/* Course Progress Indicator (BRD Section 8) */}
-        <div className="flex items-center gap-4">
+        {/* Course Progress Indicator (BRD Section 8) & Gamification Telemetry */}
+        <div className="flex items-center gap-4 font-mono">
+          {/* Points Award Toast */}
+          {pointsToast && (
+            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-950 border border-emerald-500 text-emerald-300 text-[11px] animate-in fade-in slide-in-from-top-1">
+              <span className="font-bold">●</span>
+              <span>{pointsToast}</span>
+            </div>
+          )}
+
+          {/* User Rank & Points */}
+          <div className="hidden lg:flex items-center gap-2">
+            <RankTag points={userPoints} size="sm" />
+            <span className="text-zinc-400">|</span>
+            <span className="text-blue-400 font-bold tabular-nums">{userPoints} PTS</span>
+          </div>
+
           <div className="hidden sm:flex items-center gap-2">
-            <span className="text-zinc-400">COURSE PROGRESS:</span>
+            <span className="text-zinc-400">PROGRESS:</span>
             <span className="font-bold text-emerald-400">{progressPercentage}%</span>
-            <div className="w-24 h-2 bg-zinc-800 border border-zinc-700 overflow-hidden">
+            <div className="w-20 h-2 bg-zinc-800 border border-zinc-700 overflow-hidden">
               <div
                 className="h-full bg-emerald-500 transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}

@@ -1,0 +1,246 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  INSTRUCTOR
+  CONTENT_MANAGER
+  SUPPORT_STAFF
+  LEARNER
+  GUEST
+}
+
+enum CourseState {
+  DRAFT
+  REVIEW
+  APPROVED
+  PUBLISHED
+  UNPUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  role           UserRole        @default(LEARNER)
+  avatarUrl      String?
+  headline       String?
+  timezone       String?         @default("Asia/Kolkata")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  enrollments    Enrollment[]
+  certificates   Certificate[]
+  orders         Order[]
+  quizAttempts   QuizAttempt[]
+  communityPosts CommunityPost[]
+
+  @@map("users")
+}
+
+model Course {
+  id               String       @id @default(cuid())
+  slug             String       @unique
+  title            String
+  subtitle         String
+  description      String       @db.Text
+  instructorId     String
+  instructorName   String
+  instructorTitle  String
+  category         String
+  tags             String[]
+  thumbnailUrl     String
+  bannerUrl        String
+  difficultyLevel  String       @default("All Levels")
+  durationHours    Float        @default(0)
+  priceINR         Float        @default(0)
+  discountPriceINR Float        @default(0)
+  status           CourseState  @default(PUBLISHED)
+  objectives       String[]
+  prerequisites    String[]
+  targetAudience   String[]
+  rating           Float        @default(5.0)
+  ratingsCount     Int          @default(0)
+  studentsCount    Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  modules          Module[]
+  quizzes          Quiz[]
+  enrollments      Enrollment[]
+  certificates     Certificate[]
+
+  @@map("courses")
+}
+
+model Module {
+  id        String    @id @default(cuid())
+  courseId  String
+  course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int       @default(0)
+  isLocked  Boolean   @default(false)
+  chapters  Chapter[]
+
+  @@map("modules")
+}
+
+model Chapter {
+  id        String   @id @default(cuid())
+  moduleId  String
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int      @default(0)
+  lessons   Lesson[]
+
+  @@map("chapters")
+}
+
+model Lesson {
+  id                      String   @id @default(cuid())
+  chapterId               String
+  chapter                 Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  title                   String
+  order                   Int      @default(0)
+  durationMinutes         Int      @default(10)
+  type                    String   @default("video")
+  videoUrl                String?
+  content                 String?  @db.Text
+  dripDaysAfterEnrollment Int      @default(0)
+
+  @@map("lessons")
+}
+
+model Enrollment {
+  id                   String    @id @default(cuid())
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId             String
+  course               Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrolledAt           DateTime  @default(now())
+  progressPercentage   Float     @default(0)
+  lastAccessedLessonId String?
+  completedAt          DateTime?
+  certificateIssued    Boolean   @default(false)
+  completedLessonIds   String[]
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Quiz {
+  id                String         @id @default(cuid())
+  courseId          String
+  course            Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title             String
+  passingPercentage Float          @default(70.0)
+  timeLimitMinutes  Int            @default(30)
+  maxAttempts       Int            @default(3)
+  questions         QuizQuestion[]
+  attempts          QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  quizId        String
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionText  String
+  type          String   @default("single_choice")
+  options       Json?
+  correctAnswer Json
+  explanation   String   @db.Text
+
+  @@map("quiz_questions")
+}
+
+model QuizAttempt {
+  id              String   @id @default(cuid())
+  quizId          String
+  quiz            Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scorePercentage Float
+  passed          Boolean
+  submittedAt     DateTime @default(now())
+
+  @@map("quiz_attempts")
+}
+
+model Certificate {
+  id              String   @id @default(cuid())
+  certificateId   String   @unique
+  learnerId       String
+  user            User     @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  learnerName     String
+  courseId        String
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseTitle     String
+  instructorName  String
+  issuedAt        DateTime @default(now())
+  verificationUrl String
+  status          String   @default("VALID")
+
+  @@map("certificates")
+}
+
+model Order {
+  id               String   @id @default(cuid())
+  orderNumber      String   @unique
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userEmail        String
+  courseId         String?
+  membershipPlanId String?
+  amountINR        Float
+  discountINR      Float    @default(0)
+  currency         String   @default("INR")
+  paymentMethod    String
+  status           String   @default("INITIATED")
+  createdAt        DateTime @default(now())
+  transactionId    String
+
+  @@map("orders")
+}
+
+model LiveSession {
+  id             String   @id @default(cuid())
+  title          String
+  instructorName String
+  date           String
+  startTime      String
+  endTime        String
+  courseId       String?
+  capacity       Int      @default(50)
+  meetingUrl     String
+  status         String   @default("UPCOMING")
+  createdAt      DateTime @default(now())
+
+  @@map("live_sessions")
+}
+
+model CommunityPost {
+  id           String    @id @default(cuid())
+  channelId    String
+  authorId     String?
+  user         User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName   String
+  authorRole   UserRole  @default(LEARNER)
+  authorAvatar String?
+  content      String    @db.Text
+  createdAt    DateTime  @default(now())
+  reactions    Json?
+  repliesCount Int       @default(0)
+
+  @@map("community_posts")
+}

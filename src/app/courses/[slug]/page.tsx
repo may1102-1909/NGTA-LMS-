@@ -19,6 +19,9 @@ import {
   Lock,
   X,
 } from "lucide-react";
+import ChallengeStepLog from "@/components/gamification/ChallengeStepLog";
+import CredentialCard from "@/components/gamification/CredentialCard";
+import { INITIAL_CREDENTIALS } from "@/lib/gamification";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -265,6 +268,22 @@ export default function CourseDetailPage() {
                   <li key={idx}>{t}</li>
                 ))}
               </ul>
+            </div>
+
+            {/* Component 6: CHALLENGE STEP-LOG (BRD Section 23) */}
+            <ChallengeStepLog maxVisible={6} />
+
+            {/* Component 4: UNLOCKABLE CREDENTIALS (Solid Cert + Dashed Badges) */}
+            <div className="space-y-3 pt-2">
+              <div className="flex justify-between items-center text-zinc-500 uppercase text-[10px] tracking-wider border-b border-zinc-200 pb-1">
+                <span>[COURSE ACCREDITATION // BRD §12 & §38]</span>
+                <span>UNLOCKABLE</span>
+              </div>
+              <div className="space-y-3">
+                {INITIAL_CREDENTIALS.slice(0, 2).map((cred) => (
+                  <CredentialCard key={cred.id} credential={cred} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
