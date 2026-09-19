@@ -28,33 +28,6 @@ export default function LandingPage() {
 
       {/* ── MAIN FULL-FOCUS CRT TERMINAL STAGE ── */}
       <main className="relative z-20 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-12 text-center flex flex-col items-center justify-center flex-1">
-        {/* Subtle Brand Identity above Terminal */}
-        <div className="mb-6 flex items-center justify-center gap-3.5">
-          <div className="relative p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800 shadow-[0_0_25px_rgba(56,189,248,0.2)]">
-            <Image
-              src="/logo.png"
-              alt="NGTA LMS Logo"
-              width={44}
-              height={44}
-              className="w-11 h-11 object-contain rounded-lg"
-              priority
-            />
-          </div>
-          <div className="text-left">
-            <div className="flex items-center gap-2">
-              <span className="font-sans text-base font-black tracking-tight text-white uppercase">
-                NextGen Testing Academy
-              </span>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded uppercase">
-                LMS
-              </span>
-            </div>
-            <div className="font-mono text-[11px] text-zinc-500 tracking-wider">
-              AUTONOMOUS LEARNING RUNTIME
-            </div>
-          </div>
-        </div>
-
         {/* Centerpiece High-Resolution ThreeUI Zion Mainframe CRT Terminal */}
         <div className="w-full max-w-5xl relative">
 
