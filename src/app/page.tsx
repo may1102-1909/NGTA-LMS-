@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Scene } from "@/components/CrtScene";
+import LoginButton from "@/components/LoginButton";
 
 export default function LandingPage() {
   return (
@@ -44,13 +45,7 @@ export default function LandingPage() {
 
         {/* ── ACTION BUTTON TO ENTER UNTOUCHED LMS PLATFORM ── */}
         <div className="mt-10 flex flex-wrap justify-center items-center gap-4 font-mono">
-          <Link
-            href="/lms"
-            className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white text-zinc-950 font-bold text-sm uppercase tracking-wider rounded-full hover:bg-zinc-200 transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.35)] group"
-          >
-            <span>Enter LMS Platform</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <LoginButton />
         </div>
       </main>
 
