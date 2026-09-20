@@ -20,7 +20,6 @@ export default function LeaderboardTable({
 
   const rawEntries = INITIAL_LEADERBOARD[activeTab] || [];
 
-  // Filter & Sort
   const filteredAndSortedEntries = useMemo(() => {
     let list = [...rawEntries];
 
@@ -53,26 +52,26 @@ export default function LeaderboardTable({
 
   return (
     <div
-      className={`border-2 border-zinc-900 bg-white p-5 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-4 font-mono ${className}`}
+      className={`border border-[#252A36] bg-[#181C26] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
-      {/* Widget Header & Section Label */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b-2 border-zinc-900 pb-3">
+      {/* Widget Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#252A36] pb-3">
         <div>
-          <div className="text-[10px] text-zinc-500 uppercase tracking-widest">
+          <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
             [COHORT LEADERBOARD // BRD SECTION 38]
           </div>
-          <h3 className="text-xl font-black text-zinc-950 uppercase tracking-tight">
+          <h3 className="text-xl font-black text-white uppercase tracking-tight">
             ENGINEERING RANKINGS
           </h3>
         </div>
 
-        {/* Cohort / Course Filter */}
+        {/* Cohort Filter */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-zinc-500 uppercase">COHORT:</span>
+          <span className="text-[10px] text-[#5A5F70] uppercase">COHORT:</span>
           <select
             value={cohortFilter}
             onChange={(e) => setCohortFilter(e.target.value)}
-            className="border border-zinc-900 bg-zinc-50 text-xs px-2.5 py-1 font-bold text-zinc-900 focus:outline-none uppercase"
+            className="border border-[#252A36] bg-[#10131A] text-xs px-2.5 py-1 font-bold text-white focus:outline-none uppercase"
           >
             <option value="ALL">ALL COHORTS</option>
             <option value="Selenium">SELENIUM (COHORT 26)</option>
@@ -81,76 +80,76 @@ export default function LeaderboardTable({
         </div>
       </div>
 
-      {/* Swiss Tabs: This Week / This Month / All-Time */}
-      <div className="flex border-2 border-zinc-900 bg-zinc-100 text-xs font-bold">
+      {/* Tabs */}
+      <div className="flex border border-[#252A36] bg-[#10131A] text-xs font-bold">
         <button
           onClick={() => setActiveTab("WEEK")}
           className={`flex-1 py-1.5 px-3 uppercase text-center transition-colors ${
             activeTab === "WEEK"
-              ? "bg-zinc-950 text-white"
-              : "text-zinc-700 hover:bg-zinc-200"
+              ? "bg-[#EFFF4F] text-[#10131A]"
+              : "text-[#A0A5B5] hover:bg-[#252A36]"
           }`}
         >
           THIS WEEK
         </button>
         <button
           onClick={() => setActiveTab("MONTH")}
-          className={`flex-1 py-1.5 px-3 uppercase text-center border-l-2 border-zinc-900 transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#252A36] transition-colors ${
             activeTab === "MONTH"
-              ? "bg-zinc-950 text-white"
-              : "text-zinc-700 hover:bg-zinc-200"
+              ? "bg-[#EFFF4F] text-[#10131A]"
+              : "text-[#A0A5B5] hover:bg-[#252A36]"
           }`}
         >
           THIS MONTH
         </button>
         <button
           onClick={() => setActiveTab("ALL_TIME")}
-          className={`flex-1 py-1.5 px-3 uppercase text-center border-l-2 border-zinc-900 transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#252A36] transition-colors ${
             activeTab === "ALL_TIME"
-              ? "bg-zinc-950 text-white"
-              : "text-zinc-700 hover:bg-zinc-200"
+              ? "bg-[#EFFF4F] text-[#10131A]"
+              : "text-[#A0A5B5] hover:bg-[#252A36]"
           }`}
         >
           ALL-TIME
         </button>
       </div>
 
-      {/* Leaderboard Table Container */}
-      <div className="border border-zinc-900 overflow-x-auto bg-white">
+      {/* Leaderboard Table */}
+      <div className="border border-[#252A36] overflow-x-auto bg-[#10131A]">
         <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
-            <tr className="bg-zinc-950 text-white text-[11px] uppercase tracking-wider border-b border-zinc-900">
+            <tr className="bg-[#10131A] text-[#A0A5B5] text-[11px] uppercase tracking-wider border-b border-[#252A36]">
               <th
                 onClick={() => handleSort("rank")}
-                className="py-2.5 px-3 cursor-pointer select-none hover:bg-zinc-800 transition-colors"
+                className="py-2.5 px-3 cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
               >
                 <div className="flex items-center gap-1">
                   <span>RANK</span>
-                  <ArrowUpDown className="w-3 h-3 text-zinc-400" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
               <th className="py-2.5 px-3">LEARNER</th>
               <th
                 onClick={() => handleSort("points")}
-                className="py-2.5 px-3 text-right cursor-pointer select-none hover:bg-zinc-800 transition-colors"
+                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>PTS</span>
-                  <ArrowUpDown className="w-3 h-3 text-zinc-400" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
               <th
                 onClick={() => handleSort("streakDays")}
-                className="py-2.5 px-3 text-right cursor-pointer select-none hover:bg-zinc-800 transition-colors"
+                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>STREAK</span>
-                  <ArrowUpDown className="w-3 h-3 text-zinc-400" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-200 text-zinc-900">
+          <tbody className="divide-y divide-[#252A36] text-white">
             {filteredAndSortedEntries.map((learner, idx) => {
               const displayRank = idx + 1;
               const isCurrentUser = learner.isCurrentUser;
@@ -160,49 +159,45 @@ export default function LeaderboardTable({
                   key={learner.id}
                   className={`transition-colors tabular-nums ${
                     isCurrentUser
-                      ? "bg-blue-50/80 border-l-4 border-l-blue-600 font-bold"
-                      : "hover:bg-zinc-50"
+                      ? "bg-[#EFFF4F]/5 border-l-2 border-l-[#EFFF4F] font-bold"
+                      : "hover:bg-[#252A36]/50"
                   }`}
                 >
-                  {/* RANK column */}
-                  <td className="py-2.5 px-3 text-zinc-950 font-bold">
+                  <td className="py-2.5 px-3 text-white font-bold">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-zinc-500">#</span>
+                      <span className="text-[#5A5F70]">#</span>
                       <span>{String(displayRank).padStart(2, "0")}</span>
                       {displayRank === 1 && (
-                        <span className="w-1.5 h-1.5 bg-amber-500 rounded-full inline-block" />
+                        <span className="w-1.5 h-1.5 bg-[#EFFF4F] rounded-full inline-block" />
                       )}
                     </div>
                   </td>
 
-                  {/* LEARNER column */}
                   <td className="py-2.5 px-3">
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-zinc-950 font-bold">
+                        <span className="text-white font-bold">
                           {learner.name}
                         </span>
                         {isCurrentUser && (
-                          <span className="text-[9px] px-1 py-0.2 bg-zinc-950 text-white uppercase tracking-wider font-bold">
+                          <span className="text-[9px] px-1 py-0.2 bg-[#EFFF4F] text-[#10131A] uppercase tracking-wider font-bold">
                             YOU
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-1 text-[10px] text-zinc-500 font-normal">
+                      <div className="flex items-center gap-1 text-[10px] text-[#5A5F70] font-normal">
                         <span>{learner.handle}</span>
                         <span>•</span>
-                        <span className="text-zinc-700 font-semibold">{learner.rankCode}</span>
+                        <span className="text-[#A0A5B5] font-semibold">{learner.rankCode}</span>
                       </div>
                     </div>
                   </td>
 
-                  {/* PTS column */}
-                  <td className="py-2.5 px-3 text-right font-black text-blue-600">
+                  <td className="py-2.5 px-3 text-right font-black text-[#EFFF4F]">
                     {learner.points.toLocaleString()}
                   </td>
 
-                  {/* STREAK column */}
-                  <td className="py-2.5 px-3 text-right text-emerald-600 font-bold">
+                  <td className="py-2.5 px-3 text-right text-[#EFFF4F] font-bold">
                     <span className="inline-flex items-center gap-1">
                       <span>●</span>
                       <span>{learner.streakDays}d</span>
@@ -214,7 +209,7 @@ export default function LeaderboardTable({
 
             {filteredAndSortedEntries.length === 0 && (
               <tr>
-                <td colSpan={4} className="py-6 text-center text-zinc-500 font-mono text-xs">
+                <td colSpan={4} className="py-6 text-center text-[#5A5F70] font-mono text-xs">
                   NO TELEMETRY RECORDED FOR SELECTED FILTER
                 </td>
               </tr>
@@ -224,7 +219,7 @@ export default function LeaderboardTable({
       </div>
 
       {/* Footer Meta */}
-      <div className="flex justify-between items-center text-[10px] text-zinc-500 uppercase pt-1">
+      <div className="flex justify-between items-center text-[10px] text-[#5A5F70] uppercase pt-1">
         <span>REFRESH: REAL-TIME TELEMETRY</span>
         <span>BRD §38 LEADERBOARD PROTOCOL</span>
       </div>

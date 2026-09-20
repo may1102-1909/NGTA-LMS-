@@ -29,15 +29,15 @@ export default function RankTag({
     <div className={`inline-flex flex-col gap-1.5 font-mono ${className}`}>
       <div className="flex items-center gap-2">
         <span
-          className={`inline-flex items-center gap-1 font-bold uppercase tracking-wider border border-zinc-900 bg-zinc-100 text-zinc-950 select-none shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ${sizeClasses[size]}`}
+          className={`inline-flex items-center gap-1 font-bold uppercase tracking-wider border border-[#EFFF4F]/30 bg-[#EFFF4F]/10 text-[#EFFF4F] select-none ${sizeClasses[size]}`}
           title={`${currentTier.name}: ${currentTier.description}`}
         >
-          <span className="text-zinc-500 font-normal">RANK:</span>
-          <span className="text-zinc-950 font-black">{currentTier.code}</span>
+          <span className="text-[#A0A5B5] font-normal">RANK:</span>
+          <span className="text-[#EFFF4F] font-black">{currentTier.code}</span>
         </span>
 
         {nextTier && !showProgress && (
-          <span className="text-[10px] text-zinc-500 tabular-nums hidden sm:inline-block">
+          <span className="text-[10px] text-[#5A5F70] tabular-nums hidden sm:inline-block">
             [{percentage}% TO {nextTier.code}]
           </span>
         )}
@@ -45,17 +45,16 @@ export default function RankTag({
 
       {showProgress && nextTier && (
         <div className="space-y-1 w-full max-w-xs">
-          <div className="flex justify-between items-center text-[10px] text-zinc-600 tabular-nums">
+          <div className="flex justify-between items-center text-[10px] text-[#5A5F70] tabular-nums">
             <span>NEXT: {nextTier.code}</span>
-            <span className="font-bold text-zinc-900">
+            <span className="font-bold text-white">
               {points}/{nextTier.minPoints} PTS [{percentage}%]
             </span>
           </div>
 
-          {/* Thin segmented status-bar style progress indicator (not rounded) */}
-          <div className="w-full h-1.5 bg-zinc-200 border border-zinc-900 flex overflow-hidden">
+          <div className="w-full h-1.5 bg-[#252A36] border border-[#252A36] flex overflow-hidden">
             <div
-              className="h-full bg-blue-600 transition-all duration-300"
+              className="h-full bg-[#EFFF4F] transition-all duration-300"
               style={{ width: `${percentage}%` }}
             />
           </div>

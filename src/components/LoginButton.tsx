@@ -5,7 +5,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { ArrowRight } from 'lucide-react'
 
 export default function LoginButton({
-  className = "inline-flex items-center gap-2.5 px-8 py-3.5 bg-white text-zinc-950 font-bold text-sm uppercase tracking-wider rounded-full hover:bg-zinc-200 transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.35)] group cursor-pointer",
+  className = "inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#EFFF4F] text-[#10131A] font-bold text-sm uppercase tracking-wider rounded-full hover:bg-[#EFFF4F]/90 transition-all hover:scale-105 shadow-[0_0_30px_rgba(239,255,79,0.35)] group cursor-pointer",
 }: {
   className?: string
 }) {

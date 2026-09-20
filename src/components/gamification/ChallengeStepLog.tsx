@@ -47,47 +47,47 @@ export default function ChallengeStepLog({
 
   return (
     <div
-      className={`border-2 border-zinc-900 bg-white p-5 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-4 font-mono ${className}`}
+      className={`border border-[#252A36] bg-[#181C26] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
-      {/* CLI Header & Section Label */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b-2 border-zinc-900 pb-3">
+      {/* CLI Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#252A36] pb-3">
         <div>
-          <div className="text-[10px] text-zinc-500 uppercase tracking-widest">
+          <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
             [30-DAY SDET CHALLENGE // BRD SECTION 23]
           </div>
-          <h3 className="text-xl font-black text-zinc-950 uppercase tracking-tight flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-blue-600" />
+          <h3 className="text-xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-[#EFFF4F]" />
             <span>CLI CHALLENGE STEP-LOG</span>
           </h3>
         </div>
 
-        {/* Progress Telemetry Counter */}
+        {/* Progress Counter */}
         <div className="text-right tabular-nums">
-          <div className="text-xs font-bold text-zinc-900">
+          <div className="text-xs font-bold text-white">
             {String(completedCount).padStart(2, "0")}/{String(totalCount).padStart(2, "0")} COMPLETED [{completionPercentage}%]
           </div>
-          <div className="text-[10px] text-emerald-600 font-semibold">
+          <div className="text-[10px] text-[#EFFF4F] font-semibold">
             {totalCount - completedCount} DAYS REMAINING
           </div>
         </div>
       </div>
 
-      {/* Thin, segmented status-bar style progress indicators (not rounded pill bars) */}
+      {/* Progress Bar */}
       <div className="space-y-1">
-        <div className="w-full h-2 bg-zinc-200 border border-zinc-900 flex overflow-hidden">
+        <div className="w-full h-2 bg-[#252A36] border border-[#252A36] flex overflow-hidden">
           {Array.from({ length: 30 }).map((_, i) => {
             const isFilled = i < completedCount;
             return (
               <div
                 key={i}
-                className={`flex-1 border-r border-zinc-900 last:border-r-0 transition-colors ${
-                  isFilled ? "bg-blue-600" : "bg-zinc-200"
+                className={`flex-1 border-r border-[#10131A] last:border-r-0 transition-colors ${
+                  isFilled ? "bg-[#EFFF4F]" : "bg-[#252A36]"
                 }`}
               />
             );
           })}
         </div>
-        <div className="flex justify-between text-[9px] text-zinc-500 tabular-nums">
+        <div className="flex justify-between text-[9px] text-[#5A5F70] tabular-nums">
           <span>DAY 01</span>
           <span>DAY 15</span>
           <span>DAY 30</span>
@@ -95,13 +95,13 @@ export default function ChallengeStepLog({
       </div>
 
       {/* Vertical Terminal Checklist */}
-      <div className="border border-zinc-900 bg-zinc-950 text-zinc-100 p-4 space-y-1.5 shadow-inner">
-        <div className="text-[10px] text-zinc-500 border-b border-zinc-800 pb-2 mb-2 flex justify-between">
+      <div className="border border-[#252A36] bg-[#10131A] text-white p-4 space-y-1.5">
+        <div className="text-[10px] text-[#5A5F70] border-b border-[#252A36] pb-2 mb-2 flex justify-between">
           <span>RUN: ngta challenge --track=sdet-30-days</span>
           <span>STATUS: EXECUTION_CADENCE</span>
         </div>
 
-        <div className="space-y-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin", scrollbarColor: "#52525b #18181b" }}>
+        <div className="space-y-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin", scrollbarColor: "#252A36 #10131A" }}>
           {displayedTasks.map((task) => {
             const dayFormatted = String(task.dayNumber).padStart(2, "0");
             const isDone = task.isCompleted;
@@ -110,21 +110,20 @@ export default function ChallengeStepLog({
               <div
                 key={task.dayNumber}
                 onClick={() => setSelectedTask(selectedTask?.dayNumber === task.dayNumber ? null : task)}
-                className={`group flex items-start justify-between p-1.5 cursor-pointer hover:bg-zinc-900 transition-colors border-l-2 ${
+                className={`group flex items-start justify-between p-1.5 cursor-pointer hover:bg-[#181C26] transition-colors border-l-2 ${
                   isDone
-                    ? "border-l-emerald-500 text-zinc-300"
-                    : "border-l-zinc-700 text-zinc-400"
+                    ? "border-l-[#EFFF4F] text-white"
+                    : "border-l-[#252A36] text-[#5A5F70]"
                 }`}
               >
-                {/* Format: "DAY 01 ▸ Install Java [✓]" */}
                 <div className="flex items-baseline gap-2 truncate">
-                  <span className="text-zinc-500 text-[11px] font-bold shrink-0">
+                  <span className="text-[#5A5F70] text-[11px] font-bold shrink-0">
                     DAY {dayFormatted}
                   </span>
-                  <span className="text-blue-400 shrink-0">▸</span>
+                  <span className="text-[#EFFF4F] shrink-0">▸</span>
                   <span
                     className={`text-xs truncate ${
-                      isDone ? "text-zinc-200" : "text-zinc-400"
+                      isDone ? "text-white" : "text-[#5A5F70]"
                     }`}
                   >
                     {task.title}
@@ -132,7 +131,7 @@ export default function ChallengeStepLog({
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 ml-2">
-                  <span className="text-[10px] text-zinc-500 tabular-nums">
+                  <span className="text-[10px] text-[#5A5F70] tabular-nums">
                     +{task.pointsReward} PTS
                   </span>
                   <button
@@ -140,8 +139,8 @@ export default function ChallengeStepLog({
                       e.stopPropagation();
                       handleToggle(task.dayNumber);
                     }}
-                    className={`font-mono text-xs px-1 hover:text-white transition-colors ${
-                      isDone ? "text-emerald-400 font-bold" : "text-zinc-600"
+                    className={`font-mono text-xs px-1 hover:text-[#EFFF4F] transition-colors ${
+                      isDone ? "text-[#EFFF4F] font-bold" : "text-[#5A5F70]"
                     }`}
                     title={isDone ? "Mark as incomplete" : "Mark as completed"}
                   >
@@ -153,13 +152,13 @@ export default function ChallengeStepLog({
           })}
         </div>
 
-        {/* Selected Task Command Snippet Inspection */}
+        {/* Selected Task Command Snippet */}
         {selectedTask && (
-          <div className="mt-3 p-2.5 bg-zinc-900 border border-zinc-700 text-[11px] space-y-1">
-            <div className="text-zinc-400 font-bold uppercase text-[10px]">
+          <div className="mt-3 p-2.5 bg-[#181C26] border border-[#252A36] text-[11px] space-y-1">
+            <div className="text-[#5A5F70] font-bold uppercase text-[10px]">
               DAY {String(selectedTask.dayNumber).padStart(2, "0")} COMMAND & TELEMETRY:
             </div>
-            <div className="font-mono text-emerald-400 bg-black/60 p-2 border border-zinc-800 break-all select-all">
+            <div className="font-mono text-[#EFFF4F] bg-[#10131A] p-2 border border-[#252A36] break-all select-all">
               $ {selectedTask.commandSnippet || "javac -version && java Main"}
             </div>
           </div>
@@ -170,7 +169,7 @@ export default function ChallengeStepLog({
       <div className="flex justify-between items-center text-xs pt-1">
         <button
           onClick={() => setShowAll(!showAll)}
-          className="text-blue-600 hover:text-blue-800 font-bold uppercase flex items-center gap-1"
+          className="text-[#EFFF4F] hover:text-white font-bold uppercase flex items-center gap-1 transition-colors"
         >
           <span>
             {showAll
@@ -180,7 +179,7 @@ export default function ChallengeStepLog({
           {showAll ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
 
-        <span className="text-[10px] text-zinc-400 uppercase">
+        <span className="text-[10px] text-[#5A5F70] uppercase">
           BRD §23 AUTONOMOUS CHALLENGE
         </span>
       </div>

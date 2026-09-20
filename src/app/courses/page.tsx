@@ -27,30 +27,30 @@ export default function CoursesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header Banner (Swiss Typographic Hierarchy) */}
-      <div className="border-b-2 border-zinc-900 pb-8 mb-8">
-        <div className="font-mono text-xs text-zinc-500 uppercase tracking-widest mb-1">
+      {/* Header Banner */}
+      <div className="border-b border-[#252A36] pb-8 mb-8">
+        <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
           [CATALOG // REGISTRY]
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-950 uppercase">
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase">
           SDET & TEST AUTOMATION CURRICULA
         </h1>
-        <p className="text-zinc-600 mt-2 text-base font-normal max-w-2xl">
+        <p className="text-[#A0A5B5] mt-2 text-base font-normal max-w-2xl">
           Comprehensive, production-validated syllabi covering architecture, enterprise frameworks, CI/CD integration, and performance benchmarks.
         </p>
       </div>
 
-      {/* Swiss Filter Grid Toolbar (BRD Section 36) */}
-      <div className="border-2 border-zinc-900 bg-white p-4 mb-10 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+      {/* Filter Grid Toolbar */}
+      <div className="border border-[#252A36] bg-[#181C26] p-4 mb-10 shadow-card grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
         {/* Search Input */}
         <div className="md:col-span-6 relative">
-          <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#5A5F70] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search keywords (e.g. Selenium, Playwright, CI/CD)..."
-            className="w-full pl-9 pr-4 py-2 border border-zinc-300 font-mono text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
+            className="w-full pl-9 pr-4 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50"
           />
         </div>
 
@@ -59,7 +59,7 @@ export default function CoursesPage() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-3 py-2 border border-zinc-300 font-mono text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 bg-white"
+            className="w-full px-3 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -74,7 +74,7 @@ export default function CoursesPage() {
           <select
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
-            className="w-full px-3 py-2 border border-zinc-300 font-mono text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 bg-white"
+            className="w-full px-3 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
           >
             {levels.map((lvl) => (
               <option key={lvl} value={lvl}>
@@ -90,28 +90,28 @@ export default function CoursesPage() {
         {filteredCourses.map((course, idx) => (
           <div
             key={course.id}
-            className="border-2 border-zinc-900 bg-white flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform"
+            className="border border-[#252A36] bg-[#181C26] flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all"
           >
             <div>
               {/* Card Banner */}
-              <div className="relative h-48 border-b-2 border-zinc-900 overflow-hidden bg-zinc-100">
+              <div className="relative h-48 border-b border-[#252A36] overflow-hidden bg-[#10131A]">
                 <img
                   src={course.thumbnailUrl}
                   alt={course.title}
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                  className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-300"
                 />
-                <div className="absolute top-3 left-3 bg-zinc-950 text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-zinc-800">
+                <div className="absolute top-3 left-3 bg-[#10131A]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36]">
                   {course.category}
                 </div>
-                <div className="absolute top-3 right-3 bg-white text-zinc-950 font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-zinc-900 flex items-center gap-1">
-                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                <div className="absolute top-3 right-3 bg-[#181C26] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36] flex items-center gap-1">
+                  <Star className="w-3 h-3 text-[#EFFF4F] fill-[#EFFF4F]" />
                   <span>{course.rating}</span>
                 </div>
               </div>
 
               {/* Card Info */}
               <div className="p-6 space-y-4">
-                <div className="flex items-center gap-3 font-mono text-xs text-zinc-500">
+                <div className="flex items-center gap-3 font-mono text-xs text-[#5A5F70]">
                   <span className="flex items-center gap-1">
                     <BarChart2 className="w-3.5 h-3.5" />
                     {course.difficultyLevel}
@@ -125,19 +125,19 @@ export default function CoursesPage() {
                   <span>{course.studentsCount.toLocaleString()} STUDENTS</span>
                 </div>
 
-                <h3 className="text-xl font-bold text-zinc-950 tracking-tight leading-snug">
-                  <Link href={`/courses/${course.slug}`} className="hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-white tracking-tight leading-snug">
+                  <Link href={`/courses/${course.slug}`} className="hover:text-[#EFFF4F] transition-colors">
                     {course.title}
                   </Link>
                 </h3>
 
-                <p className="text-sm text-zinc-600 line-clamp-2">{course.subtitle}</p>
+                <p className="text-sm text-[#A0A5B5] line-clamp-2">{course.subtitle}</p>
 
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {course.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-[10px] px-2 py-0.5 border border-zinc-300 text-zinc-700 bg-zinc-50"
+                      className="font-mono text-[10px] px-2 py-0.5 border border-[#252A36] text-[#5A5F70] bg-[#10131A]"
                     >
                       #{tag}
                     </span>
@@ -147,14 +147,14 @@ export default function CoursesPage() {
             </div>
 
             {/* Price and CTA */}
-            <div className="p-6 border-t-2 border-zinc-900 bg-zinc-50 flex items-center justify-between">
+            <div className="p-6 border-t border-[#252A36] bg-[#10131A] flex items-center justify-between">
               <div>
-                <div className="font-mono text-[10px] text-zinc-500 uppercase">FEE</div>
+                <div className="font-mono text-[10px] text-[#5A5F70] uppercase">FEE</div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-black text-zinc-950 font-mono">
+                  <span className="text-2xl font-black text-white font-mono">
                     ₹{course.discountPriceINR.toLocaleString()}
                   </span>
-                  <span className="text-xs line-through text-zinc-400 font-mono">
+                  <span className="text-xs line-through text-[#5A5F70] font-mono">
                     ₹{course.priceINR.toLocaleString()}
                   </span>
                 </div>
@@ -162,7 +162,7 @@ export default function CoursesPage() {
 
               <Link
                 href={`/courses/${course.slug}`}
-                className="px-5 py-2.5 bg-zinc-950 text-white font-mono text-xs uppercase font-bold hover:bg-blue-600 transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                className="px-5 py-2.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
               >
                 <span>VIEW CURRICULUM</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

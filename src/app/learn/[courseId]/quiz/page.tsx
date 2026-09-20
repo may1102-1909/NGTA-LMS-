@@ -36,7 +36,6 @@ export default function QuizAssessmentPage() {
     }));
   };
 
-  // Calculate score
   const totalQuestions = quiz.questions.length;
   let correctCount = 0;
   quiz.questions.forEach((q) => {
@@ -56,51 +55,51 @@ export default function QuizAssessmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white font-sans py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#10131A] text-white font-sans py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Top Navigation */}
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-4 font-mono text-xs">
+        <div className="flex items-center justify-between border-b border-[#252A36] pb-4 font-mono text-xs">
           <Link
             href={`/learn/${course.id}`}
-            className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-[#5A5F70] hover:text-[#EFFF4F] transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>BACK TO PLAYER</span>
           </Link>
           <div className="flex items-center gap-3">
-            <span className="text-zinc-500">ATTEMPT: {attemptCount}/{quiz.maxAttempts}</span>
-            <span className="text-zinc-500">|</span>
-            <span className="flex items-center gap-1 text-amber-400 font-bold">
+            <span className="text-[#5A5F70]">ATTEMPT: {attemptCount}/{quiz.maxAttempts}</span>
+            <span className="text-[#252A36]">|</span>
+            <span className="flex items-center gap-1 text-[#EFFF4F] font-bold">
               <Clock className="w-3.5 h-3.5" /> {quiz.timeLimitMinutes} MIN PASSING BENCHMARK: {quiz.passingPercentage}%
             </span>
           </div>
         </div>
 
-        {/* Assessment Header (Swiss Typography) */}
-        <div className="border-2 border-zinc-700 bg-zinc-900 p-6 shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] space-y-2">
-          <div className="font-mono text-xs text-blue-400 uppercase tracking-widest">
+        {/* Assessment Header */}
+        <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-2">
+          <div className="font-mono text-xs text-[#EFFF4F] uppercase tracking-widest">
             [EXAM // TECHNICAL EVALUATION]
           </div>
           <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
             {quiz.title}
           </h1>
-          <p className="text-zinc-400 text-xs sm:text-sm font-sans">
+          <p className="text-[#A0A5B5] text-xs sm:text-sm font-sans">
             Validating core SDET competency, W3C WebDriver architecture, and thread isolation principles for {course.title}.
           </p>
         </div>
 
-        {/* Results Banner (shown on submission) */}
+        {/* Results Banner */}
         {isSubmitted && (
           <div
-            className={`border-2 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-4 animate-in fade-in duration-200 ${
+            className={`border p-6 shadow-card space-y-4 animate-in fade-in duration-200 ${
               isPassed
-                ? "bg-emerald-950/80 border-emerald-500 text-emerald-100"
-                : "bg-red-950/80 border-red-500 text-red-100"
+                ? "bg-[#EFFF4F]/5 border-[#EFFF4F]/30 text-[#EFFF4F]"
+                : "bg-red-500/5 border-red-500/30 text-red-400"
             }`}
           >
             <div className="flex items-center gap-3">
               {isPassed ? (
-                <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                <CheckCircle2 className="w-8 h-8 text-[#EFFF4F]" />
               ) : (
                 <XCircle className="w-8 h-8 text-red-400" />
               )}
@@ -108,32 +107,32 @@ export default function QuizAssessmentPage() {
                 <h3 className="text-xl font-bold uppercase font-mono">
                   {isPassed ? "ASSESSMENT PASSED — COMPETENCY CERTIFIED" : "SCORE BELOW PASSING THRESHOLD"}
                 </h3>
-                <div className="font-mono text-xs mt-0.5">
-                  FINAL SCORE: <strong>{percentageScore}%</strong> ({correctCount} of {totalQuestions} correct) • REQUIRED: {quiz.passingPercentage}%
+                <div className="font-mono text-xs mt-0.5 text-[#A0A5B5]">
+                  FINAL SCORE: <strong className="text-white">{percentageScore}%</strong> ({correctCount} of {totalQuestions} correct) • REQUIRED: {quiz.passingPercentage}%
                 </div>
               </div>
             </div>
 
             {isPassed ? (
-              <div className="border-t border-emerald-700/60 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
+              <div className="border-t border-[#252A36] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
                 <div>
-                  <span className="text-emerald-300">ACCREDITED CERTIFICATE ISSUED:</span>{" "}
+                  <span className="text-[#A0A5B5]">ACCREDITED CERTIFICATE ISSUED:</span>{" "}
                   <strong className="text-white">{certificateId}</strong>
                 </div>
                 <Link
                   href={`/verify?certId=${certificateId}`}
-                  className="px-4 py-2.5 bg-emerald-500 text-zinc-950 font-bold uppercase hover:bg-emerald-400 transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#10131A] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
                 >
                   <Award className="w-4 h-4" />
                   <span>VIEW & VERIFY CREDENTIAL</span>
                 </Link>
               </div>
             ) : (
-              <div className="border-t border-red-700/60 pt-4 flex items-center justify-between font-mono text-xs">
-                <span>Please review lesson materials and try again.</span>
+              <div className="border-t border-[#252A36] pt-4 flex items-center justify-between font-mono text-xs">
+                <span className="text-[#A0A5B5]">Please review lesson materials and try again.</span>
                 <button
                   onClick={handleRetake}
-                  className="px-4 py-2 bg-red-800 text-white font-bold hover:bg-red-700 transition-colors flex items-center gap-1"
+                  className="px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-400 font-bold hover:bg-red-500/30 transition-colors flex items-center gap-1"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>RETAKE ASSESSMENT</span>
@@ -153,16 +152,16 @@ export default function QuizAssessmentPage() {
             return (
               <div
                 key={q.id}
-                className="border-2 border-zinc-800 bg-zinc-900 p-6 space-y-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                className="border border-[#252A36] bg-[#181C26] p-6 space-y-4 shadow-card"
               >
-                <div className="flex justify-between items-center font-mono text-xs text-zinc-500">
+                <div className="flex justify-between items-center font-mono text-xs text-[#5A5F70]">
                   <span>QUESTION 0{idx + 1} OF 0{totalQuestions}</span>
-                  <span className="uppercase text-[10px] px-1.5 py-0.5 border border-zinc-700 text-zinc-300">
+                  <span className="uppercase text-[10px] px-1.5 py-0.5 border border-[#252A36] text-[#A0A5B5]">
                     {q.type.replace("_", " ")}
                   </span>
                 </div>
 
-                <p className="text-base font-semibold text-zinc-100 font-sans">
+                <p className="text-base font-semibold text-white font-sans">
                   {q.questionText}
                 </p>
 
@@ -170,16 +169,16 @@ export default function QuizAssessmentPage() {
                 <div className="space-y-2 font-mono text-xs">
                   {q.options?.map((opt) => {
                     const isSelected = userAnswer === opt.id;
-                    let optionStyle = "border-zinc-700 bg-zinc-950 text-zinc-300 hover:border-zinc-500";
+                    let optionStyle = "border-[#252A36] bg-[#10131A] text-[#A0A5B5] hover:border-[#EFFF4F]/30";
 
                     if (isSubmitted) {
                       if (opt.id === q.correctAnswer) {
-                        optionStyle = "border-emerald-500 bg-emerald-950/50 text-emerald-200 font-bold";
+                        optionStyle = "border-[#EFFF4F]/50 bg-[#EFFF4F]/10 text-[#EFFF4F] font-bold";
                       } else if (isSelected) {
-                        optionStyle = "border-red-500 bg-red-950/50 text-red-200";
+                        optionStyle = "border-red-500/50 bg-red-500/10 text-red-400";
                       }
                     } else if (isSelected) {
-                      optionStyle = "border-blue-500 bg-blue-950/40 text-blue-200 font-bold";
+                      optionStyle = "border-[#EFFF4F]/50 bg-[#EFFF4F]/10 text-[#EFFF4F] font-bold";
                     }
 
                     return (
@@ -203,8 +202,8 @@ export default function QuizAssessmentPage() {
 
                 {/* Explanation on submission */}
                 {isSubmitted && (
-                  <div className="p-3 bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 font-sans space-y-1">
-                    <span className="font-mono text-[10px] uppercase font-bold text-zinc-500 block">
+                  <div className="p-3 bg-[#10131A] border border-[#252A36] text-xs text-[#A0A5B5] font-sans space-y-1">
+                    <span className="font-mono text-[10px] uppercase font-bold text-[#5A5F70] block">
                       EXPLANATION:
                     </span>
                     <p>{q.explanation}</p>
@@ -217,11 +216,11 @@ export default function QuizAssessmentPage() {
 
         {/* Submit Bar */}
         {!isSubmitted && (
-          <div className="border-t-2 border-zinc-800 pt-6 flex justify-end">
+          <div className="border-t border-[#252A36] pt-6 flex justify-end">
             <button
               onClick={() => setIsSubmitted(true)}
               disabled={Object.keys(selectedAnswers).length < totalQuestions}
-              className="px-8 py-3.5 bg-blue-600 text-white font-mono text-xs uppercase font-bold hover:bg-blue-500 transition-colors shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-8 py-3.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <span>SUBMIT ASSESSMENT ANSWERS</span>
               <ArrowRight className="w-4 h-4" />
