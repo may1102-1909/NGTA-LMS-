@@ -174,7 +174,7 @@ export default function HomePage() {
 
                   <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
                     <img
-                      src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                      src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                       alt={course.instructorName}
                       className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
                     />
@@ -229,7 +229,7 @@ export default function HomePage() {
             <div className="lg:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
               <div className="relative">
                 <img
-                  src="/instructor/rahul-kamat.jpg"
+                  src="/instructor/rahul-kamat.png"
                   alt="Rahul Kamat"
                   className="w-44 h-44 sm:w-52 sm:h-52 rounded-xl object-cover border-2 border-[#EFFF4F]/30 shadow-lemon-md"
                 />

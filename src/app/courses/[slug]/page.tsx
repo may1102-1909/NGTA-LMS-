@@ -91,7 +91,7 @@ export default function CourseDetailPage() {
 
               <div className="flex items-center gap-3 pt-2">
                 <img
-                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
                   className="w-9 h-9 rounded-full object-cover border border-[#252A36]"
                 />
@@ -251,7 +251,7 @@ export default function CourseDetailPage() {
               </div>
               <div className="flex flex-col sm:flex-row gap-5 items-start">
                 <img
-                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
                   className="w-24 h-24 rounded-lg object-cover border border-[#252A36] shrink-0"
                 />

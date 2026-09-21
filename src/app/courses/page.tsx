@@ -135,7 +135,7 @@ export default function CoursesPage() {
 
                 <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
                   <img
-                    src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                    src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                     alt={course.instructorName}
                     className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
                   />
