@@ -172,7 +172,16 @@ export default function HomePage() {
                     {course.subtitle}
                   </p>
 
-                  <div className="flex flex-wrap gap-1.5 pt-2">
+                  <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
+                    <img
+                      src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                      alt={course.instructorName}
+                      className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
+                    />
+                    <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {course.tags.map((tag) => (
                       <span
                         key={tag}
@@ -209,6 +218,66 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* SECTION 3.5: INSTRUCTOR SPOTLIGHT */}
+      <section className="border-t border-[#252A36] bg-[#10131A] py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="border border-[#252A36] bg-[#181C26] p-8 sm:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Instructor Avatar Photo */}
+            <div className="lg:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
+              <div className="relative">
+                <img
+                  src="/instructor/rahul-kamat.jpg"
+                  alt="Rahul Kamat"
+                  className="w-44 h-44 sm:w-52 sm:h-52 rounded-xl object-cover border-2 border-[#EFFF4F]/30 shadow-lemon-md"
+                />
+                <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 bg-[#10131A] text-[#EFFF4F] border border-[#EFFF4F]/40 font-mono text-[10px] uppercase font-bold px-3 py-1 shadow-sm whitespace-nowrap">
+                  17+ YRS QA EXPERIENCE
+                </span>
+              </div>
+            </div>
+
+            {/* Instructor Bio & Credentials */}
+            <div className="lg:col-span-8 space-y-5">
+              <div>
+                <div className="font-mono text-xs uppercase tracking-widest text-[#5A5F70] mb-1">
+                  MEET YOUR LEAD INSTRUCTOR & FOUNDER
+                </div>
+                <h3 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
+                  RAHUL KAMAT
+                </h3>
+                <p className="font-mono text-sm text-[#EFFF4F] mt-1">
+                  Lead SDET & Founder @ NextGen Testing Academy (NGTA)
+                </p>
+              </div>
+
+              <p className="text-sm sm:text-base text-[#A0A5B5] leading-relaxed font-normal">
+                Rahul Kamat is an enterprise test automation leader with over 17 years of hands-on Quality Assurance experience. Having mentored over 10,000+ QA engineers and career switchers worldwide, his signature curriculum bridges manual testing to high-velocity automation architecture with Selenium, Java, CI/CD pipelines, and cutting-edge AI-assisted test engineering.
+              </p>
+
+              {/* Badges / Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 font-mono text-xs">
+                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                  <div className="text-[10px] text-[#5A5F70]">STUDENTS</div>
+                  <div className="text-lg font-black text-white mt-0.5">10,000+</div>
+                </div>
+                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                  <div className="text-[10px] text-[#5A5F70]">EXPERIENCE</div>
+                  <div className="text-lg font-black text-[#EFFF4F] mt-0.5">17+ Years</div>
+                </div>
+                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                  <div className="text-[10px] text-[#5A5F70]">RATING</div>
+                  <div className="text-lg font-black text-white mt-0.5">★ 4.9 / 5.0</div>
+                </div>
+                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                  <div className="text-[10px] text-[#5A5F70]">SPECIALTY</div>
+                  <div className="text-lg font-black text-[#EFFF4F] mt-0.5">Selenium + AI</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

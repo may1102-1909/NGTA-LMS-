@@ -133,7 +133,16 @@ export default function CoursesPage() {
 
                 <p className="text-sm text-[#A0A5B5] line-clamp-2">{course.subtitle}</p>
 
-                <div className="flex flex-wrap gap-1.5 pt-2">
+                <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
+                  <img
+                    src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                    alt={course.instructorName}
+                    className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
+                  />
+                  <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
                   {course.tags.map((tag) => (
                     <span
                       key={tag}

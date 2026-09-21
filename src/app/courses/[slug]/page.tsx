@@ -89,9 +89,14 @@ export default function CourseDetailPage() {
                 {course.subtitle}
               </p>
 
-              <div className="flex items-center gap-4 pt-2 font-mono text-xs text-[#A0A5B5]">
-                <div>
-                  INSTRUCTOR: <strong className="text-white">{course.instructorName}</strong> ({course.instructorTitle})
+              <div className="flex items-center gap-3 pt-2">
+                <img
+                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                  alt={course.instructorName}
+                  className="w-9 h-9 rounded-full object-cover border border-[#252A36]"
+                />
+                <div className="font-mono text-xs text-[#A0A5B5]">
+                  INSTRUCTOR: <strong className="text-white">{course.instructorName}</strong> • {course.instructorTitle}
                 </div>
               </div>
             </div>
@@ -149,7 +154,7 @@ export default function CourseDetailPage() {
             {/* Objectives */}
             <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-4">
               <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
-                [01 // LEARNING GOALS]
+                LEARNING OBJECTIVES
               </div>
               <h3 className="text-xl font-black uppercase tracking-tight text-white">
                 WHAT YOU WILL ARCHITECT
@@ -168,13 +173,13 @@ export default function CourseDetailPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-end border-b border-[#252A36] pb-2">
                 <div>
-                  <div className="font-mono text-xs uppercase text-[#5A5F70]">[02 // SYLLABUS]</div>
+                  <div className="font-mono text-xs uppercase text-[#5A5F70]">COURSE SYLLABUS</div>
                   <h3 className="text-2xl font-black uppercase tracking-tight text-white">
-                    COURSE CURRICULUM
+                    CURRICULUM & MODULES
                   </h3>
                 </div>
                 <span className="font-mono text-xs text-[#5A5F70]">
-                  {course.modules.length} MODULES • ALL CHAPTERS UNLOCKED
+                  {course.modules.length} MODULES • ALL LESSONS UNLOCKED
                 </span>
               </div>
 
@@ -236,6 +241,39 @@ export default function CourseDetailPage() {
                     )}
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Instructor Spotlight */}
+            <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-4">
+              <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
+                YOUR INSTRUCTOR
+              </div>
+              <div className="flex flex-col sm:flex-row gap-5 items-start">
+                <img
+                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.jpg"}
+                  alt={course.instructorName}
+                  className="w-24 h-24 rounded-lg object-cover border border-[#252A36] shrink-0"
+                />
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-baseline gap-2">
+                    <h4 className="text-xl font-bold text-white">{course.instructorName}</h4>
+                    <span className="text-xs text-[#EFFF4F] font-mono font-bold bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 px-2 py-0.5">
+                      17+ Years Experience
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#A0A5B5] font-mono">{course.instructorTitle}</p>
+                  <p className="text-sm text-[#A0A5B5] font-sans leading-relaxed">
+                    {course.instructorBio || "Founder and Lead SDET Instructor at NextGen Testing Academy (NGTA)."}
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-1 font-mono text-xs text-[#5A5F70]">
+                    <span>★ 4.9 Instructor Rating</span>
+                    <span>•</span>
+                    <span>10,000+ Students Mentored</span>
+                    <span>•</span>
+                    <span>1,840+ Reviews</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

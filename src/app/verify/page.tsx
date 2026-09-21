@@ -36,8 +36,8 @@ function VerifyCertificateContent() {
   const certificateData = {
     id: searchedCertId,
     recipient: "Tanmay Sharma",
-    course: "Selenium WebDriver & Test Automation Framework Architecture",
-    instructor: "Vikram Malhotra (Lead SDET)",
+    course: "Selenium Java + AI: Complete Automation Testing Course",
+    instructor: "Rahul Kamat (Founder & Lead SDET)",
     issuedDate: "March 17, 2026",
     issuer: "NextGen Testing Academy (NGTA)",
     accreditation: "NextGen Testing Academy Certified SDET Track",
@@ -150,8 +150,8 @@ function VerifyCertificateContent() {
             </div>
 
             <div className="text-right space-y-1 border-t border-[#EFFF4F]/30 pt-2 min-w-[180px]">
-              <div className="font-bold text-white">Vikram Malhotra</div>
-              <div className="text-[10px] text-[#5A5F70]">HEAD OF ACCREDITATION, NGTA</div>
+              <div className="font-bold text-white">Rahul Kamat</div>
+              <div className="text-[10px] text-[#5A5F70]">FOUNDER & LEAD SDET, NGTA</div>
             </div>
           </div>
         </div>

@@ -240,15 +240,15 @@ export const INITIAL_CREDENTIALS: CredentialItem[] = [
   {
     id: "cred-cert-1",
     code: "NGTA-CERT-2026-8910",
-    title: "Selenium WebDriver & Framework Architecture",
-    description: "Accredited completion of enterprise UI testing with Java, TestNG, and CI/CD pipelines.",
+    title: "Selenium Java + AI: Complete Automation Testing Course",
+    description: "Accredited completion of enterprise UI testing with Java, Selenium 4, TestNG, Jenkins CI/CD, and AI-powered self-healing locators.",
     type: "CERTIFICATE",
     isVerified: true,
     issuedAt: "2026-03-17",
     verificationId: "NGTA-CERT-course-1-2026-8910",
     tier: "ADVANCED",
     category: "OFFICIAL_ACCREDITATION",
-    courseTitle: "Selenium WebDriver & Test Automation Framework Architecture",
+    courseTitle: "Selenium Java + AI: Complete Automation Testing Course",
   },
   {
     id: "cred-badge-1",

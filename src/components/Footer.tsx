@@ -43,7 +43,7 @@ export default function Footer() {
               CURRICULUM
             </div>
             <ul className="space-y-2 text-[#A0A5B5]">
-              <li><Link href="/courses/selenium-automation-masterclass" className="hover:text-[#EFFF4F] transition-colors">Selenium 4 WebDriver</Link></li>
+              <li><Link href="/courses/selenium-automation-masterclass" className="hover:text-[#EFFF4F] transition-colors">Selenium Java + AI Masterclass</Link></li>
               <li><Link href="/courses/playwright-typescript-end-to-end" className="hover:text-[#EFFF4F] transition-colors">Playwright & TypeScript</Link></li>
               <li><Link href="/courses" className="hover:text-[#EFFF4F] transition-colors">API Automation (RestAssured)</Link></li>
               <li><Link href="/courses" className="hover:text-[#EFFF4F] transition-colors">Performance Testing (JMeter)</Link></li>

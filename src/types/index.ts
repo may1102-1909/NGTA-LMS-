@@ -66,6 +66,8 @@ export interface Course {
   instructorId: string;
   instructorName: string;
   instructorTitle: string;
+  instructorAvatarUrl?: string;
+  instructorBio?: string;
   category: string;
   tags: string[];
   thumbnailUrl: string;
