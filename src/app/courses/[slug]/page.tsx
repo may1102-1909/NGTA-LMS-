@@ -103,6 +103,14 @@ export default function CourseDetailPage() {
 
             {/* Pricing Card */}
             <div className="lg:col-span-4 border border-[#252A36] bg-[#181C26] p-6 space-y-5 shadow-card">
+              <div className="relative aspect-video overflow-hidden border border-[#252A36] bg-[#10131A] -mx-6 -mt-6 mb-2">
+                <img
+                  src={course.thumbnailUrl}
+                  alt={course.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
               <div className="space-y-1">
                 <div className="font-mono text-[10px] text-[#5A5F70] uppercase tracking-widest">
                   ALL-INCLUSIVE ENROLLMENT
