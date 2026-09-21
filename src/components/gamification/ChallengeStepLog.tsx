@@ -53,11 +53,11 @@ export default function ChallengeStepLog({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#252A36] pb-3">
         <div>
           <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
-            [30-DAY SDET CHALLENGE // BRD SECTION 23]
+            30-DAY SDET CHALLENGE
           </div>
           <h3 className="text-xl font-black text-white uppercase tracking-tight flex items-center gap-2">
             <Terminal className="w-4 h-4 text-[#EFFF4F]" />
-            <span>CLI CHALLENGE STEP-LOG</span>
+            <span>CHALLENGE EXERCISE LOG</span>
           </h3>
         </div>
 
@@ -156,7 +156,7 @@ export default function ChallengeStepLog({
         {selectedTask && (
           <div className="mt-3 p-2.5 bg-[#181C26] border border-[#252A36] text-[11px] space-y-1">
             <div className="text-[#5A5F70] font-bold uppercase text-[10px]">
-              DAY {String(selectedTask.dayNumber).padStart(2, "0")} COMMAND & TELEMETRY:
+              DAY {String(selectedTask.dayNumber).padStart(2, "0")} CODE SNIPPET:
             </div>
             <div className="font-mono text-[#EFFF4F] bg-[#10131A] p-2 border border-[#252A36] break-all select-all">
               $ {selectedTask.commandSnippet || "javac -version && java Main"}
@@ -180,7 +180,7 @@ export default function ChallengeStepLog({
         </button>
 
         <span className="text-[10px] text-[#5A5F70] uppercase">
-          BRD §23 AUTONOMOUS CHALLENGE
+          DAILY CODING CHALLENGE
         </span>
       </div>
     </div>

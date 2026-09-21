@@ -76,7 +76,7 @@ export default function CommunityPage() {
       <div className="border-b border-[#252A36] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-            [COLLABORATION NETWORK // BRD SECTION 20 & 22]
+            COMMUNITY NETWORK
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
             ENGINEERING PEER COMMUNITY

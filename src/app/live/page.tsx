@@ -18,7 +18,7 @@ export default function LiveTrainingPage() {
       {/* Header */}
       <div className="border-b border-[#252A36] pb-6">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-          [LIVE BOOTCAMPS // BRD SECTION 24]
+          LIVE WORKSHOPS & BOOTCAMPS
         </div>
         <h1 className="text-4xl font-black text-white uppercase tracking-tight">
           LIVE WORKSHOPS & ARCHITECTURE SESSIONS

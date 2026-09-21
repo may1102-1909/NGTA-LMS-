@@ -58,7 +58,7 @@ export default function LeaderboardTable({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#252A36] pb-3">
         <div>
           <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
-            [COHORT LEADERBOARD // BRD SECTION 38]
+            COHORT LEADERBOARD
           </div>
           <h3 className="text-xl font-black text-white uppercase tracking-tight">
             ENGINEERING RANKINGS
@@ -210,7 +210,7 @@ export default function LeaderboardTable({
             {filteredAndSortedEntries.length === 0 && (
               <tr>
                 <td colSpan={4} className="py-6 text-center text-[#5A5F70] font-mono text-xs">
-                  NO TELEMETRY RECORDED FOR SELECTED FILTER
+                  NO STUDENTS FOUND FOR SELECTED FILTER
                 </td>
               </tr>
             )}
@@ -220,8 +220,8 @@ export default function LeaderboardTable({
 
       {/* Footer Meta */}
       <div className="flex justify-between items-center text-[10px] text-[#5A5F70] uppercase pt-1">
-        <span>REFRESH: REAL-TIME TELEMETRY</span>
-        <span>BRD §38 LEADERBOARD PROTOCOL</span>
+        <span>LIVE UPDATES</span>
+        <span>COHORT STANDINGS</span>
       </div>
     </div>
   );

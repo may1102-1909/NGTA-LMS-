@@ -30,7 +30,7 @@ export default function CoursesPage() {
       {/* Header Banner */}
       <div className="border-b border-[#252A36] pb-8 mb-8">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-          [CATALOG // REGISTRY]
+          COURSE CATALOG
         </div>
         <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase">
           SDET & TEST AUTOMATION CURRICULA

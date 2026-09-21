@@ -47,7 +47,7 @@ export default function DashboardPage() {
       <div className="border-b border-[#252A36] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-            [WORKSPACE TELEMETRY // BRD SECTION 3 & 27]
+            DASHBOARD OVERVIEW
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
             MANAGEMENT CONSOLE
@@ -98,8 +98,7 @@ export default function DashboardPage() {
             <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-2 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-[#5A5F70] uppercase">
-                  <span>[ENROLLED TRACKS]</span>
-                  <span className="text-[10px]">BRD §3</span>
+                  <span>ENROLLED COURSES</span>
                 </div>
                 <div className="text-3xl font-black text-white tabular-nums">02 ACTIVE</div>
                 <div className="text-[11px] text-[#5A5F70]">1 In-Progress • 1 Completed</div>
@@ -112,7 +111,7 @@ export default function DashboardPage() {
                   className="w-full py-2 bg-[#10131A] hover:bg-[#252A36] border border-[#252A36] text-[#A0A5B5] font-bold uppercase text-[11px] flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <User className="w-3.5 h-3.5" />
-                  <span>{showProfileDrawer ? "HIDE PROFILE TELEMETRY" : "VIEW PROFILE TELEMETRY"}</span>
+                  <span>{showProfileDrawer ? "HIDE PROFILE" : "VIEW PROFILE"}</span>
                 </button>
               </div>
             </div>
@@ -120,8 +119,7 @@ export default function DashboardPage() {
             {/* Card 2: GAMIFICATION REPUTATION */}
             <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-3">
               <div className="flex justify-between items-center text-[#5A5F70] uppercase">
-                <span className="font-bold">[GAMIFICATION REPUTATION]</span>
-                <span className="text-[10px]">BRD §38</span>
+                <span className="font-bold">POINTS & REPUTATION</span>
               </div>
 
               <div className="flex flex-wrap items-baseline gap-2.5">
@@ -140,8 +138,7 @@ export default function DashboardPage() {
             <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-3 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-[#5A5F70] uppercase">
-                  <span>[VERIFIABLE CREDENTIALS]</span>
-                  <span className="text-[10px]">ISO 9001</span>
+                  <span>EARNED CREDENTIALS</span>
                 </div>
 
                 <div>
@@ -187,17 +184,17 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#252A36] pb-3">
                 <div>
                   <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
-                    [LEARNER TELEMETRY // PROFILE // BRD §38]
+                    STUDENT PROFILE
                   </div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">
-                    ENGINEER PROFILE & AUDIT DOSSIER
+                    ENGINEER PROFILE
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowProfileDrawer(false)}
                   className="text-xs text-[#5A5F70] hover:text-[#EFFF4F] underline uppercase transition-colors"
                 >
-                  COLLAPSE DOSSIER [x]
+                  CLOSE PROFILE [x]
                 </button>
               </div>
 
@@ -211,7 +208,7 @@ export default function DashboardPage() {
                 <div className="border border-[#252A36] bg-[#10131A] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">SYSTEM ROLE</div>
                   <div className="font-bold text-[#EFFF4F] text-sm">LEARNER (PRO)</div>
-                  <div className="text-[#5A5F70] text-[10px]">RBAC: LEAST-PRIVILEGE</div>
+                  <div className="text-[#5A5F70] text-[10px]">VERIFIED STUDENT</div>
                 </div>
                 <div className="border border-[#252A36] bg-[#10131A] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">SDET RANK</div>
@@ -318,7 +315,7 @@ export default function DashboardPage() {
                 <div className="flex justify-between items-start border-b border-[#252A36] pb-4">
                   <div>
                     <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
-                      [CREDENTIAL & BADGE REGISTRY // BRD §12 & §38]
+                      CREDENTIAL REGISTRY
                     </div>
                     <h3 className="text-2xl font-black text-white uppercase">
                       VERIFIABLE CREDENTIALS & SKILL BADGES
@@ -453,7 +450,7 @@ export default function DashboardPage() {
             <div className="border border-[#252A36] bg-[#181C26] p-5 shadow-card">
               <div className="text-[#5A5F70] uppercase">[REFUND RATIO]</div>
               <div className="text-2xl sm:text-3xl font-black text-[#EFFF4F] mt-1">0.4%</div>
-              <div className="text-[10px] text-[#5A5F70] mt-1">Razorpay Indian Rails</div>
+              <div className="text-[10px] text-[#5A5F70] mt-1">Payment Gateway</div>
             </div>
           </div>
 
@@ -461,9 +458,9 @@ export default function DashboardPage() {
           <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-4">
             <div className="flex justify-between items-center border-b border-[#252A36] pb-3">
               <h4 className="font-mono text-sm font-bold uppercase text-white">
-                AUDIT TRAIL LOGS (BRD SECTION 31)
+                RECENT SYSTEM ACTIVITY
               </h4>
-              <span className="font-mono text-xs text-[#5A5F70]">LEAST-PRIVILEGE ACTIVE</span>
+              <span className="font-mono text-xs text-[#5A5F70]">LIVE LOG</span>
             </div>
 
             <div className="divide-y divide-[#252A36] font-mono text-xs">

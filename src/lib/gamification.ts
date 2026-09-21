@@ -1,4 +1,4 @@
-// BRD Section 38 Data Model & Section 23 Gamification Configuration
+// Gamification Data Model & SDET Challenge Configuration
 // Aesthetic: Technical systems-console, monospace, tabular numerals
 
 export interface RankTier {
@@ -205,7 +205,7 @@ export const INITIAL_REPUTATION_LOG: GamificationPoint[] = [
     points: 300,
     type: "STREAK",
     description: "7-Day Streak Achiever",
-    context: "Unbroken telemetry cadence",
+    context: "Consistent 7-day study streak",
     timestamp: "3 days ago",
   },
 ];
@@ -276,12 +276,12 @@ export const INITIAL_CREDENTIALS: CredentialItem[] = [
     id: "cred-badge-3",
     code: "BADGE-STREAK-7D",
     title: "7-Day Systems Discipline",
-    description: "Maintained unbroken daily telemetry and learning cadence for 7 consecutive days.",
+    description: "Maintained an unbroken daily learning streak for 7 consecutive days.",
     type: "BADGE",
     isVerified: false,
     issuedAt: "2026-03-19",
     tier: "DISCIPLINE",
-    category: "TELEMETRY_MILESTONE",
+    category: "STREAK_MILESTONE",
   },
 ];
 
@@ -463,10 +463,10 @@ export const INITIAL_LEADERBOARD: Record<"WEEK" | "MONTH" | "ALL_TIME", Leaderbo
   ],
 };
 
-// BRD Section 23: 30-Day SDET Challenge Tasks
+// 30-Day SDET Challenge Tasks
 export const INITIAL_CHALLENGE_TASKS: ChallengeTask[] = [
   { dayNumber: 1, title: "Install Java JDK 21 & Verify environment PATH", commandSnippet: "javac -version", isCompleted: true, pointsReward: 10 },
-  { dayNumber: 2, title: "First program & JVM heap telemetry", commandSnippet: "java -XshowSettings:vm Main", isCompleted: true, pointsReward: 10 },
+  { dayNumber: 2, title: "First program & JVM memory configuration", commandSnippet: "java -XshowSettings:vm Main", isCompleted: true, pointsReward: 10 },
   { dayNumber: 3, title: "Variables, Primitive Types & Memory allocations", commandSnippet: "byte/short/int/long/float/double", isCompleted: true, pointsReward: 10 },
   { dayNumber: 4, title: "Control Flow, Branching & Loops", commandSnippet: "switch-case pattern matching", isCompleted: true, pointsReward: 10 },
   { dayNumber: 5, title: "OOP Architecture: Inheritance, Polymorphism, Abstract classes", commandSnippet: "abstract class BaseDriver", isCompleted: true, pointsReward: 15 },

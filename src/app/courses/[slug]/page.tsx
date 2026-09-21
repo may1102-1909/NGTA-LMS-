@@ -268,7 +268,7 @@ export default function CourseDetailPage() {
 
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-center text-[#5A5F70] uppercase text-[10px] tracking-wider border-b border-[#252A36] pb-1">
-                <span>[COURSE ACCREDITATION // BRD §12 & §38]</span>
+                <span>COURSE ACCREDITATION & BADGES</span>
                 <span>UNLOCKABLE</span>
               </div>
               <div className="space-y-3">
@@ -288,7 +288,7 @@ export default function CourseDetailPage() {
             <div className="flex justify-between items-start border-b border-[#252A36] pb-3">
               <div>
                 <div className="font-mono text-[10px] text-[#5A5F70] uppercase">
-                  SECURE INDIAN PAYMENT RAILS // NGTA
+                  SECURE CHECKOUT
                 </div>
                 <h4 className="text-xl font-black text-white uppercase">ORDER CHECKOUT</h4>
               </div>
@@ -404,7 +404,7 @@ export default function CourseDetailPage() {
             )}
 
             <div className="font-mono text-[10px] text-center text-[#5A5F70]">
-              MOCKABLE ADAPTER ACTIVE (BRD SECTION 50) // ZERO EXTERNAL BLOCKERS
+              256-Bit SSL Encrypted • Instant Access Upon Confirmation
             </div>
           </div>
         </div>

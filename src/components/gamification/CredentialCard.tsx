@@ -34,8 +34,8 @@ export default function CredentialCard({
               }`}
             >
               {isCertificate
-                ? "[ACCREDITED CERTIFICATE // VERIFIED]"
-                : "[SKILL BADGE // EARNED]"}
+                ? "CERTIFICATE OF COMPLETION"
+                : "SKILL BADGE"}
             </span>
           </div>
           <div className="text-[11px] text-[#5A5F70] font-mono">

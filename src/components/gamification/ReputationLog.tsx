@@ -69,7 +69,7 @@ export default function ReputationLog({
       {/* Component 1: REPUTATION LOG — Scrollable Event Ledger */}
       <div className="space-y-2 pt-2 border-t border-[#252A36]">
         <div className="flex justify-between items-center text-[10px] text-[#5A5F70] uppercase tracking-wider">
-          <span>[EVENT LEDGER // BRD §38]</span>
+          <span>ACTIVITY HISTORY</span>
           <span>NEWEST AT TOP</span>
         </div>
 

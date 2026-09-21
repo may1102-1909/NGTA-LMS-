@@ -14,7 +14,7 @@ export default function HomePage() {
             <div className="lg:col-span-8 space-y-6">
               <div className="inline-flex items-center gap-2 px-2.5 py-1 border border-[#252A36] font-mono text-xs uppercase tracking-widest bg-[#181C26] text-[#A0A5B5]">
                 <span className="w-2 h-2 bg-[#EFFF4F]"></span>
-                <span>SYS_RELEASE: v1.0.0 // NEXTGEN TESTING ACADEMY</span>
+                <span>NEXTGEN TESTING ACADEMY • SPRING 2026</span>
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[0.95] uppercase">
@@ -24,7 +24,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-lg sm:text-xl text-[#A0A5B5] max-w-2xl font-normal leading-relaxed">
-                Autonomous, industry-standard Learning Management System delivering end-to-end automation architecture, live hands-on bootcamps, and cryptographically verifiable digital credentials.
+                Master enterprise test automation, performance engineering, and modern SDET architecture with hands-on bootcamps, real-world labs, and industry-recognized certifications.
               </p>
 
               <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs uppercase font-bold tracking-wider">
@@ -45,66 +45,66 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Key Technical Specs Box */}
+            {/* Right Column: Key Highlights Box */}
             <div className="lg:col-span-4 border border-[#252A36] bg-[#181C26] p-6 space-y-5 shadow-card">
               <div className="flex justify-between items-center border-b border-[#252A36] pb-3 font-mono text-xs">
-                <span className="font-bold text-[#EFFF4F] uppercase">[SPEC_SUMMARY]</span>
-                <span className="text-[#5A5F70]">ISO/IEC 25010</span>
+                <span className="font-bold text-[#EFFF4F] uppercase">PLATFORM HIGHLIGHTS</span>
+                <span className="text-[#5A5F70]">SDET ACCREDITED</span>
               </div>
 
               <div className="space-y-3 font-mono text-xs text-[#A0A5B5]">
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">W3C Standard</strong> WebDriver Architecture</span>
+                  <span><strong className="text-white">Hands-On Labs:</strong> Selenium 4 & Playwright</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Live Indian Rails:</strong> UPI, Cards & NetBanking</span>
+                  <span><strong className="text-white">Instant Access:</strong> UPI, Cards & NetBanking</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Drip Learning:</strong> Automated lesson unlock engine</span>
+                  <span><strong className="text-white">Structured Learning:</strong> Step-by-step curriculum</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Gamification:</strong> Streaks, Leaderboards, Badges</span>
+                  <span><strong className="text-white">Gamification:</strong> Streaks, Leaderboards & Badges</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">7 Primary Roles:</strong> RBAC Least-Privilege</span>
+                  <span><strong className="text-white">Mentorship:</strong> 1-on-1 Code Reviews & Guidance</span>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-[#252A36] font-mono text-[11px] text-[#5A5F70]">
-                NGTA LMS ENGINE // AUTONOMOUS RUNTIME
+                VERIFIED SDET CURRICULUM
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: SYSTEM TELEMETRY / STATS GRID */}
+      {/* SECTION 2: STATS GRID */}
       <section className="border-b border-[#252A36] bg-[#181C26] text-white font-mono">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#252A36]">
           <div className="p-6 sm:p-8">
-            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">[01 / AUDIENCE]</div>
+            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">ACTIVE LEARNERS</div>
             <div className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-2">10,000+</div>
-            <div className="text-xs text-[#5A5F70] mt-1">REGISTERED SDET CANDIDATES</div>
+            <div className="text-xs text-[#5A5F70] mt-1">ENROLLED ENGINEERS</div>
           </div>
           <div className="p-6 sm:p-8">
-            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">[02 / PASS RATE]</div>
+            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">SUCCESS RATE</div>
             <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">99.4%</div>
-            <div className="text-xs text-[#5A5F70] mt-1">ASSESSMENT SATISFACTION</div>
+            <div className="text-xs text-[#5A5F70] mt-1">COURSE SATISFACTION</div>
           </div>
           <div className="p-6 sm:p-8">
-            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">[03 / LATENCY]</div>
-            <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">&lt; 200ms</div>
-            <div className="text-xs text-[#5A5F70] mt-1">API RESPONSE TELEMETRY</div>
+            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">HANDS-ON LABS</div>
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">150+</div>
+            <div className="text-xs text-[#5A5F70] mt-1">REAL-WORLD PROJECTS</div>
           </div>
           <div className="p-6 sm:p-8">
-            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">[04 / UPTIME]</div>
-            <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">99.9%</div>
-            <div className="text-xs text-[#5A5F70] mt-1">SYSTEM AVAILABILITY TARGET</div>
+            <div className="text-xs text-[#5A5F70] uppercase tracking-widest">HIRING PARTNERS</div>
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">120+</div>
+            <div className="text-xs text-[#5A5F70] mt-1">TOP TECH COMPANIES</div>
           </div>
         </div>
       </section>
@@ -114,7 +114,7 @@ export default function HomePage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-4 border-b border-[#252A36] gap-4">
           <div>
             <div className="font-mono text-xs uppercase tracking-widest text-[#5A5F70] mb-1">
-              [CATALOG // FEATURED TRACKS]
+              FEATURED TRACKS
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
               FEATURED ENGINEERING CURRICULA
@@ -212,18 +212,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 4: ACCEPTANCE SCENARIO WORKFLOW */}
+      {/* SECTION 4: LEARNING JOURNEY WORKFLOW */}
       <section className="bg-[#181C26] border-y border-[#252A36] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <div className="font-mono text-xs uppercase tracking-widest text-[#5A5F70] mb-1">
-              [ACCEPTANCE PROTOCOL // BRD SECTION 44]
+              LEARNING JOURNEY
             </div>
             <h2 className="text-3xl font-black text-white uppercase tracking-tight">
-              PRIMARY END-TO-END AUTONOMOUS LEARNING PIPELINE
+              HOW YOU LEARN AT NEXTGEN TESTING ACADEMY
             </h2>
             <p className="text-sm text-[#A0A5B5] mt-2 font-mono">
-              The exact automated sequence implemented and validated end-to-end:
+              A structured, project-driven path from automation fundamentals to senior SDET:
             </p>
           </div>
 
@@ -234,29 +234,29 @@ export default function HomePage() {
               <p className="font-sans text-[11px] text-[#A0A5B5]">Explore modules, syllabus, prerequisites, and SDET tracks.</p>
             </div>
             <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
-              <div className="text-[#EFFF4F] font-bold">02. COMMERCE</div>
-              <div className="font-sans font-bold text-white">UPI / Rails Checkout</div>
-              <p className="font-sans text-[11px] text-[#A0A5B5]">Simulated Indian payment with instant confirmation.</p>
+              <div className="text-[#EFFF4F] font-bold">02. ENROLL</div>
+              <div className="font-sans font-bold text-white">Instant Access</div>
+              <p className="font-sans text-[11px] text-[#A0A5B5]">Seamless checkout with instant unlock to all course resources.</p>
             </div>
             <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
-              <div className="text-[#EFFF4F] font-bold">03. ENROLL</div>
-              <div className="font-sans font-bold text-white">Dashboard Unlock</div>
-              <p className="font-sans text-[11px] text-[#A0A5B5]">Immediate access to course player and curriculum assets.</p>
+              <div className="text-[#EFFF4F] font-bold">03. LEARN</div>
+              <div className="font-sans font-bold text-white">Video Lessons</div>
+              <p className="font-sans text-[11px] text-[#A0A5B5]">Deep-dive architecture walkthroughs and live coding demonstrations.</p>
             </div>
             <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
-              <div className="text-[#EFFF4F] font-bold">04. LEARN</div>
-              <div className="font-sans font-bold text-white">Progress Telemetry</div>
-              <p className="font-sans text-[11px] text-[#A0A5B5]">Playback position tracking and drip release checks.</p>
+              <div className="text-[#EFFF4F] font-bold">04. PRACTICE</div>
+              <div className="font-sans font-bold text-white">Hands-On Labs</div>
+              <p className="font-sans text-[11px] text-[#A0A5B5]">Build enterprise test suites with real Git repositories and CI/CD.</p>
             </div>
             <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
-              <div className="text-[#EFFF4F] font-bold">05. ASSESS</div>
-              <div className="font-sans font-bold text-white">Automated Quiz</div>
-              <p className="font-sans text-[11px] text-[#A0A5B5]">Multi-question assessment with instant passing score check.</p>
+              <div className="text-[#EFFF4F] font-bold">05. EVALUATE</div>
+              <div className="font-sans font-bold text-white">Quizzes & Code Reviews</div>
+              <p className="font-sans text-[11px] text-[#A0A5B5]">Validate understanding with technical quizzes and peer feedback.</p>
             </div>
             <div className="border border-[#EFFF4F]/30 p-4 bg-[#10131A] space-y-2 shadow-lemon-sm">
               <div className="text-[#EFFF4F] font-bold">06. CERTIFY</div>
-              <div className="font-sans font-bold text-white">Verifiable Credential</div>
-              <p className="font-sans text-[11px] text-[#A0A5B5]">Instant certificate with public verification URL & QR.</p>
+              <div className="font-sans font-bold text-white">Digital Certificate</div>
+              <p className="font-sans text-[11px] text-[#A0A5B5]">Earn a shareable, verifiable credential for your LinkedIn and CV.</p>
             </div>
           </div>
         </div>
@@ -270,7 +270,7 @@ export default function HomePage() {
             <div className="flex justify-between items-center border-b border-[#252A36] pb-4">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#EFFF4F] animate-ping"></span>
-                <span className="font-mono text-xs uppercase font-bold text-white">[LIVE SDET BOOTCAMPS]</span>
+                <span className="font-mono text-xs uppercase font-bold text-white">LIVE SDET BOOTCAMPS</span>
               </div>
               <Link href="/live" className="font-mono text-xs text-[#EFFF4F] hover:underline">VIEW ALL</Link>
             </div>
@@ -298,7 +298,7 @@ export default function HomePage() {
             <div className="flex justify-between items-center border-b border-[#252A36] pb-4">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-[#EFFF4F]" />
-                <span className="font-mono text-xs uppercase font-bold text-white">[PEER COMMUNITY]</span>
+                <span className="font-mono text-xs uppercase font-bold text-white">PEER COMMUNITY</span>
               </div>
               <Link href="/community" className="font-mono text-xs text-[#EFFF4F] hover:underline">JOIN CHANNEL</Link>
             </div>

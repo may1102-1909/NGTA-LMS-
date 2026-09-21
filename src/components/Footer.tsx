@@ -34,7 +34,7 @@ export default function Footer() {
               NextGen Testing Academy is the premier technical training institute for Automation Engineers and SDETs.
             </p>
             <div className="text-[11px] text-[#5A5F70]">
-              ISO 9001:2015 ACCREDITED LEARNING STANDARDS
+              Empowering engineers worldwide with production-ready skills.
             </div>
           </div>
 
@@ -52,26 +52,26 @@ export default function Footer() {
 
           <div>
             <div className="font-bold uppercase tracking-wider mb-3 text-[#EFFF4F] border-b border-[#EFFF4F]/20 pb-1 inline-block">
-              ACADEMY RAILS
+              PROGRAMS
             </div>
             <ul className="space-y-2 text-[#A0A5B5]">
               <li><Link href="/live" className="hover:text-[#EFFF4F] transition-colors">Live SDET Bootcamps</Link></li>
               <li><Link href="/community" className="hover:text-[#EFFF4F] transition-colors">Peer Code Review Channels</Link></li>
               <li><Link href="/verify" className="hover:text-[#EFFF4F] transition-colors">Certificate Verification</Link></li>
-              <li><Link href="/consultations" className="hover:text-[#EFFF4F] transition-colors">1-on-1 SDET Mentorship</Link></li>
+              <li><Link href="/courses" className="hover:text-[#EFFF4F] transition-colors">1-on-1 SDET Mentorship</Link></li>
             </ul>
           </div>
 
           <div>
             <div className="font-bold uppercase tracking-wider mb-3 text-[#EFFF4F] border-b border-[#EFFF4F]/20 pb-1 inline-block">
-              SPECIFICATION
+              COMMUNITY & SUPPORT
             </div>
-            <div className="space-y-1 text-[11px] text-[#5A5F70]">
-              <div>BRD SPEC: v1.0 / 31-PAGE</div>
-              <div>DESIGN: NIGHT SHIFT EDITION</div>
-              <div>SECURITY: RBAC LEVEL 4</div>
-              <div>PAYMENTS: UPI / RAILS READY</div>
-            </div>
+            <ul className="space-y-2 text-[#A0A5B5]">
+              <li><Link href="/community" className="hover:text-[#EFFF4F] transition-colors">Discord Community</Link></li>
+              <li><Link href="/verify" className="hover:text-[#EFFF4F] transition-colors">Verify Certificate</Link></li>
+              <li><Link href="/dashboard" className="hover:text-[#EFFF4F] transition-colors">Student Dashboard</Link></li>
+              <li><Link href="/community" className="hover:text-[#EFFF4F] transition-colors">Help & FAQs</Link></li>
+            </ul>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ export default function Footer() {
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-[#EFFF4F] transition-colors">PRIVACY POLICY</Link>
             <Link href="/terms" className="hover:text-[#EFFF4F] transition-colors">TERMS OF SERVICE</Link>
-            <Link href="/audit" className="hover:text-[#EFFF4F] transition-colors">AUDIT LOGS</Link>
+            <Link href="/community" className="hover:text-[#EFFF4F] transition-colors">CONTACT SUPPORT</Link>
           </div>
         </div>
       </div>

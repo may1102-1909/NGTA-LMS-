@@ -35,9 +35,9 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
       <div className="bg-[#0C0E14] text-[#A0A5B5] text-xs px-4 py-1.5 flex justify-between items-center font-mono border-b border-[#252A36]">
         <div className="flex items-center gap-3">
           <span className="inline-block w-2 h-2 rounded-full bg-[#EFFF4F] animate-pulse"></span>
-          <span>NGTA_SYSTEM: V1.0.0</span>
+          <span>NEXTGEN TESTING ACADEMY</span>
           <span className="text-[#5A5F70]">|</span>
-          <span className="text-[#A0A5B5]">STATUS: AUTONOMOUS_ACTIVE</span>
+          <span className="text-[#A0A5B5]">ADMISSIONS OPEN • SPRING 2026</span>
         </div>
 
         {/* Role Emulator Selector */}

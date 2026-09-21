@@ -40,8 +40,8 @@ function VerifyCertificateContent() {
     instructor: "Vikram Malhotra (Lead SDET)",
     issuedDate: "March 17, 2026",
     issuer: "NextGen Testing Academy (NGTA)",
-    accreditation: "ISO 9001:2015 Technical Curriculum Standards",
-    verificationStatus: "VALID / OFFICIALLY ACCREDITED",
+    accreditation: "NextGen Testing Academy Certified SDET Track",
+    verificationStatus: "VALID & VERIFIED",
     grade: "PASS (Score: 100%)",
   };
 
@@ -50,13 +50,13 @@ function VerifyCertificateContent() {
       {/* Verification Header */}
       <div className="border-b border-[#252A36] pb-6">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-          [PUBLIC VERIFICATION PROTOCOL // BRD SECTION 12]
+          CERTIFICATE VERIFICATION
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
           CREDENTIAL AUTHENTICATION REGISTRY
         </h1>
         <p className="text-[#A0A5B5] text-sm font-sans mt-2">
-          Verify the authenticity of digital certificates issued by NextGen Testing Academy. Every credential is cryptographically anchored.
+          Verify the authenticity of digital certificates issued by NextGen Testing Academy.
         </p>
       </div>
 
@@ -143,7 +143,7 @@ function VerifyCertificateContent() {
           {/* Signatures & Security Hash */}
           <div className="flex flex-col sm:flex-row justify-between items-end gap-6 pt-4 font-mono text-xs">
             <div className="space-y-1">
-              <div className="text-[#5A5F70] text-[10px]">CRYPTOGRAPHIC RECORD HASH</div>
+              <div className="text-[#5A5F70] text-[10px]">DIGITAL VERIFICATION HASH</div>
               <div className="font-mono text-[10px] text-[#A0A5B5] bg-[#10131A] px-2 py-1 border border-[#252A36]">
                 SHA256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
               </div>
