@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { UserRole } from "@/types";
-import { ShieldCheck, BookOpen, Video, Users, Award, LayoutDashboard, ChevronDown } from "lucide-react";
+import { ShieldCheck, BookOpen, Video, Users, LayoutDashboard } from "lucide-react";
 
 interface HeaderProps {
   currentRole?: UserRole;
@@ -14,68 +14,13 @@ interface HeaderProps {
 
 export default function Header({ currentRole = "LEARNER", onRoleChange }: HeaderProps) {
   const pathname = usePathname();
-  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
   if (pathname === "/") {
     return null;
   }
 
-  const roles: UserRole[] = [
-    "LEARNER",
-    "INSTRUCTOR",
-    "ADMIN",
-    "SUPER_ADMIN",
-    "CONTENT_MANAGER",
-    "SUPPORT_STAFF",
-  ];
-
   return (
     <header className="sticky top-0 z-50 bg-[#28282B]/95 backdrop-blur-md border-b border-[#3E3E43] text-white">
-      {/* Top Notice Bar */}
-      <div className="bg-[#0C0E14] text-[#A0A5B5] text-xs px-4 py-1.5 flex justify-between items-center font-mono border-b border-[#3E3E43]">
-        <div className="flex items-center gap-3">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#EFFF4F] animate-pulse"></span>
-          <span>NEXTGEN TESTING ACADEMY</span>
-          <span className="text-[#5A5F70]">|</span>
-          <span className="text-[#A0A5B5]">ADMISSIONS OPEN • SPRING 2026</span>
-        </div>
-
-        {/* Role Emulator Selector */}
-        <div className="relative">
-          <button
-            onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-            className="flex items-center gap-2 hover:text-white bg-[#333336] px-2 py-0.5 border border-[#3E3E43] hover:border-[#EFFF4F]/30 transition-colors"
-          >
-            <span className="text-[#A0A5B5]">ROLE:</span>
-            <span className="font-bold text-[#EFFF4F]">{currentRole}</span>
-            <ChevronDown className="w-3 h-3" />
-          </button>
-
-          {roleMenuOpen && (
-            <div className="absolute right-0 mt-1 w-48 bg-[#333336] border border-[#3E3E43] shadow-xl z-50 py-1 font-mono text-xs">
-              <div className="px-3 py-1 text-[#5A5F70] border-b border-[#3E3E43] text-[10px] uppercase tracking-wider">
-                Simulate RBAC Role
-              </div>
-              {roles.map((r) => (
-                <button
-                  key={r}
-                  onClick={() => {
-                    if (onRoleChange) onRoleChange(r);
-                    setRoleMenuOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-1.5 hover:bg-[#3E3E43] transition-colors flex items-center justify-between ${
-                    currentRole === r ? "text-[#EFFF4F] font-bold bg-[#3E3E43]/50" : "text-[#A0A5B5]"
-                  }`}
-                >
-                  {r}
-                  {currentRole === r && <span className="text-[10px]">●</span>}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">

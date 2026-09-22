@@ -49,9 +49,6 @@ function VerifyCertificateContent() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Verification Header */}
       <div className="border-b border-[#3E3E43] pb-6">
-        <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
-          CERTIFICATE VERIFICATION
-        </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
           CREDENTIAL AUTHENTICATION REGISTRY
         </h1>

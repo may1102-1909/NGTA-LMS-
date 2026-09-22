@@ -308,7 +308,7 @@ export const INITIAL_COURSES: Course[] = [
                 order: 1,
                 durationMinutes: 25,
                 type: "video",
-                videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+                videoUrl: "https://www.udemy.com/course/manual-testing-with-ai-2026-real-projects/?couponCode=KEEPLEARNING",
                 content: "Complete overview of modern agile test strategies, acceptance criteria, test matrices, and boundary value analysis.",
               },
               {

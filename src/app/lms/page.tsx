@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { INITIAL_COURSES, INITIAL_LIVE_SESSIONS } from "@/lib/mockData";
-import { ArrowUpRight, CheckCircle2, ShieldCheck, PlayCircle, Star, Terminal, Zap, Users } from "lucide-react";
+import { ArrowUpRight, ShieldCheck, PlayCircle, Star, Terminal, Zap, Users } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -9,75 +9,33 @@ export default function HomePage() {
       {/* SECTION 1: HERO */}
       <section className="border-b border-[#3E3E43] bg-[#28282B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Column: Typography & Intent */}
-            <div className="lg:col-span-8 space-y-6">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 border border-[#3E3E43] font-mono text-xs uppercase tracking-widest bg-[#333336] text-[#A0A5B5]">
-                <span className="w-2 h-2 bg-[#EFFF4F]"></span>
-                <span>NEXTGEN TESTING ACADEMY • SPRING 2026</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[0.95] uppercase">
-                ENGINEERED FOR <br />
-                <span className="text-[#EFFF4F]">HIGH-VELOCITY</span> <br />
-                SDET MASTERY.
-              </h1>
-
-              <p className="text-lg sm:text-xl text-[#A0A5B5] max-w-2xl font-normal leading-relaxed">
-                Master enterprise test automation, performance engineering, and modern SDET architecture with hands-on bootcamps, real-world labs, and industry-recognized certifications.
-              </p>
-
-              <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs uppercase font-bold tracking-wider">
-                <Link
-                  href="/courses"
-                  className="px-6 py-3.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-2 shadow-lemon-sm"
-                >
-                  <span>EXPLORE COURSE CATALOG</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="/verify"
-                  className="px-6 py-3.5 border border-[#3E3E43] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-colors flex items-center gap-2"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>VERIFY CERTIFICATE</span>
-                </Link>
-              </div>
+          <div className="max-w-3xl space-y-6">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 border border-[#3E3E43] font-mono text-xs uppercase tracking-widest bg-[#333336] text-[#A0A5B5]">
+              <span className="w-2 h-2 bg-[#EFFF4F]"></span>
+              <span>NEXTGEN TESTING ACADEMY • SPRING 2026</span>
             </div>
 
-            {/* Right Column: Key Highlights Box */}
-            <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
-              <div className="flex justify-between items-center border-b border-[#3E3E43] pb-3 font-mono text-xs">
-                <span className="font-bold text-[#EFFF4F] uppercase">PLATFORM HIGHLIGHTS</span>
-                <span className="text-[#5A5F70]">SDET ACCREDITED</span>
-              </div>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[0.95] uppercase">
+              ENGINEERED FOR <br />
+              <span className="text-[#EFFF4F]">HIGH-VELOCITY</span> <br />
+              SDET MASTERY.
+            </h1>
 
-              <div className="space-y-3 font-mono text-xs text-[#A0A5B5]">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Hands-On Labs:</strong> Selenium 4 & Playwright</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Instant Access:</strong> UPI, Cards & NetBanking</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Structured Learning:</strong> Step-by-step curriculum</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Gamification:</strong> Streaks, Leaderboards & Badges</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
-                  <span><strong className="text-white">Mentorship:</strong> 1-on-1 Code Reviews & Guidance</span>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-[#3E3E43] font-mono text-[11px] text-[#5A5F70]">
-                VERIFIED SDET CURRICULUM
-              </div>
+            <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs uppercase font-bold tracking-wider">
+              <Link
+                href="/courses"
+                className="px-6 py-3.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-2 shadow-lemon-sm"
+              >
+                <span>EXPLORE COURSE CATALOG</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/verify"
+                className="px-6 py-3.5 border border-[#3E3E43] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-colors flex items-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>VERIFY CERTIFICATE</span>
+              </Link>
             </div>
           </div>
         </div>
