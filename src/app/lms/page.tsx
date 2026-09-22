@@ -7,12 +7,12 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* SECTION 1: HERO */}
-      <section className="border-b border-[#252A36] bg-[#10131A]">
+      <section className="border-b border-[#3E3E43] bg-[#28282B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left Column: Typography & Intent */}
             <div className="lg:col-span-8 space-y-6">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 border border-[#252A36] font-mono text-xs uppercase tracking-widest bg-[#181C26] text-[#A0A5B5]">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 border border-[#3E3E43] font-mono text-xs uppercase tracking-widest bg-[#333336] text-[#A0A5B5]">
                 <span className="w-2 h-2 bg-[#EFFF4F]"></span>
                 <span>NEXTGEN TESTING ACADEMY • SPRING 2026</span>
               </div>
@@ -30,14 +30,14 @@ export default function HomePage() {
               <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs uppercase font-bold tracking-wider">
                 <Link
                   href="/courses"
-                  className="px-6 py-3.5 bg-[#EFFF4F] text-[#10131A] hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-2 shadow-lemon-sm"
+                  className="px-6 py-3.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-2 shadow-lemon-sm"
                 >
                   <span>EXPLORE COURSE CATALOG</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/verify"
-                  className="px-6 py-3.5 border border-[#252A36] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-colors flex items-center gap-2"
+                  className="px-6 py-3.5 border border-[#3E3E43] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-colors flex items-center gap-2"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>VERIFY CERTIFICATE</span>
@@ -46,8 +46,8 @@ export default function HomePage() {
             </div>
 
             {/* Right Column: Key Highlights Box */}
-            <div className="lg:col-span-4 border border-[#252A36] bg-[#181C26] p-6 space-y-5 shadow-card">
-              <div className="flex justify-between items-center border-b border-[#252A36] pb-3 font-mono text-xs">
+            <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
+              <div className="flex justify-between items-center border-b border-[#3E3E43] pb-3 font-mono text-xs">
                 <span className="font-bold text-[#EFFF4F] uppercase">PLATFORM HIGHLIGHTS</span>
                 <span className="text-[#5A5F70]">SDET ACCREDITED</span>
               </div>
@@ -75,7 +75,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#252A36] font-mono text-[11px] text-[#5A5F70]">
+              <div className="pt-2 border-t border-[#3E3E43] font-mono text-[11px] text-[#5A5F70]">
                 VERIFIED SDET CURRICULUM
               </div>
             </div>
@@ -84,8 +84,8 @@ export default function HomePage() {
       </section>
 
       {/* SECTION 2: STATS GRID */}
-      <section className="border-b border-[#252A36] bg-[#181C26] text-white font-mono">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#252A36]">
+      <section className="border-b border-[#3E3E43] bg-[#333336] text-white font-mono">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#3E3E43]">
           <div className="p-6 sm:p-8">
             <div className="text-xs text-[#5A5F70] uppercase tracking-widest">ACTIVE LEARNERS</div>
             <div className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-2">10,000+</div>
@@ -111,7 +111,7 @@ export default function HomePage() {
 
       {/* SECTION 3: STOREFRONT CATALOG */}
       <section className="py-16 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-4 border-b border-[#252A36] gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-4 border-b border-[#3E3E43] gap-4">
           <div>
             <div className="font-mono text-xs uppercase tracking-widest text-[#5A5F70] mb-1">
               FEATURED TRACKS
@@ -133,20 +133,20 @@ export default function HomePage() {
           {INITIAL_COURSES.map((course, idx) => (
             <div
               key={course.id}
-              className="border border-[#252A36] bg-[#181C26] flex flex-col justify-between hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all shadow-card hover:shadow-card-hover"
+              className="border border-[#3E3E43] bg-[#333336] flex flex-col justify-between hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all shadow-card hover:shadow-card-hover"
             >
               <div>
                 {/* Course Header Banner / Thumbnail */}
-                <div className="relative h-48 border-b border-[#252A36] overflow-hidden bg-[#10131A]">
+                <div className="relative h-48 border-b border-[#3E3E43] overflow-hidden bg-[#28282B]">
                   <img
                     src={course.thumbnailUrl}
                     alt={course.title}
                     className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-300"
                   />
-                  <div className="absolute top-3 left-3 bg-[#10131A]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36]">
+                  <div className="absolute top-3 left-3 bg-[#28282B]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43]">
                     {course.category}
                   </div>
-                  <div className="absolute top-3 right-3 bg-[#181C26] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36] flex items-center gap-1">
+                  <div className="absolute top-3 right-3 bg-[#333336] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43] flex items-center gap-1">
                     <Star className="w-3 h-3 text-[#EFFF4F] fill-[#EFFF4F]" />
                     <span>{course.rating}</span>
                   </div>
@@ -176,7 +176,7 @@ export default function HomePage() {
                     <img
                       src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                       alt={course.instructorName}
-                      className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
+                      className="w-5 h-5 rounded-full object-cover border border-[#3E3E43]"
                     />
                     <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
                   </div>
@@ -185,7 +185,7 @@ export default function HomePage() {
                     {course.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="font-mono text-[10px] px-2 py-0.5 border border-[#252A36] text-[#5A5F70] bg-[#10131A]"
+                        className="font-mono text-[10px] px-2 py-0.5 border border-[#3E3E43] text-[#5A5F70] bg-[#28282B]"
                       >
                         #{tag}
                       </span>
@@ -195,7 +195,7 @@ export default function HomePage() {
               </div>
 
               {/* Course Footer & Pricing */}
-              <div className="p-6 border-t border-[#252A36] bg-[#10131A] flex items-center justify-between">
+              <div className="p-6 border-t border-[#3E3E43] bg-[#28282B] flex items-center justify-between">
                 <div>
                   <div className="font-mono text-[10px] text-[#5A5F70] uppercase">ENROLLMENT FEE</div>
                   <div className="flex items-baseline gap-2">
@@ -210,7 +210,7 @@ export default function HomePage() {
 
                 <Link
                   href={`/courses/${course.slug}`}
-                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
                 >
                   <span>CURRICULUM</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -222,9 +222,9 @@ export default function HomePage() {
       </section>
 
       {/* SECTION 3.5: INSTRUCTOR SPOTLIGHT */}
-      <section className="border-t border-[#252A36] bg-[#10131A] py-16">
+      <section className="border-t border-[#3E3E43] bg-[#28282B] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border border-[#252A36] bg-[#181C26] p-8 sm:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="border border-[#3E3E43] bg-[#333336] p-8 sm:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Instructor Avatar Photo */}
             <div className="lg:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
               <div className="relative">
@@ -233,7 +233,7 @@ export default function HomePage() {
                   alt="Rahul Kamat"
                   className="w-44 h-44 sm:w-52 sm:h-52 rounded-xl object-cover border-2 border-[#EFFF4F]/30 shadow-lemon-md"
                 />
-                <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 bg-[#10131A] text-[#EFFF4F] border border-[#EFFF4F]/40 font-mono text-[10px] uppercase font-bold px-3 py-1 shadow-sm whitespace-nowrap">
+                <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 bg-[#28282B] text-[#EFFF4F] border border-[#EFFF4F]/40 font-mono text-[10px] uppercase font-bold px-3 py-1 shadow-sm whitespace-nowrap">
                   17+ YRS QA EXPERIENCE
                 </span>
               </div>
@@ -259,19 +259,19 @@ export default function HomePage() {
 
               {/* Badges / Metrics */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 font-mono text-xs">
-                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                <div className="border border-[#3E3E43] bg-[#28282B] p-3">
                   <div className="text-[10px] text-[#5A5F70]">STUDENTS</div>
                   <div className="text-lg font-black text-white mt-0.5">10,000+</div>
                 </div>
-                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                <div className="border border-[#3E3E43] bg-[#28282B] p-3">
                   <div className="text-[10px] text-[#5A5F70]">EXPERIENCE</div>
                   <div className="text-lg font-black text-[#EFFF4F] mt-0.5">17+ Years</div>
                 </div>
-                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                <div className="border border-[#3E3E43] bg-[#28282B] p-3">
                   <div className="text-[10px] text-[#5A5F70]">RATING</div>
                   <div className="text-lg font-black text-white mt-0.5">★ 4.9 / 5.0</div>
                 </div>
-                <div className="border border-[#252A36] bg-[#10131A] p-3">
+                <div className="border border-[#3E3E43] bg-[#28282B] p-3">
                   <div className="text-[10px] text-[#5A5F70]">SPECIALTY</div>
                   <div className="text-lg font-black text-[#EFFF4F] mt-0.5">Selenium + AI</div>
                 </div>
@@ -282,7 +282,7 @@ export default function HomePage() {
       </section>
 
       {/* SECTION 4: LEARNING JOURNEY WORKFLOW */}
-      <section className="bg-[#181C26] border-y border-[#252A36] py-16">
+      <section className="bg-[#333336] border-y border-[#3E3E43] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <div className="font-mono text-xs uppercase tracking-widest text-[#5A5F70] mb-1">
@@ -297,32 +297,32 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 font-mono text-xs">
-            <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
+            <div className="border border-[#3E3E43] p-4 bg-[#28282B] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
               <div className="text-[#EFFF4F] font-bold">01. DISCOVER</div>
               <div className="font-sans font-bold text-white">Browse Catalog</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Explore modules, syllabus, prerequisites, and SDET tracks.</p>
             </div>
-            <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
+            <div className="border border-[#3E3E43] p-4 bg-[#28282B] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
               <div className="text-[#EFFF4F] font-bold">02. ENROLL</div>
               <div className="font-sans font-bold text-white">Instant Access</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Seamless checkout with instant unlock to all course resources.</p>
             </div>
-            <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
+            <div className="border border-[#3E3E43] p-4 bg-[#28282B] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
               <div className="text-[#EFFF4F] font-bold">03. LEARN</div>
               <div className="font-sans font-bold text-white">Video Lessons</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Deep-dive architecture walkthroughs and live coding demonstrations.</p>
             </div>
-            <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
+            <div className="border border-[#3E3E43] p-4 bg-[#28282B] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
               <div className="text-[#EFFF4F] font-bold">04. PRACTICE</div>
               <div className="font-sans font-bold text-white">Hands-On Labs</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Build enterprise test suites with real Git repositories and CI/CD.</p>
             </div>
-            <div className="border border-[#252A36] p-4 bg-[#10131A] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
+            <div className="border border-[#3E3E43] p-4 bg-[#28282B] space-y-2 hover:border-[#EFFF4F]/30 transition-colors">
               <div className="text-[#EFFF4F] font-bold">05. EVALUATE</div>
               <div className="font-sans font-bold text-white">Quizzes & Code Reviews</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Validate understanding with technical quizzes and peer feedback.</p>
             </div>
-            <div className="border border-[#EFFF4F]/30 p-4 bg-[#10131A] space-y-2 shadow-lemon-sm">
+            <div className="border border-[#EFFF4F]/30 p-4 bg-[#28282B] space-y-2 shadow-lemon-sm">
               <div className="text-[#EFFF4F] font-bold">06. CERTIFY</div>
               <div className="font-sans font-bold text-white">Digital Certificate</div>
               <p className="font-sans text-[11px] text-[#A0A5B5]">Earn a shareable, verifiable credential for your LinkedIn and CV.</p>
@@ -335,8 +335,8 @@ export default function HomePage() {
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Live Sessions */}
-          <div className="border border-[#252A36] p-6 sm:p-8 bg-[#181C26] shadow-card space-y-6">
-            <div className="flex justify-between items-center border-b border-[#252A36] pb-4">
+          <div className="border border-[#3E3E43] p-6 sm:p-8 bg-[#333336] shadow-card space-y-6">
+            <div className="flex justify-between items-center border-b border-[#3E3E43] pb-4">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#EFFF4F] animate-ping"></span>
                 <span className="font-mono text-xs uppercase font-bold text-white">LIVE SDET BOOTCAMPS</span>
@@ -346,9 +346,9 @@ export default function HomePage() {
 
             <div className="space-y-4">
               {INITIAL_LIVE_SESSIONS.map((session) => (
-                <div key={session.id} className="border border-[#252A36] p-4 hover:border-[#EFFF4F]/30 transition-colors bg-[#10131A]">
+                <div key={session.id} className="border border-[#3E3E43] p-4 hover:border-[#EFFF4F]/30 transition-colors bg-[#28282B]">
                   <div className="flex justify-between items-start">
-                    <span className="font-mono text-[10px] bg-[#181C26] px-2 py-0.5 border border-[#252A36] text-[#A0A5B5]">
+                    <span className="font-mono text-[10px] bg-[#333336] px-2 py-0.5 border border-[#3E3E43] text-[#A0A5B5]">
                       {session.date} • {session.startTime}
                     </span>
                     <span className="font-mono text-[10px] text-[#EFFF4F] font-bold">
@@ -363,8 +363,8 @@ export default function HomePage() {
           </div>
 
           {/* Community & Discussions */}
-          <div className="border border-[#252A36] p-6 sm:p-8 bg-[#181C26] shadow-card space-y-6">
-            <div className="flex justify-between items-center border-b border-[#252A36] pb-4">
+          <div className="border border-[#3E3E43] p-6 sm:p-8 bg-[#333336] shadow-card space-y-6">
+            <div className="flex justify-between items-center border-b border-[#3E3E43] pb-4">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-[#EFFF4F]" />
                 <span className="font-mono text-xs uppercase font-bold text-white">PEER COMMUNITY</span>
@@ -373,7 +373,7 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-4 font-mono text-xs">
-              <div className="p-4 bg-[#10131A] border border-[#252A36] space-y-2">
+              <div className="p-4 bg-[#28282B] border border-[#3E3E43] space-y-2">
                 <div className="flex justify-between text-[#5A5F70] text-[11px]">
                   <span className="font-bold text-white">#selenium-architecture</span>
                   <span>Active 12m ago</span>
@@ -384,7 +384,7 @@ export default function HomePage() {
                 <div className="text-[10px] text-[#EFFF4F] font-bold">8 Responses • SDET Review Active</div>
               </div>
 
-              <div className="p-4 bg-[#10131A] border border-[#252A36] space-y-2">
+              <div className="p-4 bg-[#28282B] border border-[#3E3E43] space-y-2">
                 <div className="flex justify-between text-[#5A5F70] text-[11px]">
                   <span className="font-bold text-white">#playwright-tricks</span>
                   <span>Active 45m ago</span>

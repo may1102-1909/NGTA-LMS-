@@ -67,12 +67,12 @@ export default function CourseDetailPage() {
   return (
     <div className="w-full">
       {/* Course Banner Header */}
-      <section className="bg-[#10131A] border-b border-[#252A36] py-12">
+      <section className="bg-[#28282B] border-b border-[#3E3E43] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8 space-y-4">
               <div className="flex items-center gap-2 font-mono text-xs text-[#5A5F70] uppercase">
-                <span className="px-2 py-0.5 border border-[#252A36] bg-[#181C26] font-bold text-[#EFFF4F]">
+                <span className="px-2 py-0.5 border border-[#3E3E43] bg-[#333336] font-bold text-[#EFFF4F]">
                   {course.category}
                 </span>
                 <span>•</span>
@@ -93,7 +93,7 @@ export default function CourseDetailPage() {
                 <img
                   src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
-                  className="w-9 h-9 rounded-full object-cover border border-[#252A36]"
+                  className="w-9 h-9 rounded-full object-cover border border-[#3E3E43]"
                 />
                 <div className="font-mono text-xs text-[#A0A5B5]">
                   INSTRUCTOR: <strong className="text-white">{course.instructorName}</strong> • {course.instructorTitle}
@@ -102,8 +102,8 @@ export default function CourseDetailPage() {
             </div>
 
             {/* Pricing Card */}
-            <div className="lg:col-span-4 border border-[#252A36] bg-[#181C26] p-6 space-y-5 shadow-card">
-              <div className="relative aspect-video overflow-hidden border border-[#252A36] bg-[#10131A] -mx-6 -mt-6 mb-2">
+            <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
+              <div className="relative aspect-video overflow-hidden border border-[#3E3E43] bg-[#28282B] -mx-6 -mt-6 mb-2">
                 <img
                   src={course.thumbnailUrl}
                   alt={course.title}
@@ -130,13 +130,13 @@ export default function CourseDetailPage() {
 
               <button
                 onClick={() => setIsCheckoutOpen(true)}
-                className="w-full py-3.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
               >
                 <span>ENROLL VIA UPI / CARDS</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="space-y-2 border-t border-[#252A36] pt-4 font-mono text-xs text-[#A0A5B5]">
+              <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
                 <div className="flex items-center gap-2">
                   <Clock className="w-3.5 h-3.5 text-[#5A5F70]" />
                   <span>{course.durationHours} Hours Self-Paced Learning</span>
@@ -160,7 +160,7 @@ export default function CourseDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-8 space-y-12">
             {/* Objectives */}
-            <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-4">
+            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4">
               <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
                 LEARNING OBJECTIVES
               </div>
@@ -179,7 +179,7 @@ export default function CourseDetailPage() {
 
             {/* Curriculum Accordion */}
             <div className="space-y-4">
-              <div className="flex justify-between items-end border-b border-[#252A36] pb-2">
+              <div className="flex justify-between items-end border-b border-[#3E3E43] pb-2">
                 <div>
                   <div className="font-mono text-xs uppercase text-[#5A5F70]">COURSE SYLLABUS</div>
                   <h3 className="text-2xl font-black uppercase tracking-tight text-white">
@@ -195,11 +195,11 @@ export default function CourseDetailPage() {
                 {course.modules.map((mod, modIdx) => (
                   <div
                     key={mod.id}
-                    className="border border-[#252A36] bg-[#181C26] shadow-card"
+                    className="border border-[#3E3E43] bg-[#333336] shadow-card"
                   >
                     <button
                       onClick={() => toggleModule(mod.id)}
-                      className="w-full px-5 py-4 flex items-center justify-between text-left font-mono text-sm font-bold bg-[#10131A] hover:bg-[#252A36] transition-colors border-b border-[#252A36]"
+                      className="w-full px-5 py-4 flex items-center justify-between text-left font-mono text-sm font-bold bg-[#28282B] hover:bg-[#3E3E43] transition-colors border-b border-[#3E3E43]"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-[#EFFF4F]">0{modIdx + 1}.</span>
@@ -213,9 +213,9 @@ export default function CourseDetailPage() {
                     </button>
 
                     {openModules[mod.id] && (
-                      <div className="divide-y divide-[#252A36]">
+                      <div className="divide-y divide-[#3E3E43]">
                         {mod.chapters.map((chap) => (
-                          <div key={chap.id} className="p-4 bg-[#181C26] space-y-2">
+                          <div key={chap.id} className="p-4 bg-[#333336] space-y-2">
                             <div className="font-mono text-[11px] uppercase font-bold text-[#5A5F70]">
                               CHAPTER: {chap.title}
                             </div>
@@ -223,7 +223,7 @@ export default function CourseDetailPage() {
                               {chap.lessons.map((les) => (
                                 <div
                                   key={les.id}
-                                  className="flex items-center justify-between py-1.5 px-3 hover:bg-[#10131A] border border-transparent hover:border-[#252A36] transition-colors text-xs"
+                                  className="flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs"
                                 >
                                   <div className="flex items-center gap-2 text-[#A0A5B5]">
                                     {les.type === "video" && (
@@ -253,7 +253,7 @@ export default function CourseDetailPage() {
             </div>
 
             {/* Instructor Spotlight */}
-            <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-4">
+            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4">
               <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
                 YOUR INSTRUCTOR
               </div>
@@ -261,7 +261,7 @@ export default function CourseDetailPage() {
                 <img
                   src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
-                  className="w-24 h-24 rounded-lg object-cover border border-[#252A36] shrink-0"
+                  className="w-24 h-24 rounded-lg object-cover border border-[#3E3E43] shrink-0"
                 />
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-baseline gap-2">
@@ -288,8 +288,8 @@ export default function CourseDetailPage() {
 
           {/* Right Column */}
           <div className="lg:col-span-4 space-y-6 font-mono text-xs">
-            <div className="border border-[#252A36] bg-[#181C26] p-5 space-y-3 shadow-card">
-              <div className="font-bold text-white uppercase border-b border-[#252A36] pb-2">
+            <div className="border border-[#3E3E43] bg-[#333336] p-5 space-y-3 shadow-card">
+              <div className="font-bold text-white uppercase border-b border-[#3E3E43] pb-2">
                 PREREQUISITES
               </div>
               <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
@@ -299,8 +299,8 @@ export default function CourseDetailPage() {
               </ul>
             </div>
 
-            <div className="border border-[#252A36] bg-[#181C26] p-5 space-y-3 shadow-card">
-              <div className="font-bold text-white uppercase border-b border-[#252A36] pb-2">
+            <div className="border border-[#3E3E43] bg-[#333336] p-5 space-y-3 shadow-card">
+              <div className="font-bold text-white uppercase border-b border-[#3E3E43] pb-2">
                 TARGET AUDIENCE
               </div>
               <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
@@ -313,7 +313,7 @@ export default function CourseDetailPage() {
             <ChallengeStepLog maxVisible={6} />
 
             <div className="space-y-3 pt-2">
-              <div className="flex justify-between items-center text-[#5A5F70] uppercase text-[10px] tracking-wider border-b border-[#252A36] pb-1">
+              <div className="flex justify-between items-center text-[#5A5F70] uppercase text-[10px] tracking-wider border-b border-[#3E3E43] pb-1">
                 <span>COURSE ACCREDITATION & BADGES</span>
                 <span>UNLOCKABLE</span>
               </div>
@@ -329,9 +329,9 @@ export default function CourseDetailPage() {
 
       {/* PAYMENT MODAL */}
       {isCheckoutOpen && (
-        <div className="fixed inset-0 z-50 bg-[#10131A]/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#181C26] border border-[#252A36] shadow-lemon-md p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex justify-between items-start border-b border-[#252A36] pb-3">
+        <div className="fixed inset-0 z-50 bg-[#28282B]/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#333336] border border-[#3E3E43] shadow-lemon-md p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex justify-between items-start border-b border-[#3E3E43] pb-3">
               <div>
                 <div className="font-mono text-[10px] text-[#5A5F70] uppercase">
                   SECURE CHECKOUT
@@ -340,15 +340,15 @@ export default function CourseDetailPage() {
               </div>
               <button
                 onClick={() => setIsCheckoutOpen(false)}
-                className="p-1 hover:bg-[#252A36] border border-[#252A36] text-[#A0A5B5] transition-colors"
+                className="p-1 hover:bg-[#3E3E43] border border-[#3E3E43] text-[#A0A5B5] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-[#10131A] border border-[#252A36] space-y-1 font-mono text-xs">
+            <div className="p-3 bg-[#28282B] border border-[#3E3E43] space-y-1 font-mono text-xs">
               <div className="text-[#5A5F70]">ITEM: {course.title}</div>
-              <div className="flex justify-between font-bold text-white text-sm pt-1 border-t border-[#252A36]">
+              <div className="flex justify-between font-bold text-white text-sm pt-1 border-t border-[#3E3E43]">
                 <span>TOTAL PAYABLE:</span>
                 <span>₹{course.discountPriceINR.toLocaleString()} INR</span>
               </div>
@@ -362,8 +362,8 @@ export default function CourseDetailPage() {
                   onClick={() => setPaymentMethod("UPI")}
                   className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
                     paymentMethod === "UPI"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#10131A] font-bold"
-                      : "border-[#252A36] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
                   }`}
                 >
                   <Smartphone className="w-4 h-4" />
@@ -374,8 +374,8 @@ export default function CourseDetailPage() {
                   onClick={() => setPaymentMethod("CARD")}
                   className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
                     paymentMethod === "CARD"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#10131A] font-bold"
-                      : "border-[#252A36] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
                   }`}
                 >
                   <CreditCard className="w-4 h-4" />
@@ -386,8 +386,8 @@ export default function CourseDetailPage() {
                   onClick={() => setPaymentMethod("NET_BANKING")}
                   className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
                     paymentMethod === "NET_BANKING"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#10131A] font-bold"
-                      : "border-[#252A36] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
                   }`}
                 >
                   <Building className="w-4 h-4" />
@@ -403,7 +403,7 @@ export default function CourseDetailPage() {
                   type="text"
                   value={upiId}
                   onChange={(e) => setUpiId(e.target.value)}
-                  className="w-full p-2 border border-[#252A36] bg-[#10131A] text-white focus:outline-none focus:border-[#EFFF4F]/50"
+                  className="w-full p-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]/50"
                   placeholder="name@upi"
                 />
                 <div className="text-[10px] text-[#5A5F70]">
@@ -417,12 +417,12 @@ export default function CourseDetailPage() {
                 <input
                   type="text"
                   placeholder="Card Number (Rupay / Visa / Mastercard)"
-                  className="w-full p-2 border border-[#252A36] bg-[#10131A] text-white focus:outline-none focus:border-[#EFFF4F]/50"
+                  className="w-full p-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]/50"
                   defaultValue="4312 •••• •••• 8910"
                 />
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" placeholder="MM/YY" className="p-2 border border-[#252A36] bg-[#10131A] text-white" defaultValue="08/29" />
-                  <input type="password" placeholder="CVV" className="p-2 border border-[#252A36] bg-[#10131A] text-white" defaultValue="•••" />
+                  <input type="text" placeholder="MM/YY" className="p-2 border border-[#3E3E43] bg-[#28282B] text-white" defaultValue="08/29" />
+                  <input type="password" placeholder="CVV" className="p-2 border border-[#3E3E43] bg-[#28282B] text-white" defaultValue="•••" />
                 </div>
               </div>
             )}
@@ -436,7 +436,7 @@ export default function CourseDetailPage() {
               <button
                 disabled={isProcessing}
                 onClick={handleSimulatePayment}
-                className="w-full py-3.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
                   <span>AUTHENTICATING PAYMENT GATEWAY...</span>

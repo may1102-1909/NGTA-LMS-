@@ -28,7 +28,7 @@ export default function CoursesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header Banner */}
-      <div className="border-b border-[#252A36] pb-8 mb-8">
+      <div className="border-b border-[#3E3E43] pb-8 mb-8">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
           COURSE CATALOG
         </div>
@@ -41,7 +41,7 @@ export default function CoursesPage() {
       </div>
 
       {/* Filter Grid Toolbar */}
-      <div className="border border-[#252A36] bg-[#181C26] p-4 mb-10 shadow-card grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+      <div className="border border-[#3E3E43] bg-[#333336] p-4 mb-10 shadow-card grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
         {/* Search Input */}
         <div className="md:col-span-6 relative">
           <Search className="w-4 h-4 text-[#5A5F70] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -50,7 +50,7 @@ export default function CoursesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search keywords (e.g. Selenium, Playwright, CI/CD)..."
-            className="w-full pl-9 pr-4 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50"
+            className="w-full pl-9 pr-4 py-2 border border-[#3E3E43] bg-[#28282B] font-mono text-xs text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50"
           />
         </div>
 
@@ -59,7 +59,7 @@ export default function CoursesPage() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-3 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
+            className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -74,7 +74,7 @@ export default function CoursesPage() {
           <select
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
-            className="w-full px-3 py-2 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
+            className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] font-mono text-xs text-white focus:outline-none focus:border-[#EFFF4F]/50"
           >
             {levels.map((lvl) => (
               <option key={lvl} value={lvl}>
@@ -90,20 +90,20 @@ export default function CoursesPage() {
         {filteredCourses.map((course, idx) => (
           <div
             key={course.id}
-            className="border border-[#252A36] bg-[#181C26] flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all"
+            className="border border-[#3E3E43] bg-[#333336] flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all"
           >
             <div>
               {/* Card Banner */}
-              <div className="relative h-48 border-b border-[#252A36] overflow-hidden bg-[#10131A]">
+              <div className="relative h-48 border-b border-[#3E3E43] overflow-hidden bg-[#28282B]">
                 <img
                   src={course.thumbnailUrl}
                   alt={course.title}
                   className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-300"
                 />
-                <div className="absolute top-3 left-3 bg-[#10131A]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36]">
+                <div className="absolute top-3 left-3 bg-[#28282B]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43]">
                   {course.category}
                 </div>
-                <div className="absolute top-3 right-3 bg-[#181C26] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#252A36] flex items-center gap-1">
+                <div className="absolute top-3 right-3 bg-[#333336] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43] flex items-center gap-1">
                   <Star className="w-3 h-3 text-[#EFFF4F] fill-[#EFFF4F]" />
                   <span>{course.rating}</span>
                 </div>
@@ -137,7 +137,7 @@ export default function CoursesPage() {
                   <img
                     src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                     alt={course.instructorName}
-                    className="w-5 h-5 rounded-full object-cover border border-[#252A36]"
+                    className="w-5 h-5 rounded-full object-cover border border-[#3E3E43]"
                   />
                   <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
                 </div>
@@ -146,7 +146,7 @@ export default function CoursesPage() {
                   {course.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-[10px] px-2 py-0.5 border border-[#252A36] text-[#5A5F70] bg-[#10131A]"
+                      className="font-mono text-[10px] px-2 py-0.5 border border-[#3E3E43] text-[#5A5F70] bg-[#28282B]"
                     >
                       #{tag}
                     </span>
@@ -156,7 +156,7 @@ export default function CoursesPage() {
             </div>
 
             {/* Price and CTA */}
-            <div className="p-6 border-t border-[#252A36] bg-[#10131A] flex items-center justify-between">
+            <div className="p-6 border-t border-[#3E3E43] bg-[#28282B] flex items-center justify-between">
               <div>
                 <div className="font-mono text-[10px] text-[#5A5F70] uppercase">FEE</div>
                 <div className="flex items-baseline gap-2">
@@ -171,7 +171,7 @@ export default function CoursesPage() {
 
               <Link
                 href={`/courses/${course.slug}`}
-                className="px-5 py-2.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                className="px-5 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
               >
                 <span>VIEW CURRICULUM</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

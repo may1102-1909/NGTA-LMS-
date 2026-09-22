@@ -48,7 +48,7 @@ function VerifyCertificateContent() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Verification Header */}
-      <div className="border-b border-[#252A36] pb-6">
+      <div className="border-b border-[#3E3E43] pb-6">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
           CERTIFICATE VERIFICATION
         </div>
@@ -61,7 +61,7 @@ function VerifyCertificateContent() {
       </div>
 
       {/* Search Input Box */}
-      <div className="border border-[#252A36] bg-[#181C26] p-4 shadow-card flex flex-col sm:flex-row gap-3">
+      <div className="border border-[#3E3E43] bg-[#333336] p-4 shadow-card flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-[#5A5F70] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -69,12 +69,12 @@ function VerifyCertificateContent() {
             value={inputCertId}
             onChange={(e) => setInputCertId(e.target.value)}
             placeholder="Enter Certificate ID (e.g. NGTA-CERT-course-1-2026-8910)..."
-            className="w-full pl-9 pr-4 py-2.5 border border-[#252A36] bg-[#10131A] font-mono text-xs text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50 uppercase"
+            className="w-full pl-9 pr-4 py-2.5 border border-[#3E3E43] bg-[#28282B] font-mono text-xs text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50 uppercase"
           />
         </div>
         <button
           onClick={() => setSearchedCertId(inputCertId)}
-          className="px-6 py-2.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
+          className="px-6 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
         >
           <ShieldCheck className="w-4 h-4" />
           <span>AUTHENTICATE</span>
@@ -83,11 +83,11 @@ function VerifyCertificateContent() {
 
       {/* Certificate Viewer Card */}
       {isValid ? (
-        <div className="border-2 border-[#EFFF4F]/30 bg-[#181C26] p-8 sm:p-12 shadow-lemon-md relative space-y-8">
+        <div className="border-2 border-[#EFFF4F]/30 bg-[#333336] p-8 sm:p-12 shadow-lemon-md relative space-y-8">
           {/* Top Verification Watermark / Stamp */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#252A36] pb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#3E3E43] pb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-[#EFFF4F] text-[#10131A] font-bold font-mono text-sm">NGTA</div>
+              <div className="p-2.5 bg-[#EFFF4F] text-[#28282B] font-bold font-mono text-sm">NGTA</div>
               <div>
                 <div className="text-sm font-black tracking-tight text-white uppercase">
                   NEXTGEN TESTING ACADEMY
@@ -121,7 +121,7 @@ function VerifyCertificateContent() {
           </div>
 
           {/* Metadata Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-b border-[#252A36] py-6 font-mono text-xs">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-b border-[#3E3E43] py-6 font-mono text-xs">
             <div>
               <span className="text-[#5A5F70] block text-[10px] uppercase">CERTIFICATE ID</span>
               <span className="font-bold text-white">{certificateData.id}</span>
@@ -144,7 +144,7 @@ function VerifyCertificateContent() {
           <div className="flex flex-col sm:flex-row justify-between items-end gap-6 pt-4 font-mono text-xs">
             <div className="space-y-1">
               <div className="text-[#5A5F70] text-[10px]">DIGITAL VERIFICATION HASH</div>
-              <div className="font-mono text-[10px] text-[#A0A5B5] bg-[#10131A] px-2 py-1 border border-[#252A36]">
+              <div className="font-mono text-[10px] text-[#A0A5B5] bg-[#28282B] px-2 py-1 border border-[#3E3E43]">
                 SHA256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
               </div>
             </div>

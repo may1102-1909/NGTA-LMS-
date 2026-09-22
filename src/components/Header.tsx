@@ -30,9 +30,9 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#10131A]/95 backdrop-blur-md border-b border-[#252A36] text-white">
+    <header className="sticky top-0 z-50 bg-[#28282B]/95 backdrop-blur-md border-b border-[#3E3E43] text-white">
       {/* Top Notice Bar */}
-      <div className="bg-[#0C0E14] text-[#A0A5B5] text-xs px-4 py-1.5 flex justify-between items-center font-mono border-b border-[#252A36]">
+      <div className="bg-[#0C0E14] text-[#A0A5B5] text-xs px-4 py-1.5 flex justify-between items-center font-mono border-b border-[#3E3E43]">
         <div className="flex items-center gap-3">
           <span className="inline-block w-2 h-2 rounded-full bg-[#EFFF4F] animate-pulse"></span>
           <span>NEXTGEN TESTING ACADEMY</span>
@@ -44,7 +44,7 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
         <div className="relative">
           <button
             onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-            className="flex items-center gap-2 hover:text-white bg-[#181C26] px-2 py-0.5 border border-[#252A36] hover:border-[#EFFF4F]/30 transition-colors"
+            className="flex items-center gap-2 hover:text-white bg-[#333336] px-2 py-0.5 border border-[#3E3E43] hover:border-[#EFFF4F]/30 transition-colors"
           >
             <span className="text-[#A0A5B5]">ROLE:</span>
             <span className="font-bold text-[#EFFF4F]">{currentRole}</span>
@@ -52,8 +52,8 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
           </button>
 
           {roleMenuOpen && (
-            <div className="absolute right-0 mt-1 w-48 bg-[#181C26] border border-[#252A36] shadow-xl z-50 py-1 font-mono text-xs">
-              <div className="px-3 py-1 text-[#5A5F70] border-b border-[#252A36] text-[10px] uppercase tracking-wider">
+            <div className="absolute right-0 mt-1 w-48 bg-[#333336] border border-[#3E3E43] shadow-xl z-50 py-1 font-mono text-xs">
+              <div className="px-3 py-1 text-[#5A5F70] border-b border-[#3E3E43] text-[10px] uppercase tracking-wider">
                 Simulate RBAC Role
               </div>
               {roles.map((r) => (
@@ -63,8 +63,8 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
                     if (onRoleChange) onRoleChange(r);
                     setRoleMenuOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-1.5 hover:bg-[#252A36] transition-colors flex items-center justify-between ${
-                    currentRole === r ? "text-[#EFFF4F] font-bold bg-[#252A36]/50" : "text-[#A0A5B5]"
+                  className={`w-full text-left px-3 py-1.5 hover:bg-[#3E3E43] transition-colors flex items-center justify-between ${
+                    currentRole === r ? "text-[#EFFF4F] font-bold bg-[#3E3E43]/50" : "text-[#A0A5B5]"
                   }`}
                 >
                   {r}
@@ -94,7 +94,7 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
                 <span className="text-2xl font-black tracking-tighter text-white group-hover:text-[#EFFF4F] transition-colors">
                   NGTA
                 </span>
-                <span className="text-xs font-mono font-bold px-1.5 py-0.5 bg-[#EFFF4F] text-[#10131A] tracking-widest uppercase">
+                <span className="text-xs font-mono font-bold px-1.5 py-0.5 bg-[#EFFF4F] text-[#28282B] tracking-widest uppercase">
                   LMS
                 </span>
               </div>
@@ -124,14 +124,14 @@ export default function Header({ currentRole = "LEARNER", onRoleChange }: Header
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider px-3.5 py-2 border border-[#252A36] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
+              className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider px-3.5 py-2 border border-[#3E3E43] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
               Dashboard
             </Link>
             <Link
               href="/courses"
-              className="hidden sm:inline-flex text-xs font-mono font-bold uppercase tracking-wider px-4 py-2 bg-[#EFFF4F] text-[#10131A] hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
+              className="hidden sm:inline-flex text-xs font-mono font-bold uppercase tracking-wider px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
             >
               Enroll Now
             </Link>

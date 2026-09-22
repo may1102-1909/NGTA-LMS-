@@ -23,10 +23,10 @@ export default function ReputationLog({
 
   return (
     <div
-      className={`border border-[#252A36] bg-[#181C26] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
+      className={`border border-[#3E3E43] bg-[#333336] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
       {/* Top Header Label */}
-      <div className="flex justify-between items-center border-b border-[#252A36] pb-2">
+      <div className="flex justify-between items-center border-b border-[#3E3E43] pb-2">
         <span className="text-[#5A5F70] uppercase text-xs font-bold tracking-wider">
           [GAMIFICATION REPUTATION]
         </span>
@@ -61,20 +61,20 @@ export default function ReputationLog({
 
       {/* Component 3: STREAK GRID */}
       {showStreakGrid && (
-        <div className="pt-1 border-t border-[#252A36]">
+        <div className="pt-1 border-t border-[#3E3E43]">
           <StreakGrid currentStreakDays={7} streakActive={true} />
         </div>
       )}
 
       {/* Component 1: REPUTATION LOG — Scrollable Event Ledger */}
-      <div className="space-y-2 pt-2 border-t border-[#252A36]">
+      <div className="space-y-2 pt-2 border-t border-[#3E3E43]">
         <div className="flex justify-between items-center text-[10px] text-[#5A5F70] uppercase tracking-wider">
           <span>ACTIVITY HISTORY</span>
           <span>NEWEST AT TOP</span>
         </div>
 
         <div
-          className={`overflow-y-auto space-y-1.5 pr-1 border border-[#252A36] bg-[#10131A] p-2.5 divide-y divide-[#252A36] transition-all ${
+          className={`overflow-y-auto space-y-1.5 pr-1 border border-[#3E3E43] bg-[#28282B] p-2.5 divide-y divide-[#3E3E43] transition-all ${
             isExpanded ? "max-h-64" : "max-h-36"
           }`}
         >

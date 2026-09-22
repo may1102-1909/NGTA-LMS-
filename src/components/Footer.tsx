@@ -13,9 +13,9 @@ export default function Footer() {
   }
 
   return (
-    <footer className="border-t border-[#252A36] bg-[#0C0E14] text-white font-mono text-xs">
+    <footer className="border-t border-[#3E3E43] bg-[#0C0E14] text-white font-mono text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-[#252A36]">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-[#3E3E43]">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
               <Image
@@ -27,7 +27,7 @@ export default function Footer() {
               />
               <div className="flex items-baseline gap-1.5">
                 <span className="text-xl font-black tracking-tighter text-white">NGTA</span>
-                <span className="text-[10px] font-bold px-1 bg-[#EFFF4F] text-[#10131A]">LMS</span>
+                <span className="text-[10px] font-bold px-1 bg-[#EFFF4F] text-[#28282B]">LMS</span>
               </div>
             </div>
             <p className="text-[#A0A5B5] leading-relaxed font-sans text-xs">

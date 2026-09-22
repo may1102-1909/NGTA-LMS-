@@ -55,10 +55,10 @@ export default function QuizAssessmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#10131A] text-white font-sans py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#28282B] text-white font-sans py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Top Navigation */}
-        <div className="flex items-center justify-between border-b border-[#252A36] pb-4 font-mono text-xs">
+        <div className="flex items-center justify-between border-b border-[#3E3E43] pb-4 font-mono text-xs">
           <Link
             href={`/learn/${course.id}`}
             className="flex items-center gap-1 text-[#5A5F70] hover:text-[#EFFF4F] transition-colors"
@@ -68,7 +68,7 @@ export default function QuizAssessmentPage() {
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-[#5A5F70]">ATTEMPT: {attemptCount}/{quiz.maxAttempts}</span>
-            <span className="text-[#252A36]">|</span>
+            <span className="text-[#3E3E43]">|</span>
             <span className="flex items-center gap-1 text-[#EFFF4F] font-bold">
               <Clock className="w-3.5 h-3.5" /> {quiz.timeLimitMinutes} MIN PASSING BENCHMARK: {quiz.passingPercentage}%
             </span>
@@ -76,7 +76,7 @@ export default function QuizAssessmentPage() {
         </div>
 
         {/* Assessment Header */}
-        <div className="border border-[#252A36] bg-[#181C26] p-6 shadow-card space-y-2">
+        <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-2">
           <div className="font-mono text-xs text-[#EFFF4F] uppercase tracking-widest">
             [EXAM // TECHNICAL EVALUATION]
           </div>
@@ -114,21 +114,21 @@ export default function QuizAssessmentPage() {
             </div>
 
             {isPassed ? (
-              <div className="border-t border-[#252A36] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
+              <div className="border-t border-[#3E3E43] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
                 <div>
                   <span className="text-[#A0A5B5]">ACCREDITED CERTIFICATE ISSUED:</span>{" "}
                   <strong className="text-white">{certificateId}</strong>
                 </div>
                 <Link
                   href={`/verify?certId=${certificateId}`}
-                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#10131A] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
                 >
                   <Award className="w-4 h-4" />
                   <span>VIEW & VERIFY CREDENTIAL</span>
                 </Link>
               </div>
             ) : (
-              <div className="border-t border-[#252A36] pt-4 flex items-center justify-between font-mono text-xs">
+              <div className="border-t border-[#3E3E43] pt-4 flex items-center justify-between font-mono text-xs">
                 <span className="text-[#A0A5B5]">Please review lesson materials and try again.</span>
                 <button
                   onClick={handleRetake}
@@ -152,11 +152,11 @@ export default function QuizAssessmentPage() {
             return (
               <div
                 key={q.id}
-                className="border border-[#252A36] bg-[#181C26] p-6 space-y-4 shadow-card"
+                className="border border-[#3E3E43] bg-[#333336] p-6 space-y-4 shadow-card"
               >
                 <div className="flex justify-between items-center font-mono text-xs text-[#5A5F70]">
                   <span>QUESTION 0{idx + 1} OF 0{totalQuestions}</span>
-                  <span className="uppercase text-[10px] px-1.5 py-0.5 border border-[#252A36] text-[#A0A5B5]">
+                  <span className="uppercase text-[10px] px-1.5 py-0.5 border border-[#3E3E43] text-[#A0A5B5]">
                     {q.type.replace("_", " ")}
                   </span>
                 </div>
@@ -169,7 +169,7 @@ export default function QuizAssessmentPage() {
                 <div className="space-y-2 font-mono text-xs">
                   {q.options?.map((opt) => {
                     const isSelected = userAnswer === opt.id;
-                    let optionStyle = "border-[#252A36] bg-[#10131A] text-[#A0A5B5] hover:border-[#EFFF4F]/30";
+                    let optionStyle = "border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:border-[#EFFF4F]/30";
 
                     if (isSubmitted) {
                       if (opt.id === q.correctAnswer) {
@@ -202,7 +202,7 @@ export default function QuizAssessmentPage() {
 
                 {/* Explanation on submission */}
                 {isSubmitted && (
-                  <div className="p-3 bg-[#10131A] border border-[#252A36] text-xs text-[#A0A5B5] font-sans space-y-1">
+                  <div className="p-3 bg-[#28282B] border border-[#3E3E43] text-xs text-[#A0A5B5] font-sans space-y-1">
                     <span className="font-mono text-[10px] uppercase font-bold text-[#5A5F70] block">
                       EXPLANATION:
                     </span>
@@ -216,11 +216,11 @@ export default function QuizAssessmentPage() {
 
         {/* Submit Bar */}
         {!isSubmitted && (
-          <div className="border-t border-[#252A36] pt-6 flex justify-end">
+          <div className="border-t border-[#3E3E43] pt-6 flex justify-end">
             <button
               onClick={() => setIsSubmitted(true)}
               disabled={Object.keys(selectedAnswers).length < totalQuestions}
-              className="px-8 py-3.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-8 py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <span>SUBMIT ASSESSMENT ANSWERS</span>
               <ArrowRight className="w-4 h-4" />

@@ -57,9 +57,9 @@ export default function LearnPlayerPage() {
   const isEligibleForCertificate = progressPercentage >= 75;
 
   return (
-    <div className="min-h-screen bg-[#10131A] text-white flex flex-col font-sans">
+    <div className="min-h-screen bg-[#28282B] text-white flex flex-col font-sans">
       {/* Top Player Bar */}
-      <div className="border-b border-[#252A36] bg-[#0C0E14] px-4 py-3 flex items-center justify-between font-mono text-xs">
+      <div className="border-b border-[#3E3E43] bg-[#0C0E14] px-4 py-3 flex items-center justify-between font-mono text-xs">
         <div className="flex items-center gap-3">
           <Link
             href="/courses"
@@ -68,7 +68,7 @@ export default function LearnPlayerPage() {
             <ChevronLeft className="w-4 h-4" />
             <span>EXIT PLAYER</span>
           </Link>
-          <span className="text-[#252A36]">|</span>
+          <span className="text-[#3E3E43]">|</span>
           <span className="text-white font-bold uppercase truncate max-w-xs sm:max-w-md">
             {course.title}
           </span>
@@ -84,14 +84,14 @@ export default function LearnPlayerPage() {
 
           <div className="hidden lg:flex items-center gap-2">
             <RankTag points={userPoints} size="sm" />
-            <span className="text-[#252A36]">|</span>
+            <span className="text-[#3E3E43]">|</span>
             <span className="text-[#EFFF4F] font-bold tabular-nums">{userPoints} PTS</span>
           </div>
 
           <div className="hidden sm:flex items-center gap-2">
             <span className="text-[#5A5F70]">PROGRESS:</span>
             <span className="font-bold text-[#EFFF4F]">{progressPercentage}%</span>
-            <div className="w-20 h-2 bg-[#252A36] border border-[#252A36] overflow-hidden">
+            <div className="w-20 h-2 bg-[#3E3E43] border border-[#3E3E43] overflow-hidden">
               <div
                 className="h-full bg-[#EFFF4F] transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
@@ -102,7 +102,7 @@ export default function LearnPlayerPage() {
           {isEligibleForCertificate && (
             <Link
               href={`/verify?certId=NGTA-CERT-${course.id}-9941`}
-              className="px-2.5 py-1 bg-[#EFFF4F] text-[#10131A] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
+              className="px-2.5 py-1 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
             >
               <Award className="w-3.5 h-3.5" />
               <span>CLAIM CERTIFICATE</span>
@@ -114,8 +114,8 @@ export default function LearnPlayerPage() {
       {/* Main Player Grid */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
         {/* Left Column: Video & Lesson Content */}
-        <div className="lg:col-span-8 flex flex-col bg-[#0C0E14] border-r border-[#252A36]">
-          <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#252A36]">
+        <div className="lg:col-span-8 flex flex-col bg-[#0C0E14] border-r border-[#3E3E43]">
+          <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#3E3E43]">
             {activeLesson.type === "video" ? (
               <video
                 ref={videoRef}
@@ -136,7 +136,7 @@ export default function LearnPlayerPage() {
                 </p>
                 <Link
                   href={`/learn/${course.id}/quiz`}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
                 >
                   <span>START TIMED QUIZ</span>
                   <ArrowRight className="w-4 h-4" />
@@ -146,8 +146,8 @@ export default function LearnPlayerPage() {
           </div>
 
           {/* Lesson Metadata */}
-          <div className="p-6 bg-[#10131A] flex-1 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#252A36] pb-4">
+          <div className="p-6 bg-[#28282B] flex-1 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#3E3E43] pb-4">
               <div>
                 <div className="font-mono text-xs text-[#5A5F70] uppercase">
                   LESSON {activeLesson.order} // {activeLesson.durationMinutes} MIN
@@ -163,7 +163,7 @@ export default function LearnPlayerPage() {
                   className={`px-4 py-2 font-mono text-xs uppercase font-bold flex items-center gap-2 transition-colors border ${
                     completedLessonIds.includes(activeLesson.id)
                       ? "bg-[#EFFF4F]/10 border-[#EFFF4F]/30 text-[#EFFF4F]"
-                      : "bg-[#181C26] border-[#252A36] text-[#A0A5B5] hover:bg-[#252A36]"
+                      : "bg-[#333336] border-[#3E3E43] text-[#A0A5B5] hover:bg-[#3E3E43]"
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4 text-[#EFFF4F]" />
@@ -189,13 +189,13 @@ export default function LearnPlayerPage() {
         </div>
 
         {/* Right Column: Syllabus Sidebar */}
-        <div className="lg:col-span-4 bg-[#10131A] flex flex-col h-full border-[#252A36]">
-          <div className="p-4 border-b border-[#252A36] font-mono text-xs font-bold text-[#5A5F70] uppercase tracking-wider flex justify-between items-center">
+        <div className="lg:col-span-4 bg-[#28282B] flex flex-col h-full border-[#3E3E43]">
+          <div className="p-4 border-b border-[#3E3E43] font-mono text-xs font-bold text-[#5A5F70] uppercase tracking-wider flex justify-between items-center">
             <span>CURRICULUM SYLLABUS</span>
             <span className="text-[#EFFF4F]">{completedLessonIds.length} / {allLessons.length} DONE</span>
           </div>
 
-          <div className="overflow-y-auto divide-y divide-[#252A36] flex-1">
+          <div className="overflow-y-auto divide-y divide-[#3E3E43] flex-1">
             {course.modules.map((mod, modIdx) => {
               const modLessons = mod.chapters.flatMap((c) => c.lessons);
               const modCompleted = modLessons.filter((l) =>
@@ -225,7 +225,7 @@ export default function LearnPlayerPage() {
                           className={`w-full text-left p-2 transition-colors flex items-center justify-between border ${
                             isCurrent
                               ? "bg-[#EFFF4F]/10 border-[#EFFF4F]/30 text-white font-bold"
-                              : "border-transparent hover:bg-[#181C26] text-[#5A5F70] hover:text-white"
+                              : "border-transparent hover:bg-[#333336] text-[#5A5F70] hover:text-white"
                           }`}
                         >
                           <div className="flex items-center gap-2 truncate">
@@ -250,10 +250,10 @@ export default function LearnPlayerPage() {
             })}
           </div>
 
-          <div className="p-4 border-t border-[#252A36] bg-[#0C0E14] font-mono text-xs">
+          <div className="p-4 border-t border-[#3E3E43] bg-[#0C0E14] font-mono text-xs">
             <Link
               href={`/learn/${course.id}/quiz`}
-              className="w-full py-2.5 bg-[#EFFF4F] text-[#10131A] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm"
+              className="w-full py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm"
             >
               <HelpCircle className="w-4 h-4" />
               <span>GO TO ASSESSMENT QUIZ</span>

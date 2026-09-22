@@ -52,10 +52,10 @@ export default function LeaderboardTable({
 
   return (
     <div
-      className={`border border-[#252A36] bg-[#181C26] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
+      className={`border border-[#3E3E43] bg-[#333336] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
       {/* Widget Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#252A36] pb-3">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#3E3E43] pb-3">
         <div>
           <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
             COHORT LEADERBOARD
@@ -71,7 +71,7 @@ export default function LeaderboardTable({
           <select
             value={cohortFilter}
             onChange={(e) => setCohortFilter(e.target.value)}
-            className="border border-[#252A36] bg-[#10131A] text-xs px-2.5 py-1 font-bold text-white focus:outline-none uppercase"
+            className="border border-[#3E3E43] bg-[#28282B] text-xs px-2.5 py-1 font-bold text-white focus:outline-none uppercase"
           >
             <option value="ALL">ALL COHORTS</option>
             <option value="Selenium">SELENIUM (COHORT 26)</option>
@@ -81,33 +81,33 @@ export default function LeaderboardTable({
       </div>
 
       {/* Tabs */}
-      <div className="flex border border-[#252A36] bg-[#10131A] text-xs font-bold">
+      <div className="flex border border-[#3E3E43] bg-[#28282B] text-xs font-bold">
         <button
           onClick={() => setActiveTab("WEEK")}
           className={`flex-1 py-1.5 px-3 uppercase text-center transition-colors ${
             activeTab === "WEEK"
-              ? "bg-[#EFFF4F] text-[#10131A]"
-              : "text-[#A0A5B5] hover:bg-[#252A36]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           THIS WEEK
         </button>
         <button
           onClick={() => setActiveTab("MONTH")}
-          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#252A36] transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#3E3E43] transition-colors ${
             activeTab === "MONTH"
-              ? "bg-[#EFFF4F] text-[#10131A]"
-              : "text-[#A0A5B5] hover:bg-[#252A36]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           THIS MONTH
         </button>
         <button
           onClick={() => setActiveTab("ALL_TIME")}
-          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#252A36] transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#3E3E43] transition-colors ${
             activeTab === "ALL_TIME"
-              ? "bg-[#EFFF4F] text-[#10131A]"
-              : "text-[#A0A5B5] hover:bg-[#252A36]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           ALL-TIME
@@ -115,10 +115,10 @@ export default function LeaderboardTable({
       </div>
 
       {/* Leaderboard Table */}
-      <div className="border border-[#252A36] overflow-x-auto bg-[#10131A]">
+      <div className="border border-[#3E3E43] overflow-x-auto bg-[#28282B]">
         <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
-            <tr className="bg-[#10131A] text-[#A0A5B5] text-[11px] uppercase tracking-wider border-b border-[#252A36]">
+            <tr className="bg-[#28282B] text-[#A0A5B5] text-[11px] uppercase tracking-wider border-b border-[#3E3E43]">
               <th
                 onClick={() => handleSort("rank")}
                 className="py-2.5 px-3 cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
@@ -149,7 +149,7 @@ export default function LeaderboardTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#252A36] text-white">
+          <tbody className="divide-y divide-[#3E3E43] text-white">
             {filteredAndSortedEntries.map((learner, idx) => {
               const displayRank = idx + 1;
               const isCurrentUser = learner.isCurrentUser;
@@ -160,7 +160,7 @@ export default function LeaderboardTable({
                   className={`transition-colors tabular-nums ${
                     isCurrentUser
                       ? "bg-[#EFFF4F]/5 border-l-2 border-l-[#EFFF4F] font-bold"
-                      : "hover:bg-[#252A36]/50"
+                      : "hover:bg-[#3E3E43]/50"
                   }`}
                 >
                   <td className="py-2.5 px-3 text-white font-bold">
@@ -180,7 +180,7 @@ export default function LeaderboardTable({
                           {learner.name}
                         </span>
                         {isCurrentUser && (
-                          <span className="text-[9px] px-1 py-0.2 bg-[#EFFF4F] text-[#10131A] uppercase tracking-wider font-bold">
+                          <span className="text-[9px] px-1 py-0.2 bg-[#EFFF4F] text-[#28282B] uppercase tracking-wider font-bold">
                             YOU
                           </span>
                         )}

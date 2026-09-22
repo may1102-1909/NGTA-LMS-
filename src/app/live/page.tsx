@@ -16,7 +16,7 @@ export default function LiveTrainingPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Header */}
-      <div className="border-b border-[#252A36] pb-6">
+      <div className="border-b border-[#3E3E43] pb-6">
         <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1">
           LIVE WORKSHOPS & BOOTCAMPS
         </div>
@@ -36,7 +36,7 @@ export default function LiveTrainingPage() {
           return (
             <div
               key={session.id}
-              className="border border-[#252A36] bg-[#181C26] p-6 sm:p-8 flex flex-col justify-between shadow-card space-y-6"
+              className="border border-[#3E3E43] bg-[#333336] p-6 sm:p-8 flex flex-col justify-between shadow-card space-y-6"
             >
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
@@ -53,7 +53,7 @@ export default function LiveTrainingPage() {
                   {session.title}
                 </h3>
 
-                <div className="space-y-2 border-y border-[#252A36] py-3 font-mono text-xs text-[#A0A5B5]">
+                <div className="space-y-2 border-y border-[#3E3E43] py-3 font-mono text-xs text-[#A0A5B5]">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-3.5 h-3.5 text-[#5A5F70]" />
                     <span>DATE: {session.date}</span>
@@ -78,7 +78,7 @@ export default function LiveTrainingPage() {
                 ) : (
                   <button
                     onClick={() => handleRegister(session.id)}
-                    className="w-full py-3.5 bg-[#EFFF4F] text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
                   >
                     <Video className="w-4 h-4" />
                     <span>REGISTER FOR LIVE WORKSHOP</span>

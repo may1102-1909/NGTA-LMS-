@@ -9,7 +9,7 @@ import LoginButton from "@/components/LoginButton";
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen w-full bg-[#000000] text-white overflow-x-hidden selection:bg-emerald-500 selection:text-black font-sans flex flex-col justify-between">
+    <div className="relative min-h-screen w-full bg-[#28282B] text-white overflow-x-hidden selection:bg-emerald-500 selection:text-[#28282B] font-sans flex flex-col justify-between">
       {/* ── AMBIENT COSMIC BACKGROUND & NEBULA PARTICLES ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Subtle deep nebula radial glows */}
@@ -50,7 +50,7 @@ export default function LandingPage() {
       </main>
 
       {/* ── MINIMAL DARK FOOTER ── */}
-      <footer className="relative z-20 border-t border-zinc-900 bg-black/90 py-6 text-center text-xs font-mono text-zinc-600">
+      <footer className="relative z-20 border-t border-[#3E3E43] bg-[#28282B]/90 py-6 text-center text-xs font-mono text-[#A0A5B5]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Image

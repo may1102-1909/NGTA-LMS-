@@ -47,10 +47,10 @@ export default function ChallengeStepLog({
 
   return (
     <div
-      className={`border border-[#252A36] bg-[#181C26] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
+      className={`border border-[#3E3E43] bg-[#333336] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
       {/* CLI Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#252A36] pb-3">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#3E3E43] pb-3">
         <div>
           <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
             30-DAY SDET CHALLENGE
@@ -74,14 +74,14 @@ export default function ChallengeStepLog({
 
       {/* Progress Bar */}
       <div className="space-y-1">
-        <div className="w-full h-2 bg-[#252A36] border border-[#252A36] flex overflow-hidden">
+        <div className="w-full h-2 bg-[#3E3E43] border border-[#3E3E43] flex overflow-hidden">
           {Array.from({ length: 30 }).map((_, i) => {
             const isFilled = i < completedCount;
             return (
               <div
                 key={i}
-                className={`flex-1 border-r border-[#10131A] last:border-r-0 transition-colors ${
-                  isFilled ? "bg-[#EFFF4F]" : "bg-[#252A36]"
+                className={`flex-1 border-r border-[#28282B] last:border-r-0 transition-colors ${
+                  isFilled ? "bg-[#EFFF4F]" : "bg-[#3E3E43]"
                 }`}
               />
             );
@@ -95,13 +95,13 @@ export default function ChallengeStepLog({
       </div>
 
       {/* Vertical Terminal Checklist */}
-      <div className="border border-[#252A36] bg-[#10131A] text-white p-4 space-y-1.5">
-        <div className="text-[10px] text-[#5A5F70] border-b border-[#252A36] pb-2 mb-2 flex justify-between">
+      <div className="border border-[#3E3E43] bg-[#28282B] text-white p-4 space-y-1.5">
+        <div className="text-[10px] text-[#5A5F70] border-b border-[#3E3E43] pb-2 mb-2 flex justify-between">
           <span>RUN: ngta challenge --track=sdet-30-days</span>
           <span>STATUS: EXECUTION_CADENCE</span>
         </div>
 
-        <div className="space-y-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin", scrollbarColor: "#252A36 #10131A" }}>
+        <div className="space-y-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin", scrollbarColor: "#3E3E43 #28282B" }}>
           {displayedTasks.map((task) => {
             const dayFormatted = String(task.dayNumber).padStart(2, "0");
             const isDone = task.isCompleted;
@@ -110,10 +110,10 @@ export default function ChallengeStepLog({
               <div
                 key={task.dayNumber}
                 onClick={() => setSelectedTask(selectedTask?.dayNumber === task.dayNumber ? null : task)}
-                className={`group flex items-start justify-between p-1.5 cursor-pointer hover:bg-[#181C26] transition-colors border-l-2 ${
+                className={`group flex items-start justify-between p-1.5 cursor-pointer hover:bg-[#333336] transition-colors border-l-2 ${
                   isDone
                     ? "border-l-[#EFFF4F] text-white"
-                    : "border-l-[#252A36] text-[#5A5F70]"
+                    : "border-l-[#3E3E43] text-[#5A5F70]"
                 }`}
               >
                 <div className="flex items-baseline gap-2 truncate">
@@ -154,11 +154,11 @@ export default function ChallengeStepLog({
 
         {/* Selected Task Command Snippet */}
         {selectedTask && (
-          <div className="mt-3 p-2.5 bg-[#181C26] border border-[#252A36] text-[11px] space-y-1">
+          <div className="mt-3 p-2.5 bg-[#333336] border border-[#3E3E43] text-[11px] space-y-1">
             <div className="text-[#5A5F70] font-bold uppercase text-[10px]">
               DAY {String(selectedTask.dayNumber).padStart(2, "0")} CODE SNIPPET:
             </div>
-            <div className="font-mono text-[#EFFF4F] bg-[#10131A] p-2 border border-[#252A36] break-all select-all">
+            <div className="font-mono text-[#EFFF4F] bg-[#28282B] p-2 border border-[#3E3E43] break-all select-all">
               $ {selectedTask.commandSnippet || "javac -version && java Main"}
             </div>
           </div>

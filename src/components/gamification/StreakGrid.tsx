@@ -49,8 +49,8 @@ export default function StreakGrid({
               onClick={() => setViewMode("7D")}
               className={`px-1.5 py-0.5 border ${
                 viewMode === "7D"
-                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#10131A] font-bold"
-                  : "border-[#252A36] bg-[#10131A] text-[#A0A5B5] hover:bg-[#252A36]"
+                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                  : "border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               7D
@@ -59,8 +59,8 @@ export default function StreakGrid({
               onClick={() => setViewMode("30D")}
               className={`px-1.5 py-0.5 border ${
                 viewMode === "30D"
-                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#10131A] font-bold"
-                  : "border-[#252A36] bg-[#10131A] text-[#A0A5B5] hover:bg-[#252A36]"
+                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                  : "border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               30D
@@ -72,14 +72,14 @@ export default function StreakGrid({
       {/* GitHub-contribution-graph style grid */}
       <div className="space-y-1.5">
         <div
-          className={`grid gap-1.5 p-2 bg-[#10131A] border border-[#252A36] ${
+          className={`grid gap-1.5 p-2 bg-[#28282B] border border-[#3E3E43] ${
             viewMode === "7D"
               ? "grid-cols-7"
               : "grid-cols-10 sm:grid-cols-15"
           }`}
         >
           {displayData.map((day, idx) => {
-            let blockStyle = "bg-[#252A36] border border-[#252A36]";
+            let blockStyle = "bg-[#3E3E43] border border-[#3E3E43]";
 
             if (day.active) {
               if (day.isToday && streakActive) {
@@ -116,7 +116,7 @@ export default function StreakGrid({
         {/* Legend / Metrics */}
         <div className="flex justify-between items-center text-[10px] text-[#5A5F70] tabular-nums">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 bg-[#252A36] border border-[#252A36] inline-block" />
+            <span className="w-2 h-2 bg-[#3E3E43] border border-[#3E3E43] inline-block" />
             <span>IDLE</span>
             <span className="w-2 h-2 bg-[#EFFF4F]/60 inline-block ml-1" />
             <span>ACTIVE</span>

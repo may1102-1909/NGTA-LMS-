@@ -52,7 +52,7 @@ export default function RankTag({
             </span>
           </div>
 
-          <div className="w-full h-1.5 bg-[#252A36] border border-[#252A36] flex overflow-hidden">
+          <div className="w-full h-1.5 bg-[#3E3E43] border border-[#3E3E43] flex overflow-hidden">
             <div
               className="h-full bg-[#EFFF4F] transition-all duration-300"
               style={{ width: `${percentage}%` }}

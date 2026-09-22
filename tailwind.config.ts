@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         night: {
-          DEFAULT: "#10131A",
-          base: "#10131A",
-          card: "#181C26",
-          border: "#252A36",
-          hover: "#2A3040",
+          DEFAULT: "#28282B",
+          base: "#28282B",
+          card: "#333336",
+          border: "#3E3E43",
+          hover: "#48484E",
         },
         lemon: {
           DEFAULT: "#EFFF4F",

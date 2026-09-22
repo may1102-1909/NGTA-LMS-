@@ -20,12 +20,12 @@ export default function CredentialCard({
     <div
       className={`p-5 font-mono text-xs space-y-3 transition-all ${
         isCertificate
-          ? "border border-[#EFFF4F]/30 bg-[#181C26] shadow-lemon-sm"
-          : "border border-dashed border-[#252A36] bg-[#10131A]"
+          ? "border border-[#EFFF4F]/30 bg-[#333336] shadow-lemon-sm"
+          : "border border-dashed border-[#3E3E43] bg-[#28282B]"
       } ${className}`}
     >
       {/* Card Header & Status Stamp */}
-      <div className="flex items-start justify-between gap-3 border-b border-[#252A36] pb-2.5">
+      <div className="flex items-start justify-between gap-3 border-b border-[#3E3E43] pb-2.5">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span
@@ -48,7 +48,7 @@ export default function CredentialCard({
           className={`p-1.5 border ${
             isCertificate
               ? "border-[#EFFF4F]/30 bg-[#EFFF4F]/10 text-[#EFFF4F]"
-              : "border-dashed border-[#252A36] bg-[#181C26] text-[#5A5F70]"
+              : "border-dashed border-[#3E3E43] bg-[#333336] text-[#5A5F70]"
           }`}
         >
           {isCertificate ? (
@@ -70,7 +70,7 @@ export default function CredentialCard({
       </div>
 
       {/* Metadata Footprint */}
-      <div className="pt-2 border-t border-[#252A36] flex items-center justify-between text-[10px] text-[#5A5F70] tabular-nums">
+      <div className="pt-2 border-t border-[#3E3E43] flex items-center justify-between text-[10px] text-[#5A5F70] tabular-nums">
         <div>
           ISSUED: <span className="font-semibold text-white">{credential.issuedAt}</span>
         </div>
