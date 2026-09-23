@@ -46,7 +46,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#3E3E43]">
           <div className="p-6 sm:p-8">
             <div className="text-xs text-[#5A5F70] uppercase tracking-widest">ACTIVE LEARNERS</div>
-            <div className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-2">10,000+</div>
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#EFFF4F] mt-2">10,000+</div>
             <div className="text-xs text-[#5A5F70] mt-1">ENROLLED ENGINEERS</div>
           </div>
           <div className="p-6 sm:p-8">
