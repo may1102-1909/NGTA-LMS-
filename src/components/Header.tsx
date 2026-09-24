@@ -81,8 +81,20 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
               {notificationsOpen && (
                 <div className="absolute right-0 mt-2 w-72 bg-[#202023] border border-[#3E3E43] shadow-2xl p-3 z-50 text-xs font-sans animate-in fade-in duration-150">
                   <div className="font-bold text-white uppercase font-mono pb-2 border-b border-[#3E3E43] flex justify-between items-center text-[11px]">
-                    <span>Notifications</span>
-                    <span className="text-[10px] text-[#EFFF4F]">3 New</span>
+                    <Link
+                      href="/notifications"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="hover:text-[#EFFF4F] transition-colors"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="text-[10px] text-[#EFFF4F] hover:underline"
+                    >
+                      View All
+                    </Link>
                   </div>
                   <div className="py-2 space-y-2 text-[#A0A5B5]">
                     <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
@@ -98,9 +110,9 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
             {/* User Avatar Circle Badge */}
             <Link
-              href="/dashboard#profile"
+              href="/settings"
               className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/40 text-blue-400 font-bold text-xs hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
-              title="Student Profile"
+              title="Settings & Profile"
             >
               SD
             </Link>

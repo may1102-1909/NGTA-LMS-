@@ -122,12 +122,12 @@ export default function DashboardPage() {
                 <span>Explore Catalog</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
-              <button
-                onClick={() => setShowProfileDrawer(!showProfileDrawer)}
+              <Link
+                href="/settings"
                 className="px-4 py-2 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-white uppercase font-bold transition-colors"
               >
                 Account Settings
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -230,9 +230,16 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              <div className="pt-2">
-                <span className="text-[11px] text-amber-400 font-bold">18 Days Remaining</span>
-              </div>
+              <Link
+                href="/challenge"
+                className="pt-2 text-[11px] text-amber-400 hover:underline flex items-center justify-between font-bold"
+              >
+                <span>18 Days Remaining</span>
+                <span className="flex items-center gap-1">
+                  <span>Open Challenge</span>
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </Link>
             </div>
 
             {/* Card 3: ACCREDITATION */}
@@ -250,10 +257,10 @@ export default function DashboardPage() {
                 </p>
               </div>
               <Link
-                href="/verify"
+                href="/certificates"
                 className="pt-2 text-[11px] text-emerald-400 hover:underline flex items-center gap-1 font-bold"
               >
-                <span>Check Registry Status</span>
+                <span>View My Certificates</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </div>

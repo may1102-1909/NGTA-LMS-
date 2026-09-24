@@ -43,16 +43,16 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     },
     {
       label: "Notifications",
-      href: "/dashboard",
+      href: "/notifications",
       icon: Bell,
       badge: "3",
-      active: false,
+      active: pathname === "/notifications",
     },
     {
       label: "Live Classes",
       href: "/live",
       icon: Video,
-      active: pathname === "/live",
+      active: pathname === "/live" || pathname === "/live-classes",
     },
     {
       label: "Community",
@@ -62,33 +62,33 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     },
     {
       label: "30-Day Challenge",
-      href: "/dashboard#challenge",
+      href: "/challenge",
       icon: Trophy,
-      active: false,
+      active: pathname === "/challenge" || pathname === "/30-day-challenge",
     },
     {
       label: "Leaderboard",
-      href: "/community#leaderboard",
+      href: "/leaderboard",
       icon: Zap,
-      active: false,
+      active: pathname === "/leaderboard",
     },
     {
       label: "My Certificates",
-      href: "/verify",
+      href: "/certificates",
       icon: Award,
-      active: pathname === "/verify",
+      active: pathname === "/certificates" || pathname === "/verify",
     },
     {
       label: "1-on-1 Mentorship",
-      href: "/courses",
+      href: "/mentorship",
       icon: Calendar,
-      active: false,
+      active: pathname === "/mentorship" || pathname === "/1-on-1-mentorship",
     },
     {
       label: "Settings & Profile",
-      href: "/dashboard#profile",
+      href: "/settings",
       icon: Settings,
-      active: false,
+      active: pathname === "/settings" || pathname === "/profile",
     },
   ];
 
@@ -151,7 +151,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   onClick={onClose}
                   className={`flex items-center justify-between px-3 py-2.5 rounded transition-all group ${
                     item.active
-                      ? "bg-[#EFFF4F]/10 text-[#EFFF4F] font-bold border-l-2 border-[#EFFF4F]"
+                      ? "bg-[#333527]/70 text-[#EFFF4F] font-bold border-l-2 border-[#EFFF4F] shadow-sm"
                       : "text-[#A0A5B5] hover:text-white hover:bg-[#28282B] border-l-2 border-transparent"
                   }`}
                 >
@@ -160,14 +160,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                       className={`w-4 h-4 transition-colors ${
                         item.active
                           ? "text-[#EFFF4F]"
-                          : "text-[#5A5F70] group-hover:text-[#EFFF4F]"
+                          : "text-[#7A8090] group-hover:text-[#EFFF4F]"
                       }`}
                     />
                     <span className="font-sans text-[13px]">{item.label}</span>
                   </div>
 
                   {item.badge && (
-                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[#EFFF4F] text-[#28282B]">
+                    <span className="w-5 h-5 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center font-bold text-[11px] shrink-0 shadow-lemon-sm">
                       {item.badge}
                     </span>
                   )}
