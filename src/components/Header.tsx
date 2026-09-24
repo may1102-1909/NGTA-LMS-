@@ -1,84 +1,108 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { UserRole } from "@/types";
-import { ShieldCheck, BookOpen, Video, Users, LayoutDashboard } from "lucide-react";
+import {
+  Menu,
+  Bell,
+  Flame,
+  Zap,
+  BookOpen,
+} from "lucide-react";
 
 interface HeaderProps {
-  currentRole?: UserRole;
-  onRoleChange?: (role: UserRole) => void;
+  onToggleSidebar?: () => void;
 }
 
-export default function Header({ currentRole = "LEARNER", onRoleChange }: HeaderProps) {
+export default function Header({ onToggleSidebar }: HeaderProps) {
   const pathname = usePathname();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   if (pathname === "/") {
     return null;
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[#28282B]/95 backdrop-blur-md border-b border-[#3E3E43] text-white">
-      {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 bg-[#28282B]/95 backdrop-blur-md border-b border-[#3E3E43] text-white">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <Image
-                src="/logo.png"
-                alt="NGTA LMS Logo"
-                width={36}
-                height={36}
-                className="w-9 h-9 object-contain rounded-md"
-                priority
-              />
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl font-black tracking-tighter text-white group-hover:text-[#EFFF4F] transition-colors">
-                  NGTA
-                </span>
-                <span className="text-xs font-mono font-bold px-1.5 py-0.5 bg-[#EFFF4F] text-[#28282B] tracking-widest uppercase">
-                  LMS
-                </span>
-              </div>
-            </Link>
-            <span className="hidden md:inline-block text-[11px] font-mono text-[#5A5F70] tracking-tight">
-              NEXTGEN TESTING ACADEMY
-            </span>
+          {/* Left: Mobile Sidebar Trigger + Context Greeting */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <button
+              onClick={onToggleSidebar}
+              className="p-2 text-[#A0A5B5] hover:text-[#EFFF4F] hover:bg-[#333336] rounded-md transition-colors lg:hidden"
+              aria-label="Open Navigation Sidebar"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm font-bold text-white font-sans truncate">
+                Welcome back to NextGen Academy! 🚀
+              </span>
+            </div>
           </div>
 
-          {/* Primary Navigation */}
-          <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-wider uppercase font-semibold">
-            <Link href="/courses" className="text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5" /> Courses
-            </Link>
-            <Link href="/live" className="text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors flex items-center gap-1.5">
-              <Video className="w-3.5 h-3.5" /> Live Training
-            </Link>
-            <Link href="/community" className="text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5" /> Community
-            </Link>
-            <Link href="/verify" className="text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5" /> Verify Cert
-            </Link>
-          </nav>
-
-          {/* User Controls & Action */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider px-3.5 py-2 border border-[#3E3E43] text-[#A0A5B5] hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              Dashboard
-            </Link>
+          {/* Right: Gamified Badges + Notifications + Profile Avatar */}
+          <div className="flex items-center gap-2 sm:gap-3 font-mono text-xs">
+            {/* Quick Catalog Link */}
             <Link
               href="/courses"
-              className="hidden sm:inline-flex text-xs font-mono font-bold uppercase tracking-wider px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-[#EFFF4F] hover:border-[#EFFF4F]/40 transition-colors text-[11px] font-bold uppercase"
             >
-              Enroll Now
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Catalog</span>
+            </Link>
+
+            {/* Streak Badge */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full font-bold text-[11px]">
+              <Flame className="w-3.5 h-3.5 fill-orange-400" />
+              <span>1 Days</span>
+            </div>
+
+            {/* XP Badge */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] rounded-full font-bold text-[11px] shadow-lemon-sm">
+              <Zap className="w-3.5 h-3.5 fill-[#EFFF4F]" />
+              <span>4220 XP</span>
+            </div>
+
+            {/* Notifications Button */}
+            <div className="relative">
+              <button
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                className="relative p-2 text-[#A0A5B5] hover:text-white hover:bg-[#333336] rounded-full transition-colors"
+                aria-label="View notifications"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              </button>
+
+              {notificationsOpen && (
+                <div className="absolute right-0 mt-2 w-72 bg-[#202023] border border-[#3E3E43] shadow-2xl p-3 z-50 text-xs font-sans animate-in fade-in duration-150">
+                  <div className="font-bold text-white uppercase font-mono pb-2 border-b border-[#3E3E43] flex justify-between items-center text-[11px]">
+                    <span>Notifications</span>
+                    <span className="text-[10px] text-[#EFFF4F]">3 New</span>
+                  </div>
+                  <div className="py-2 space-y-2 text-[#A0A5B5]">
+                    <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
+                      <span className="font-bold text-white">Daily Streak Active:</span> Keep your streak going by finishing Module 1.2 today.
+                    </div>
+                    <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
+                      <span className="font-bold text-white">Live SDET Bootcamp:</span> Starts this Saturday at 10:00 AM IST.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* User Avatar Circle Badge */}
+            <Link
+              href="/dashboard#profile"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/40 text-blue-400 font-bold text-xs hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
+              title="Student Profile"
+            >
+              SD
             </Link>
           </div>
         </div>

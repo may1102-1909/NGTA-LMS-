@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "NGTA LMS — NextGen Testing Academy",
@@ -20,10 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#28282B] text-white antialiased font-sans">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body className="min-h-screen bg-[#28282B] text-white antialiased font-sans">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

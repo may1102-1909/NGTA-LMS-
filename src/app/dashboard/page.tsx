@@ -16,11 +16,14 @@ import {
   PlayCircle,
   PlusCircle,
   FileCheck,
-  AlertCircle,
   Settings,
   ChevronDown,
   ChevronUp,
   User,
+  ArrowRight,
+  Calendar,
+  Trophy,
+  Video,
 } from "lucide-react";
 import ReputationLog from "@/components/gamification/ReputationLog";
 import RankTag from "@/components/gamification/RankTag";
@@ -92,6 +95,170 @@ export default function DashboardPage() {
       {/* VIEW 1: LEARNER PORTAL */}
       {activeTab === "LEARNER" && (
         <div className="space-y-8 animate-in fade-in duration-150">
+          {/* Header from Reference Image 1 */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#3E3E43] pb-6">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-2 font-mono text-[11px] text-[#A0A5B5] uppercase">
+                <span className="px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] font-bold">
+                  COMMAND CENTER
+                </span>
+                <span>•</span>
+                <span>Daily Goal: Complete 1 Lesson</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+                <span>Welcome back, Aarav</span>
+                <span className="text-xl sm:text-2xl">👋</span>
+              </h2>
+              <p className="text-sm text-[#A0A5B5] max-w-2xl font-sans">
+                Track your course progression, daily streak habits, live workshops, and verifiable credentials.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 font-mono text-xs">
+              <Link
+                href="/courses"
+                className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+              >
+                <span>Explore Catalog</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <button
+                onClick={() => setShowProfileDrawer(!showProfileDrawer)}
+                className="px-4 py-2 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-white uppercase font-bold transition-colors"
+              >
+                Account Settings
+              </button>
+            </div>
+          </div>
+
+          {/* In-Progress Course Hero Card (Reference Image 1) */}
+          <div className="border border-[#3E3E43] bg-gradient-to-br from-[#1E2230] via-[#242428] to-[#1E1E21] p-6 sm:p-8 rounded-lg shadow-card relative overflow-hidden space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-3 flex-1">
+                <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                  <span className="px-2.5 py-0.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold uppercase text-[10px]">
+                    IN PROGRESS
+                  </span>
+                  <span className="text-[#A0A5B5] text-[11px]">Last accessed today</span>
+                </div>
+
+                <div className="font-mono text-[10px] text-[#A0A5B5] uppercase tracking-wider">
+                  TEST AUTOMATION & SDET
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  Selenium with Java – AI Integrated Masterclass
+                </h3>
+
+                {/* Progress Bar */}
+                <div className="space-y-1.5 max-w-xl">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="text-[#A0A5B5]">Course Progress</span>
+                    <span className="font-bold text-[#EFFF4F]">72% Completed</span>
+                  </div>
+                  <div className="w-full h-2.5 bg-[#28282B] rounded-full overflow-hidden border border-[#3E3E43]">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-400 to-[#EFFF4F] rounded-full transition-all duration-500"
+                      style={{ width: "72%" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 font-mono text-xs text-[#A0A5B5] pt-1">
+                  <PlayCircle className="w-4 h-4 text-[#EFFF4F] shrink-0" />
+                  <span className="truncate">
+                    Next Lesson: Lesson 1.2: WebDriver Architecture & Browser Initialization
+                  </span>
+                </div>
+              </div>
+
+              <div className="shrink-0 flex items-center">
+                <Link
+                  href="/learn/course-1"
+                  className="px-6 py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-all flex items-center gap-2 shadow-lg shadow-cyan-500/20"
+                >
+                  <span>Resume Learning</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 Metric / Status Cards (Reference Image 1) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+            {/* Card 1: LIVE WORKSHOP */}
+            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4 flex flex-col justify-between rounded-lg">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[#A0A5B5]">
+                  <span className="font-bold text-[11px] text-cyan-400 tracking-wider">LIVE WORKSHOP</span>
+                  <Video className="w-4 h-4 text-cyan-400" />
+                </div>
+                <h4 className="text-base font-bold text-white font-sans">
+                  Live SDET Enterprise Automation Bootcamp
+                </h4>
+                <div className="space-y-1 text-[#A0A5B5] text-[11px]">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-[#5A5F70]" />
+                    <span>Sept 12, 2026 • 10:00 AM IST</span>
+                  </div>
+                  <div>Instructor: Rahul Kamat</div>
+                </div>
+              </div>
+              <Link
+                href="/live"
+                className="pt-2 text-[11px] text-[#EFFF4F] hover:underline flex items-center gap-1 font-bold"
+              >
+                <span>View Session Details</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+
+            {/* Card 2: 30-DAY CHALLENGE */}
+            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4 flex flex-col justify-between rounded-lg">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[#A0A5B5]">
+                  <span className="font-bold text-[11px] text-amber-400 tracking-wider">DAY 12 OF 30</span>
+                  <Trophy className="w-4 h-4 text-amber-400" />
+                </div>
+                <h4 className="text-base font-bold text-white font-sans">
+                  30-Day Selenium Automation Challenge
+                </h4>
+                <div className="space-y-1 text-[#A0A5B5] text-[11px]">
+                  <div className="text-white font-medium">Today&apos;s Milestone:</div>
+                  <div className="text-[11px] text-[#A0A5B5] line-clamp-2">
+                    Integrate TestNG DataProviders with Excel Test Data sheet
+                  </div>
+                </div>
+              </div>
+              <div className="pt-2">
+                <span className="text-[11px] text-amber-400 font-bold">18 Days Remaining</span>
+              </div>
+            </div>
+
+            {/* Card 3: ACCREDITATION */}
+            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4 flex flex-col justify-between rounded-lg">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[#A0A5B5]">
+                  <span className="font-bold text-[11px] text-emerald-400 tracking-wider">ACCREDITATION</span>
+                  <Award className="w-4 h-4 text-emerald-400" />
+                </div>
+                <h4 className="text-base font-bold text-white font-sans">
+                  Verified Certificate Status
+                </h4>
+                <p className="text-[11px] text-[#A0A5B5] leading-relaxed font-sans">
+                  Pass your final course quiz with &gt;= 70% to unlock your verifiable Certificate of SDET Mastery.
+                </p>
+              </div>
+              <Link
+                href="/verify"
+                className="pt-2 text-[11px] text-emerald-400 hover:underline flex items-center gap-1 font-bold"
+              >
+                <span>Check Registry Status</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+
           {/* Progress Cards Grid with Gamification Layer */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
             {/* Card 1: ENROLLED TRACKS */}
