@@ -13,11 +13,6 @@ import {
   Gift,
   Bookmark,
   MoreHorizontal,
-  Plus,
-  Home,
-  Compass,
-  MessageSquare,
-  User,
   Users,
   Flame,
   Newspaper,
@@ -155,7 +150,6 @@ export default function CommunityFeed() {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [newPostSpace, setNewPostSpace] = useState("Playwright Masters");
-  const [activeBottomTab, setActiveBottomTab] = useState("home");
   const [giftToast, setGiftToast] = useState<string | null>(null);
 
   const filters = [
@@ -251,7 +245,7 @@ export default function CommunityFeed() {
   });
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto pb-28 text-white font-sans">
+    <div className="relative w-full max-w-2xl mx-auto pb-12 text-white font-sans">
       {/* Toast Notification */}
       {giftToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#EFFF4F] text-[#0A0A0C] font-mono text-xs font-bold px-4 py-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
@@ -588,75 +582,6 @@ export default function CommunityFeed() {
             </div>
           </article>
         ))}
-      </div>
-
-      {/* Floating Bottom Navigation Bar & Action Button (Matching Screenshot) */}
-      <div className="fixed bottom-6 inset-x-0 z-40 pointer-events-none flex justify-center items-center px-4 max-w-2xl mx-auto">
-        <div className="w-full flex items-center justify-between pointer-events-auto">
-          <div className="flex-1" />
-
-          {/* Central Glassmorphic Dock */}
-          <nav className="flex items-center gap-1 px-3 py-2 rounded-full bg-[#1A1A1E]/90 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/80">
-            <button
-              onClick={() => setActiveBottomTab("home")}
-              className={`p-2.5 rounded-full transition-all ${
-                activeBottomTab === "home"
-                  ? "bg-white text-black shadow-md scale-105"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}
-              aria-label="Home"
-            >
-              <Home className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={() => setActiveBottomTab("discover")}
-              className={`p-2.5 rounded-full transition-all ${
-                activeBottomTab === "discover"
-                  ? "bg-white text-black shadow-md scale-105"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}
-              aria-label="Discover"
-            >
-              <Compass className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={() => setActiveBottomTab("chat")}
-              className={`p-2.5 rounded-full transition-all ${
-                activeBottomTab === "chat"
-                  ? "bg-white text-black shadow-md scale-105"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}
-              aria-label="Chat"
-            >
-              <MessageSquare className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={() => setActiveBottomTab("profile")}
-              className={`p-2.5 rounded-full transition-all ${
-                activeBottomTab === "profile"
-                  ? "bg-white text-black shadow-md scale-105"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}
-              aria-label="Profile"
-            >
-              <User className="w-5 h-5" />
-            </button>
-          </nav>
-
-          {/* Floating + Action Button (Exact Match to Screenshot) */}
-          <div className="flex-1 flex justify-end">
-            <button
-              onClick={() => setIsNewPostModalOpen(true)}
-              className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all group pointer-events-auto"
-              aria-label="Create Post"
-            >
-              <Plus className="w-6 h-6 stroke-[2.5]" />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Ask AI Search Modal */}
