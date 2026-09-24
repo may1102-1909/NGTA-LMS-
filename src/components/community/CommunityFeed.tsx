@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
 import {
   Search,
   Sparkles,
@@ -161,20 +162,65 @@ export default function CommunityFeed() {
     { label: "DevOps", emoji: "⚡" },
   ];
 
-  const handleToggleLike = (id: string) => {
+  // Query user_activities for the current user's past POST_LIKED events
+  useEffect(() => {
+    async function loadLikedPosts() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user?.id;
+        const res = await fetch(`/api/community/likes${userId ? `?userId=${userId}` : ""}`);
+        if (res.ok) {
+          const { likedPostIds } = await res.json();
+          if (Array.isArray(likedPostIds) && likedPostIds.length > 0) {
+            setPosts((prev) =>
+              prev.map((post) => ({
+                ...post,
+                isLiked: likedPostIds.includes(post.id) ? true : post.isLiked,
+              }))
+            );
+          }
+        }
+      } catch (err) {
+        console.error("Failed to query past POST_LIKED user_activities:", err);
+      }
+    }
+    loadLikedPosts();
+  }, []);
+
+  const handleToggleLike = async (id: string) => {
+    const targetPost = posts.find((p) => p.id === id);
+    if (!targetPost) return;
+    const nextLikedState = !targetPost.isLiked;
+
+    // Optimistic UI update
     setPosts((prev) =>
       prev.map((post) => {
         if (post.id === id) {
-          const isLiked = !post.isLiked;
           return {
             ...post,
-            isLiked,
-            likesCount: isLiked ? post.likesCount + 1 : post.likesCount - 1,
+            isLiked: nextLikedState,
+            likesCount: nextLikedState ? post.likesCount + 1 : post.likesCount - 1,
           };
         }
         return post;
       })
     );
+
+    // Persist to user_activities via Prisma API
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      await fetch("/api/community/likes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: id,
+          userId: user?.id,
+          isLiked: nextLikedState,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to record POST_LIKED in user_activities:", err);
+    }
   };
 
   const handleToggleBookmark = (id: string) => {

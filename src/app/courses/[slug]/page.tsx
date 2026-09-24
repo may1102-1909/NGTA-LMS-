@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { INITIAL_COURSES } from "@/lib/mockData";
+import { supabase } from "@/lib/supabaseClient";
 import {
   CheckCircle2,
   PlayCircle,
@@ -40,16 +42,68 @@ export default function CourseDetailPage() {
   const [upiId, setUpiId] = useState("sdet.aspirant@okhdfcbank");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  // Fetch existing successful payments for the logged-in user via Prisma endpoint
+  useEffect(() => {
+    async function checkExistingPayment() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const res = await fetch(
+          `/api/payments/verify?courseId=${course.id}${user?.id ? `&userId=${user.id}` : ""}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isEnrolled) {
+            setIsEnrolled(true);
+            return;
+          }
+        }
+        if (typeof window !== "undefined") {
+          const stored = JSON.parse(localStorage.getItem("ngta_enrollments") || "[]");
+          if (stored.includes(course.id)) {
+            setIsEnrolled(true);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking course payment status:", err);
+      }
+    }
+    checkExistingPayment();
+  }, [course.id]);
 
   const toggleModule = (id: string) => {
     setOpenModules((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleSimulatePayment = () => {
+  const handleSimulatePayment = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Persist to Prisma payments & user_activities via API route
+      const res = await fetch("/api/payments/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courseId: course.id,
+          amount: course.discountPriceINR,
+          userId: user?.id,
+          userEmail: user?.email,
+          userName: user?.user_metadata?.full_name || user?.email?.split("@")[0],
+          transactionId: `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Payment verification failed");
+      }
+
       setIsProcessing(false);
       setPaymentSuccess(true);
+      setIsEnrolled(true);
+
       if (typeof window !== "undefined") {
         const stored = JSON.parse(localStorage.getItem("ngta_enrollments") || "[]");
         if (!stored.includes(course.id)) {
@@ -57,11 +111,16 @@ export default function CourseDetailPage() {
           localStorage.setItem("ngta_enrollments", JSON.stringify(stored));
         }
       }
+
       setTimeout(() => {
         setIsCheckoutOpen(false);
         router.push(`/learn/${course.id}`);
       }, 1500);
-    }, 1200);
+    } catch (err) {
+      console.error("Payment verification failed:", err);
+      setIsProcessing(false);
+      alert("Payment verification error. Please check connection and try again.");
+    }
   };
 
   return (
@@ -128,13 +187,29 @@ export default function CourseDetailPage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsCheckoutOpen(true)}
-                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
-              >
-                <span>ENROLL VIA UPI / CARDS</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {isEnrolled ? (
+                <div className="space-y-2">
+                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold flex items-center justify-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>ENROLLED IN COURSE</span>
+                  </div>
+                  <Link
+                    href={`/learn/${course.id}`}
+                    className="w-full py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
+                  >
+                    <span>RESUME LEARNING</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsCheckoutOpen(true)}
+                  className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
+                >
+                  <span>ENROLL VIA UPI / CARDS</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
               <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
                 <div className="flex items-center gap-2">
