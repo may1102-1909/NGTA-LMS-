@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
   try {
@@ -7,13 +10,38 @@ export async function GET(request: Request) {
     const courseId = searchParams.get("courseId");
     let userId = searchParams.get("userId");
 
-    // If userId not provided, fallback to the latest profile in DB (e.g. current logged in user)
+    // Fetch Live User Session: Get logged-in user's id from Supabase Auth using @supabase/ssr if not passed
     if (!userId) {
-      const latestProfile = await prisma.profiles.findFirst({
-        orderBy: { created_at: "desc" },
-      });
-      if (latestProfile) {
-        userId = latestProfile.id;
+      try {
+        const cookieStore = await cookies();
+        const supabase = createServerClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          {
+            cookies: {
+              getAll() {
+                return cookieStore.getAll();
+              },
+              setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+                try {
+                  cookiesToSet.forEach(({ name, value, options }) =>
+                    cookieStore.set(name, value, options)
+                  );
+                } catch {
+                  // Route handler
+                }
+              },
+            },
+          }
+        );
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user?.id) {
+          userId = user.id;
+        }
+      } catch (authErr) {
+        console.warn("Could not read auth cookies in payments/verify GET:", authErr);
       }
     }
 
@@ -26,6 +54,7 @@ export async function GET(request: Request) {
     }
 
     if (courseId) {
+      // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
       const payment = await prisma.payments.findFirst({
         where: {
           user_id: userId,
@@ -37,8 +66,10 @@ export async function GET(request: Request) {
         },
       });
 
+      const isEnrolled = !!payment;
+
       return NextResponse.json({
-        isEnrolled: !!payment,
+        isEnrolled,
         payment,
       });
     }
@@ -54,7 +85,9 @@ export async function GET(request: Request) {
       },
     });
 
-    const enrolledCourseIds = Array.from(new Set(userPayments.map((p: { course_id: string }) => p.course_id)));
+    const enrolledCourseIds = Array.from(
+      new Set(userPayments.map((p: { course_id: string }) => p.course_id))
+    );
 
     return NextResponse.json({
       isEnrolled: enrolledCourseIds.length > 0,
@@ -72,20 +105,47 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { courseId, amount, transactionId, userId, userEmail, userName } = body;
+    const {
+      courseId = "course-1",
+      amount = 1999,
+      transactionId,
+      userId,
+      userEmail,
+      userName,
+    } = body;
 
-    if (!courseId) {
-      return NextResponse.json({ error: "courseId is required" }, { status: 400 });
-    }
-
-    // Resolve target userId
     let targetUserId = userId;
     if (!targetUserId) {
-      const latestProfile = await prisma.profiles.findFirst({
-        orderBy: { created_at: "desc" },
-      });
-      if (latestProfile) {
-        targetUserId = latestProfile.id;
+      try {
+        const cookieStore = await cookies();
+        const supabase = createServerClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          {
+            cookies: {
+              getAll() {
+                return cookieStore.getAll();
+              },
+              setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+                try {
+                  cookiesToSet.forEach(({ name, value, options }) =>
+                    cookieStore.set(name, value, options)
+                  );
+                } catch {
+                  // Route handler
+                }
+              },
+            },
+          }
+        );
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user?.id) {
+          targetUserId = user.id;
+        }
+      } catch (authErr) {
+        console.warn("Could not read auth cookies in payments/verify POST:", authErr);
       }
     }
 
@@ -106,26 +166,24 @@ export async function POST(request: Request) {
         where: { id: targetUserId },
       });
 
-      if (authUser) {
-        profile = await prisma.profiles.create({
-          data: {
-            id: targetUserId,
-            email: authUser.email || userEmail || `${targetUserId}@ngta.in`,
-            full_name: userName || authUser.email?.split("@")[0] || "Learner",
-          },
-        });
-      }
+      profile = await prisma.profiles.create({
+        data: {
+          id: targetUserId,
+          email: authUser?.email || userEmail || `${targetUserId}@ngta.in`,
+          full_name: userName || authUser?.email?.split("@")[0] || "Learner",
+        },
+      });
     }
 
     const txnId =
       transactionId ||
       `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-    // 1. Create a row in the payments table using Prisma
+    // 1. Insert a row into public.payments with user_id, course_id: 'course-1', amount: 1999, and status: 'SUCCESS'
     const payment = await prisma.payments.create({
       data: {
         user_id: targetUserId,
-        course_id: courseId,
+        course_id: courseId || "course-1",
         amount: Number(amount) || 1999,
         currency: "INR",
         status: "SUCCESS",
@@ -139,7 +197,7 @@ export async function POST(request: Request) {
         user_id: targetUserId,
         action_type: "PAYMENT_SUCCESSFUL",
         metadata: {
-          courseId,
+          courseId: courseId || "course-1",
           amount: Number(amount) || 1999,
           paymentId: payment.id,
           transactionId: payment.transaction_id,
@@ -147,9 +205,17 @@ export async function POST(request: Request) {
       },
     });
 
+    // Refetch or revalidate path so UI switches to 'Enrolled' instantly
+    revalidatePath("/lms");
+    revalidatePath("/courses");
+    if (courseId) {
+      revalidatePath(`/courses/${courseId}`);
+    }
+
     return NextResponse.json({
       success: true,
       payment,
+      isEnrolled: true,
     });
   } catch (error: any) {
     console.error("Payment verification endpoint error:", error);

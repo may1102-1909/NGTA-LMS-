@@ -2,8 +2,54 @@ import React from "react";
 import Link from "next/link";
 import { INITIAL_COURSES, INITIAL_LIVE_SESSIONS } from "@/lib/mockData";
 import { ArrowUpRight, ShieldCheck, PlayCircle, Star, Terminal, Zap, Users } from "lucide-react";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import CourseCard from "@/components/CourseCard";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch Live User Session: Get the current logged-in user's id from Supabase Auth using @supabase/ssr
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Ignored in Server Component
+          }
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
+  const enrollmentMap: Record<string, boolean> = {};
+  if (user?.id) {
+    for (const course of INITIAL_COURSES) {
+      const courseId = course.id;
+      const payment = await prisma.payments.findFirst({
+        where: {
+          user_id: user.id,
+          course_id: courseId,
+          status: "SUCCESS",
+        },
+      });
+      enrollmentMap[courseId] = !!payment;
+    }
+  }
   return (
     <div className="w-full">
       {/* SECTION 1: HERO */}
@@ -89,92 +135,13 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {INITIAL_COURSES.map((course, idx) => (
-            <div
+            <CourseCard
               key={course.id}
-              className="border border-[#3E3E43] bg-[#333336] flex flex-col justify-between hover:border-[#EFFF4F]/30 hover:translate-y-[-2px] transition-all shadow-card hover:shadow-card-hover"
-            >
-              <div>
-                {/* Course Header Banner / Thumbnail */}
-                <div className="relative h-48 border-b border-[#3E3E43] overflow-hidden bg-[#28282B]">
-                  <img
-                    src={course.thumbnailUrl}
-                    alt={course.title}
-                    className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-300"
-                  />
-                  <div className="absolute top-3 left-3 bg-[#28282B]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43]">
-                    {course.category}
-                  </div>
-                  <div className="absolute top-3 right-3 bg-[#333336] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43] flex items-center gap-1">
-                    <Star className="w-3 h-3 text-[#EFFF4F] fill-[#EFFF4F]" />
-                    <span>{course.rating}</span>
-                  </div>
-                </div>
-
-                {/* Course Content Info */}
-                <div className="p-6 space-y-4">
-                  <div className="flex items-center gap-3 font-mono text-xs text-[#5A5F70]">
-                    <span>INDEX: 0{idx + 1}</span>
-                    <span>•</span>
-                    <span>{course.difficultyLevel}</span>
-                    <span>•</span>
-                    <span>{course.durationHours} HRS</span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-white tracking-tight leading-snug">
-                    <Link href={`/courses/${course.slug}`} className="hover:text-[#EFFF4F] transition-colors">
-                      {course.title}
-                    </Link>
-                  </h3>
-
-                  <p className="text-sm text-[#A0A5B5] line-clamp-2">
-                    {course.subtitle}
-                  </p>
-
-                  <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
-                    <img
-                      src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
-                      alt={course.instructorName}
-                      className="w-5 h-5 rounded-full object-cover border border-[#3E3E43]"
-                    />
-                    <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {course.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-[10px] px-2 py-0.5 border border-[#3E3E43] text-[#5A5F70] bg-[#28282B]"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Course Footer & Pricing */}
-              <div className="p-6 border-t border-[#3E3E43] bg-[#28282B] flex items-center justify-between">
-                <div>
-                  <div className="font-mono text-[10px] text-[#5A5F70] uppercase">ENROLLMENT FEE</div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-white font-mono">
-                      ₹{course.discountPriceINR.toLocaleString()}
-                    </span>
-                    <span className="text-xs line-through text-[#5A5F70] font-mono">
-                      ₹{course.priceINR.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-
-                <Link
-                  href={`/courses/${course.slug}`}
-                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
-                >
-                  <span>CURRICULUM</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
+              course={course}
+              idx={idx}
+              initialIsEnrolled={!!enrollmentMap[course.id]}
+              userId={user?.id || null}
+            />
           ))}
         </div>
       </section>
