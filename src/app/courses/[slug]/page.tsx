@@ -120,6 +120,7 @@ export default function CourseDetailPage() {
       const res = await fetch("/api/payments/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           courseId: course.id,
           amount: course.discountPriceINR,
@@ -131,22 +132,23 @@ export default function CourseDetailPage() {
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Payment verification failed");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Payment verification failed (${res.status})`);
       }
 
       setIsProcessing(false);
       setPaymentSuccess(true);
       setIsEnrolled(true);
+      router.refresh();
 
       setTimeout(() => {
         setIsCheckoutOpen(false);
         router.push(`/learn/${course.id}`);
       }, 1500);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Payment verification failed:", err);
       setIsProcessing(false);
-      alert("Payment verification error. Please check connection and try again.");
+      alert(err?.message || "Payment verification error. Please check connection and try again.");
     }
   };
 

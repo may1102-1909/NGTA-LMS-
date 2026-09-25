@@ -14,10 +14,11 @@ export async function GET(request: Request) {
     if (!userId) {
       try {
         const cookieStore = await cookies();
-        const supabase = createServerClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (supabaseUrl && supabaseAnonKey) {
+          const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
             cookies: {
               getAll() {
                 return cookieStore.getAll();
@@ -32,13 +33,13 @@ export async function GET(request: Request) {
                 }
               },
             },
+          });
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (user?.id) {
+            userId = user.id;
           }
-        );
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user?.id) {
-          userId = user.id;
         }
       } catch (authErr) {
         console.warn("Could not read auth cookies in payments/verify GET:", authErr);
@@ -118,10 +119,11 @@ export async function POST(request: Request) {
     if (!targetUserId) {
       try {
         const cookieStore = await cookies();
-        const supabase = createServerClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (supabaseUrl && supabaseAnonKey) {
+          const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
             cookies: {
               getAll() {
                 return cookieStore.getAll();
@@ -136,13 +138,13 @@ export async function POST(request: Request) {
                 }
               },
             },
+          });
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (user?.id) {
+            targetUserId = user.id;
           }
-        );
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user?.id) {
-          targetUserId = user.id;
         }
       } catch (authErr) {
         console.warn("Could not read auth cookies in payments/verify POST:", authErr);
@@ -151,35 +153,35 @@ export async function POST(request: Request) {
 
     if (!targetUserId) {
       return NextResponse.json(
-        { error: "Valid user_id is required to verify payment" },
+        { error: "Valid user_id is required to complete payment. Please sign in." },
         { status: 401 }
       );
     }
 
-    // Ensure profile row exists to satisfy foreign key constraint
-    let profile = await prisma.profiles.findUnique({
-      where: { id: targetUserId },
-    });
-
-    if (!profile) {
-      const authUser = await prisma.users.findUnique({
+    // Ensure profile row exists to satisfy foreign key constraint: payments.user_id -> profiles.id
+    try {
+      const existingProfile = await prisma.profiles.findUnique({
         where: { id: targetUserId },
       });
 
-      profile = await prisma.profiles.create({
-        data: {
-          id: targetUserId,
-          email: authUser?.email || userEmail || `${targetUserId}@ngta.in`,
-          full_name: userName || authUser?.email?.split("@")[0] || "Learner",
-        },
-      });
+      if (!existingProfile) {
+        await prisma.profiles.create({
+          data: {
+            id: targetUserId,
+            email: userEmail || `${targetUserId}@ngta.in`,
+            full_name: userName || "Learner",
+          },
+        });
+      }
+    } catch (profileErr) {
+      console.warn("Profile check/create warning:", profileErr);
     }
 
     const txnId =
       transactionId ||
       `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-    // 1. Insert a row into public.payments with user_id, course_id: 'course-1', amount: 1999, and status: 'SUCCESS'
+    // 1. Insert a row into public.payments with user_id, course_id, amount, and status: 'SUCCESS'
     const payment = await prisma.payments.create({
       data: {
         user_id: targetUserId,
@@ -192,24 +194,32 @@ export async function POST(request: Request) {
     });
 
     // 2. Also add a record to user_activities with action_type: 'PAYMENT_SUCCESSFUL'
-    await prisma.user_activities.create({
-      data: {
-        user_id: targetUserId,
-        action_type: "PAYMENT_SUCCESSFUL",
-        metadata: {
-          courseId: courseId || "course-1",
-          amount: Number(amount) || 1999,
-          paymentId: payment.id,
-          transactionId: payment.transaction_id,
+    try {
+      await prisma.user_activities.create({
+        data: {
+          user_id: targetUserId,
+          action_type: "PAYMENT_SUCCESSFUL",
+          metadata: {
+            courseId: courseId || "course-1",
+            amount: Number(amount) || 1999,
+            paymentId: payment.id,
+            transactionId: payment.transaction_id,
+          },
         },
-      },
-    });
+      });
+    } catch (actErr) {
+      console.warn("Activity logging non-critical error:", actErr);
+    }
 
     // Refetch or revalidate path so UI switches to 'Enrolled' instantly
-    revalidatePath("/lms");
-    revalidatePath("/courses");
-    if (courseId) {
-      revalidatePath(`/courses/${courseId}`);
+    try {
+      revalidatePath("/lms");
+      revalidatePath("/courses");
+      if (courseId) {
+        revalidatePath(`/courses/${courseId}`);
+      }
+    } catch (revErr) {
+      console.warn("Revalidation warning:", revErr);
     }
 
     return NextResponse.json({

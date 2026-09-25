@@ -100,13 +100,14 @@ export default function CourseCard({
         return;
       }
 
-      // Insert row into public.payments with user_id, course_id: 'course-1', amount: 1999, and status: 'SUCCESS'
+      // Insert row into public.payments with user_id, course_id, amount, and status: 'SUCCESS'
       const res = await fetch("/api/payments/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           courseId: course.id || "course-1",
-          amount: 1999,
+          amount: course.discountPriceINR || 1999,
           userId: activeUserId,
           userEmail: user?.email,
           userName:
@@ -116,16 +117,16 @@ export default function CourseCard({
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Payment failed");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Payment failed (${res.status})`);
       }
 
       // Update state and refresh path so UI switches to 'Enrolled' instantly
       setIsEnrolled(true);
       router.refresh();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to process enrollment:", err);
-      alert("Payment processing encountered an error. Please try again.");
+      alert(err?.message || "Payment processing encountered an error. Please try again.");
     } finally {
       setIsProcessing(false);
     }
