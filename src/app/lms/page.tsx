@@ -7,48 +7,68 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import CourseCard from "@/components/CourseCard";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HomePage() {
-  // Fetch Live User Session: Get the current logged-in user's id from Supabase Auth using @supabase/ssr
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // Ignored in Server Component
-          }
-        },
-      },
-    }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
+  let user: any = null;
   const enrollmentMap: Record<string, boolean> = {};
-  if (user?.id) {
-    for (const course of INITIAL_COURSES) {
-      const courseId = course.id;
-      const payment = await prisma.payments.findFirst({
-        where: {
-          user_id: user.id,
-          course_id: courseId,
-          status: "SUCCESS",
-        },
-      });
-      enrollmentMap[courseId] = !!payment;
+
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (supabaseUrl && supabaseAnonKey) {
+      // Fetch Live User Session: Get the current logged-in user's id from Supabase Auth using @supabase/ssr
+      const cookieStore = await cookies();
+      const supabase = createServerClient(
+        supabaseUrl,
+        supabaseAnonKey,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll();
+            },
+            setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) =>
+                  cookieStore.set(name, value, options)
+                );
+              } catch {
+                // Ignored in Server Component
+              }
+            },
+          },
+        }
+      );
+
+      const { data } = await supabase.auth.getUser();
+      user = data?.user || null;
+
+      // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
+      if (user?.id) {
+        for (const course of INITIAL_COURSES) {
+          const courseId = course.id;
+          try {
+            const payment = await prisma.payments.findFirst({
+              where: {
+                user_id: user.id,
+                course_id: courseId,
+                status: "SUCCESS",
+              },
+            });
+            enrollmentMap[courseId] = !!payment;
+          } catch (dbErr) {
+            console.error(`Database error checking enrollment for ${courseId}:`, dbErr);
+          }
+        }
+      }
     }
+  } catch (err: any) {
+    if (err?.digest === "DYNAMIC_SERVER_USAGE") {
+      throw err;
+    }
+    console.error("Error checking session/enrollment on LMS page:", err);
   }
   return (
     <div className="w-full">
