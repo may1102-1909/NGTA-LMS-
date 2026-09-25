@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { INITIAL_COURSES } from "@/lib/mockData";
-import { supabase } from "@/lib/supabaseClient";
+import { createBrowserClient } from "@supabase/ssr";
 import {
   CheckCircle2,
   PlayCircle,
@@ -46,27 +46,42 @@ export default function CourseDetailPage() {
 
   // Fetch existing successful payments for the logged-in user via Prisma endpoint
   useEffect(() => {
+    // Clear legacy mock storage to prevent cross-account enrollment leaks
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("ngta_enrollments");
+    }
+
     async function checkExistingPayment() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) {
+          setIsEnrolled(false);
+          return;
+        }
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user?.id) {
+          setIsEnrolled(false);
+          return;
+        }
+
         const res = await fetch(
-          `/api/payments/verify?courseId=${course.id}${user?.id ? `&userId=${user.id}` : ""}`
+          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
         );
         if (res.ok) {
           const data = await res.json();
-          if (data.isEnrolled) {
-            setIsEnrolled(true);
-            return;
-          }
-        }
-        if (typeof window !== "undefined") {
-          const stored = JSON.parse(localStorage.getItem("ngta_enrollments") || "[]");
-          if (stored.includes(course.id)) {
-            setIsEnrolled(true);
-          }
+          setIsEnrolled(Boolean(data.isEnrolled));
+        } else {
+          setIsEnrolled(false);
         }
       } catch (err) {
         console.error("Error checking course payment status:", err);
+        setIsEnrolled(false);
       }
     }
     checkExistingPayment();
@@ -79,7 +94,27 @@ export default function CourseDetailPage() {
   const handleSimulatePayment = async () => {
     setIsProcessing(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error("Supabase credentials missing");
+      }
+
+      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user?.id) {
+        // Redirect to Google login if user is not authenticated
+        await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback?next=/courses/${course.slug}`,
+          },
+        });
+        return;
+      }
 
       // Persist to Prisma payments & user_activities via API route
       const res = await fetch("/api/payments/verify", {
@@ -88,9 +123,9 @@ export default function CourseDetailPage() {
         body: JSON.stringify({
           courseId: course.id,
           amount: course.discountPriceINR,
-          userId: user?.id,
-          userEmail: user?.email,
-          userName: user?.user_metadata?.full_name || user?.email?.split("@")[0],
+          userId: user.id,
+          userEmail: user.email,
+          userName: user.user_metadata?.full_name || user.email?.split("@")[0],
           transactionId: `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
         }),
       });
@@ -103,14 +138,6 @@ export default function CourseDetailPage() {
       setIsProcessing(false);
       setPaymentSuccess(true);
       setIsEnrolled(true);
-
-      if (typeof window !== "undefined") {
-        const stored = JSON.parse(localStorage.getItem("ngta_enrollments") || "[]");
-        if (!stored.includes(course.id)) {
-          stored.push(course.id);
-          localStorage.setItem("ngta_enrollments", JSON.stringify(stored));
-        }
-      }
 
       setTimeout(() => {
         setIsCheckoutOpen(false);

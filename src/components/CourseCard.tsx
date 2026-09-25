@@ -32,6 +32,11 @@ export default function CourseCard({
 
   // Fetch live user session and check enrollment dynamically via Supabase Auth & DB
   useEffect(() => {
+    // Clear legacy mock storage to prevent cross-account enrollment leaks
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("ngta_enrollments");
+    }
+
     async function syncSessionAndEnrollment() {
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -45,18 +50,18 @@ export default function CourseCard({
 
         if (user?.id) {
           setUserId(user.id);
-          // Check database enrollment if not already confirmed by server
-          if (!initialIsEnrolled) {
-            const res = await fetch(
-              `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
-            );
-            if (res.ok) {
-              const data = await res.json();
-              if (data.isEnrolled) {
-                setIsEnrolled(true);
-              }
-            }
+          const res = await fetch(
+            `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setIsEnrolled(Boolean(data.isEnrolled));
+          } else {
+            setIsEnrolled(false);
           }
+        } else {
+          setUserId(null);
+          setIsEnrolled(false);
         }
       } catch (err) {
         console.error("Error checking live enrollment session:", err);
