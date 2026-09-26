@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import CommunityHeaderNav, { SparkLogo } from "@/components/community/CommunityHeaderNav";
+import { SparkLogo } from "@/components/community/SparkLogo";
 import MobileStatusBar from "@/components/community/MobileStatusBar";
 import {
   Search,
@@ -213,9 +213,6 @@ export default function CommunityFeedPage() {
 
   return (
     <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center">
-      {/* Top 3-Page Switcher Bar */}
-      <CommunityHeaderNav />
-
       {/* Main Container - Framed like reference Screen 3 */}
       <div className="w-full flex-1 flex items-center justify-center p-2 sm:p-6 lg:p-8">
         <div className="w-full max-w-[420px] min-h-[820px] max-h-[90vh] bg-[#121216] border border-white/10 rounded-[44px] shadow-2xl shadow-black/80 flex flex-col justify-between relative overflow-hidden">

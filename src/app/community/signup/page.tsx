@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CommunityHeaderNav, { SparkLogo } from "@/components/community/CommunityHeaderNav";
+import { SparkLogo } from "@/components/community/SparkLogo";
 import MobileStatusBar from "@/components/community/MobileStatusBar";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -88,9 +88,6 @@ export default function CommunitySignUpPage() {
 
   return (
     <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center">
-      {/* Top 3-Page Switcher Bar */}
-      <CommunityHeaderNav />
-
       {/* Main Container - Framed like reference Screen 2 */}
       <div className="w-full flex-1 flex items-center justify-center p-3 sm:p-6 lg:p-8">
         <div className="w-full max-w-[410px] min-h-[780px] bg-[#141418] border border-white/10 rounded-[44px] shadow-2xl shadow-black/80 flex flex-col justify-between p-6 sm:p-7 relative overflow-hidden">
