@@ -104,6 +104,16 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
                       <span className="font-bold text-white">Live SDET Bootcamp:</span> Starts this Saturday at 10:00 AM IST.
                     </div>
                   </div>
+                  <div className="pt-2 border-t border-[#3E3E43] mt-2 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-[#5A5F70]">Web Push Alerts</span>
+                    <Link
+                      href="/notifications"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="text-[#EFFF4F] hover:underline font-bold"
+                    >
+                      Configure Push →
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

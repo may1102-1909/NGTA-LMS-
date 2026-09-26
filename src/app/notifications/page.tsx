@@ -13,6 +13,7 @@ import {
   Trash2,
   Check,
 } from "lucide-react";
+import PushNotificationButton from "@/components/PushNotificationButton";
 
 interface NotificationItem {
   id: string;
@@ -147,6 +148,20 @@ export default function NotificationsPage() {
             <span>Mark all as read</span>
           </button>
         )}
+      </div>
+
+      {/* Web Push Notification Settings Banner */}
+      <div className="p-4 sm:p-5 bg-[#202023] border border-[#3E3E43] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 font-mono text-xs font-bold text-white uppercase">
+            <Bell className="w-4 h-4 text-[#EFFF4F]" />
+            <span>Browser Push Alerts</span>
+          </div>
+          <p className="text-xs text-[#A0A5B5]">
+            Receive real-time notifications for live bootcamps, instructor replies, and daily streak milestones directly on your device.
+          </p>
+        </div>
+        <PushNotificationButton showTestButton={true} />
       </div>
 
       {/* Filter Tabs */}
