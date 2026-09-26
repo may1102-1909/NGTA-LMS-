@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SparkLogo } from "@/components/community/SparkLogo";
-import MobileStatusBar from "@/components/community/MobileStatusBar";
 import {
   Search,
   Sparkles,
@@ -220,11 +219,8 @@ export default function CommunityFeedPage() {
           {/* Scrollable Feed Container */}
           <div className="w-full flex-1 overflow-y-auto custom-scrollbar pb-24">
             
-            {/* 1. Mobile Status Bar */}
-            <div className="sticky top-0 bg-[#121216]/95 backdrop-blur-md z-30 pt-1">
-              <MobileStatusBar />
-
-              {/* 2. Screen 3 Top Bar: Avatar + SparkLogo + Notification Bell */}
+            {/* Top Bar: Avatar + SparkLogo + Notification Bell */}
+            <div className="sticky top-0 bg-[#121216]/95 backdrop-blur-md z-30 pt-2">
               <div className="flex items-center justify-between px-5 py-2.5">
                 {/* User Avatar */}
                 <div className="w-9 h-9 rounded-full overflow-hidden border border-white/20 bg-neutral-800">

@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SparkLogo } from "@/components/community/SparkLogo";
-import MobileStatusBar from "@/components/community/MobileStatusBar";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -95,13 +93,8 @@ export default function CommunitySignUpPage() {
           {/* Ambient Glow */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Top Status Bar & Logo */}
-          <div className="w-full flex flex-col items-center z-10">
-            <MobileStatusBar />
-            <div className="mt-4 mb-2">
-              <SparkLogo className="w-12 h-12" />
-            </div>
-
+          {/* Top Header */}
+          <div className="w-full flex flex-col items-center z-10 pt-4">
             <h1 className="text-2xl font-black text-white tracking-tight mt-1">
               Sign up
             </h1>

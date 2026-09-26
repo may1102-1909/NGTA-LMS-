@@ -3,8 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { SparkLogo } from "@/components/community/SparkLogo";
-import MobileStatusBar from "@/components/community/MobileStatusBar";
 import { Music, Code, Palette, Camera, MessageSquare, Headphones, Zap } from "lucide-react";
 
 export default function CommunityWelcomePage() {
@@ -17,16 +15,8 @@ export default function CommunityWelcomePage() {
           {/* Background Ambient Glow */}
           <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-tr from-purple-600/15 via-[#EFFF4F]/10 to-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Top: Mobile Status Bar & Spark Logo */}
-          <div className="w-full flex flex-col items-center z-10">
-            <MobileStatusBar />
-            <div className="mt-4">
-              <SparkLogo className="w-12 h-12" />
-            </div>
-          </div>
-
           {/* Middle: Interactive Network Constellation Web */}
-          <div className="relative w-full aspect-square max-w-[340px] mx-auto my-3 flex items-center justify-center z-10">
+          <div className="relative w-full aspect-square max-w-[340px] mx-auto my-auto flex items-center justify-center z-10 pt-4">
             {/* SVG Connecting Orbits and Dotted Ellipses */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none opacity-60"
