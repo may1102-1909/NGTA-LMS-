@@ -32,6 +32,13 @@ import {
   CornerDownRight,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import {
+  createPost,
+  toggleLike,
+  addComment,
+  toggleRepost,
+  getCommunityFeed,
+} from "@/app/actions/community";
 
 interface CommentItem {
   id: string;
@@ -63,6 +70,7 @@ interface Post {
   likesCount: number;
   repostsCount: number;
   isLiked?: boolean;
+  isReposted?: boolean;
   isBookmarked?: boolean;
 }
 
@@ -177,9 +185,10 @@ export default function CommunityFeedPage() {
   const [activeTab, setActiveTab] = useState<"FOR_YOU" | "TRENDING" | "COMMUNITIES" | "NEWS">("FOR_YOU");
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
-  const [userProfile, setUserProfile] = useState<{ id?: string; email?: string; name?: string; avatar?: string } | null>(null);
+  const [userProfile, setUserProfile] = useState<{ id?: string; email?: string; name?: string; avatar?: string; role?: string } | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostText, setNewPostText] = useState("");
+  const [submittingPost, setSubmittingPost] = useState(false);
   const [askModalOpen, setAskModalOpen] = useState(false);
   const [askQuestion, setAskQuestion] = useState("");
   const [askAnswer, setAskAnswer] = useState<string | null>(null);
@@ -193,54 +202,67 @@ export default function CommunityFeedPage() {
   const [loadingComments, setLoadingComments] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    async function loadUserAndLikes() {
+    async function loadCommunityData() {
       try {
+        // Fetch persisted community feed with counts & likes from Supabase
+        const feedRes = await getCommunityFeed();
+        if (feedRes.success && feedRes.posts && feedRes.posts.length > 0) {
+          setPosts(feedRes.posts as Post[]);
+
+          const commentsMap: Record<string, CommentItem[]> = {};
+          feedRes.posts.forEach((p: any) => {
+            if (p.comments && p.comments.length > 0) {
+              commentsMap[p.id] = p.comments;
+            }
+          });
+          setPostComments((prev) => ({ ...prev, ...commentsMap }));
+        }
+
+        if (feedRes.currentUser) {
+          setUserProfile({
+            id: feedRes.currentUser.id,
+            email: feedRes.currentUser.email,
+            name: feedRes.currentUser.name,
+            role: feedRes.currentUser.role,
+          });
+        }
+
+        // Also check client auth for instant persona resolution
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
-        let currentUserId = user?.id;
+        const currentUserId = user?.id || feedRes.currentUser?.id;
         if (user) {
-          setUserProfile({
+          setUserProfile((prev) => ({
             id: user.id,
             email: user.email,
-            name: user.user_metadata?.full_name || user.email?.split("@")[0],
-            avatar: user.user_metadata?.avatar_url,
-          });
+            name: user.user_metadata?.full_name || prev?.name || user.email?.split("@")[0],
+            avatar: user.user_metadata?.avatar_url || prev?.avatar,
+            role: prev?.role || "STUDENT",
+          }));
         }
 
-        // Fetch persisted likes from Supabase database user_activities table via API
-        const likesRes = await fetch(`/api/community/likes${currentUserId ? `?userId=${currentUserId}` : ""}`);
-        if (likesRes.ok) {
-          const likesData = await likesRes.json();
-          if (likesData?.likedPostIds && Array.isArray(likesData.likedPostIds)) {
-            const likedSet = new Set(likesData.likedPostIds);
-            setPosts((prev) =>
-              prev.map((p) => ({
-                ...p,
-                isLiked: likedSet.has(p.id) || p.isLiked,
-              }))
-            );
-          }
-        }
         // Fetch student custom persona & username if enrolled as STUDENT
-        const studentRes = await fetch(`/api/student-profile${currentUserId ? `?userId=${currentUserId}` : ""}`);
-        if (studentRes.ok) {
-          const studentData = await studentRes.json();
-          if (studentData?.profile) {
-            setUserProfile((prev) => ({
-              ...prev,
-              name: studentData.profile.username,
-              avatar: studentData.profile.avatar_url,
-              role: "Student",
-            }));
+        if (currentUserId) {
+          const studentRes = await fetch(`/api/student-profile?userId=${currentUserId}`);
+          if (studentRes.ok) {
+            const studentData = await studentRes.json();
+            if (studentData?.profile) {
+              setUserProfile((prev) => ({
+                ...prev,
+                name: studentData.profile.username,
+                avatar: studentData.profile.avatar_url,
+                role: "Student",
+              }));
+            }
           }
         }
       } catch (e) {
-        console.warn("Could not load user/likes in community feed:", e);
+        console.warn("Could not load community feed in community feed page:", e);
       }
     }
-    loadUserAndLikes();
+    loadCommunityData();
 
     // Listen to real-time persona updates from onboarding modal
     const handleProfileUpdate = (e: any) => {
@@ -268,13 +290,12 @@ export default function CommunityFeedPage() {
         const data = await res.json();
         if (data.success && Array.isArray(data.comments)) {
           setPostComments((prev) => {
-            const seed = INITIAL_SEED_COMMENTS[postId] || [];
-            // Merge seed and database comments uniquely by id
-            const existingIds = new Set(data.comments.map((c: CommentItem) => c.id));
-            const filteredSeed = seed.filter((s) => !existingIds.has(s.id));
+            const currentList = prev[postId] || [];
+            const existingIds = new Set(currentList.map((c: CommentItem) => c.id));
+            const newComments = data.comments.filter((c: CommentItem) => !existingIds.has(c.id));
             return {
               ...prev,
-              [postId]: [...filteredSeed, ...data.comments],
+              [postId]: [...currentList, ...newComments],
             };
           });
         }
@@ -295,47 +316,75 @@ export default function CommunityFeedPage() {
     }
   };
 
-  // Save like to Supabase user_activities table
+  // Save like via Server Action directly in Supabase community_likes table
   const handleToggleLike = async (postId: string) => {
     // 1. Optimistic UI update
-    let newLikedState = false;
     setPosts((prev) =>
       prev.map((p) => {
         if (p.id === postId) {
-          newLikedState = !p.isLiked;
+          const newLiked = !p.isLiked;
           return {
             ...p,
-            isLiked: newLikedState,
-            likesCount: newLikedState ? p.likesCount + 1 : Math.max(0, p.likesCount - 1),
+            isLiked: newLiked,
+            likesCount: newLiked ? p.likesCount + 1 : Math.max(0, p.likesCount - 1),
           };
         }
         return p;
       })
     );
 
-    // 2. Persist to Supabase database user_activities table
+    // 2. Persist to Supabase
     try {
-      const res = await fetch("/api/community/likes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          postId,
-          userId: userProfile?.id,
-          userEmail: userProfile?.email,
-          userName: userProfile?.name,
-          isLiked: newLikedState,
-        }),
-      });
-
-      if (!res.ok) {
-        console.warn("Non-ok response from /api/community/likes");
+      const res = await toggleLike(postId);
+      if (res.success) {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === postId
+              ? { ...p, isLiked: res.isLiked, likesCount: res.likesCount }
+              : p
+          )
+        );
       }
     } catch (err) {
-      console.error("Error saving like to Supabase user_activities:", err);
+      console.error("Error saving like in Supabase community_likes:", err);
     }
   };
 
-  // Submit comment to Supabase comments table
+  // Save repost via Server Action directly in Supabase community_reposts table
+  const handleToggleRepost = async (postId: string) => {
+    // 1. Optimistic UI update
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          const newReposted = !p.isReposted;
+          return {
+            ...p,
+            isReposted: newReposted,
+            repostsCount: newReposted ? p.repostsCount + 1 : Math.max(0, p.repostsCount - 1),
+          };
+        }
+        return p;
+      })
+    );
+
+    // 2. Persist to Supabase
+    try {
+      const res = await toggleRepost(postId);
+      if (res.success) {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === postId
+              ? { ...p, isReposted: res.isReposted, repostsCount: res.repostsCount }
+              : p
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error saving repost in Supabase community_reposts:", err);
+    }
+  };
+
+  // Submit comment via Server Action directly in Supabase community_comments table
   const handleSubmitComment = async (postId: string, e: React.FormEvent) => {
     e.preventDefault();
     const commentText = commentInputs[postId]?.trim();
@@ -344,38 +393,23 @@ export default function CommunityFeedPage() {
     try {
       setSubmittingComment((prev) => ({ ...prev, [postId]: true }));
 
-      const res = await fetch("/api/community/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          postId,
-          content: commentText,
-          userId: userProfile?.id,
-          userEmail: userProfile?.email,
-          userName: userProfile?.name,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to post comment");
+      const res = await addComment(postId, commentText);
+      if (!res.success || !res.comment) {
+        throw new Error(res.error || "Failed to post comment");
       }
 
-      // Add newly saved comment to local state
-      const createdComment: CommentItem = data.comment;
+      const createdComment: CommentItem = res.comment;
       setPostComments((prev) => ({
         ...prev,
         [postId]: [...(prev[postId] || []), createdComment],
       }));
 
-      // Increment commentsCount in post
       setPosts((prev) =>
         prev.map((p) =>
           p.id === postId ? { ...p, commentsCount: p.commentsCount + 1 } : p
         )
       );
 
-      // Clear input
       setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
     } catch (err: any) {
       console.error("Error submitting comment:", err);
@@ -393,45 +427,37 @@ export default function CommunityFeedPage() {
     );
   };
 
-  const handleCreatePost = (e: React.FormEvent) => {
+  // Create post via Server Action directly in Supabase community_posts table
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostText.trim()) return;
+    if (!newPostText.trim() || submittingPost) return;
 
-    const newPost: Post = {
-      id: `post-${Date.now()}`,
-      authorName: userProfile?.name || "Student",
-      authorHandle: `@/${(userProfile?.name || "student").replace(/\s+/g, "").toLowerCase()}`,
-      authorAvatar:
-        userProfile?.avatar ||
-        "/avatars/avatar-1.png",
-      spaceName: "Crack Designers",
-      spaceIcon: "👥",
-      role: "Member",
-      timeAgo: "Just now",
-      content: newPostText,
-      type: "MOCKUPS",
-      commentsCount: 0,
-      likesCount: 1,
-      repostsCount: 0,
-      isLiked: true,
-    };
+    try {
+      setSubmittingPost(true);
+      const res = await createPost(newPostText);
+      if (!res.success) {
+        throw new Error(res.error || "Failed to create post");
+      }
 
-    setPosts([newPost, ...posts]);
-    setNewPostText("");
-    setShowCreateModal(false);
+      // Re-fetch feed to get all database relationships, user personas and updated counts
+      const feedRes = await getCommunityFeed();
+      if (feedRes.success && feedRes.posts) {
+        setPosts(feedRes.posts as Post[]);
+        const commMap: Record<string, CommentItem[]> = {};
+        feedRes.posts.forEach((p: any) => {
+          if (p.comments) commMap[p.id] = p.comments;
+        });
+        setPostComments((prev) => ({ ...prev, ...commMap }));
+      }
 
-    // Also persist like for author's own new post in user_activities
-    fetch("/api/community/likes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        postId: newPost.id,
-        userId: userProfile?.id,
-        userEmail: userProfile?.email,
-        userName: userProfile?.name,
-        isLiked: true,
-      }),
-    }).catch(console.warn);
+      setNewPostText("");
+      setShowCreateModal(false);
+    } catch (err: any) {
+      console.error("Error creating post:", err);
+      alert(err.message || "Failed to create post.");
+    } finally {
+      setSubmittingPost(false);
+    }
   };
 
   const handleAskAI = (e: React.FormEvent) => {
@@ -751,9 +777,17 @@ export default function CommunityFeedPage() {
                       <span>{post.likesCount}</span>
                     </button>
 
-                    {/* Repost */}
-                    <button className="flex items-center gap-1.5 hover:text-white transition-colors">
-                      <Repeat className="w-4 h-4" />
+                    {/* Repost (Persisted to Supabase community_reposts table!) */}
+                    <button
+                      onClick={() => handleToggleRepost(post.id)}
+                      className={`flex items-center gap-1.5 transition-colors ${
+                        post.isReposted
+                          ? "text-emerald-400 font-bold"
+                          : "hover:text-emerald-400"
+                      }`}
+                      title={post.isReposted ? "Undo Repost" : "Repost"}
+                    >
+                      <Repeat className={`w-4 h-4 ${post.isReposted ? "text-emerald-400" : ""}`} />
                       <span>{post.repostsCount}</span>
                     </button>
                   </div>
@@ -996,10 +1030,15 @@ export default function CommunityFeedPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#EFFF4F] text-[#28282B] font-mono text-xs font-bold uppercase hover:bg-[#EFFF4F]/90 transition-all flex items-center gap-1.5 shadow-lemon-sm"
+                  disabled={submittingPost}
+                  className="px-6 py-2 bg-[#EFFF4F] text-[#28282B] font-mono text-xs font-bold uppercase hover:bg-[#EFFF4F]/90 transition-all flex items-center gap-1.5 shadow-lemon-sm disabled:opacity-50"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Publish Post</span>
+                  {submittingPost ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" />
+                  )}
+                  <span>{submittingPost ? "Publishing..." : "Publish Post"}</span>
                 </button>
               </div>
             </form>

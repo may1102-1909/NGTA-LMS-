@@ -642,6 +642,59 @@ model student_profiles {
   @@schema("public")
 }
 
+model community_posts {
+  id         String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String               @db.Uuid
+  content    String               @db.Text
+  image_url  String?              @db.Text
+  created_at DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at DateTime             @default(now()) @updatedAt @db.Timestamptz(6)
+
+  likes      community_likes[]
+  comments   community_comments[]
+  reposts    community_reposts[]
+
+  @@index([user_id])
+  @@schema("public")
+}
+
+model community_likes {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id    String          @db.Uuid
+  user_id    String          @db.Uuid
+  created_at DateTime        @default(now()) @db.Timestamptz(6)
+
+  post       community_posts @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@unique([post_id, user_id])
+  @@schema("public")
+}
+
+model community_comments {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id    String          @db.Uuid
+  user_id    String          @db.Uuid
+  content    String          @db.Text
+  created_at DateTime        @default(now()) @db.Timestamptz(6)
+
+  post       community_posts @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@index([post_id])
+  @@schema("public")
+}
+
+model community_reposts {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id    String          @db.Uuid
+  user_id    String          @db.Uuid
+  created_at DateTime        @default(now()) @db.Timestamptz(6)
+
+  post       community_posts @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@unique([post_id, user_id])
+  @@schema("public")
+}
+
 enum aal_level {
   aal1
   aal2
