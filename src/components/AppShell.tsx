@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import StudentOnboardingModal from "@/components/StudentOnboardingModal";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -47,6 +48,9 @@ export default function AppShell({ children }: AppShellProps) {
         {/* Footer */}
         <Footer />
       </div>
+
+      {/* Student Onboarding Modal: Prompts students without a persona to lock in their custom avatar & homies username */}
+      <StudentOnboardingModal />
     </div>
   );
 }

@@ -42,6 +42,7 @@ interface CommentItem {
     id?: string;
     name: string;
     avatar: string | null;
+    role?: string;
   };
 }
 
@@ -222,11 +223,40 @@ export default function CommunityFeedPage() {
             );
           }
         }
+        // Fetch student custom persona & username if enrolled as STUDENT
+        const studentRes = await fetch(`/api/student-profile${currentUserId ? `?userId=${currentUserId}` : ""}`);
+        if (studentRes.ok) {
+          const studentData = await studentRes.json();
+          if (studentData?.profile) {
+            setUserProfile((prev) => ({
+              ...prev,
+              name: studentData.profile.username,
+              avatar: studentData.profile.avatar_url,
+              role: "Student",
+            }));
+          }
+        }
       } catch (e) {
         console.warn("Could not load user/likes in community feed:", e);
       }
     }
     loadUserAndLikes();
+
+    // Listen to real-time persona updates from onboarding modal
+    const handleProfileUpdate = (e: any) => {
+      if (e.detail) {
+        setUserProfile((prev) => ({
+          ...prev,
+          name: e.detail.username,
+          avatar: e.detail.avatar_url,
+          role: "Student",
+        }));
+      }
+    };
+    window.addEventListener("student-profile-updated", handleProfileUpdate);
+    return () => {
+      window.removeEventListener("student-profile-updated", handleProfileUpdate);
+    };
   }, []);
 
   // Fetch comments for a specific post
@@ -369,11 +399,11 @@ export default function CommunityFeedPage() {
 
     const newPost: Post = {
       id: `post-${Date.now()}`,
-      authorName: userProfile?.name || "Community Member",
-      authorHandle: `@/${(userProfile?.name || "member").replace(/\s+/g, "").toLowerCase()}`,
+      authorName: userProfile?.name || "Student",
+      authorHandle: `@/${(userProfile?.name || "student").replace(/\s+/g, "").toLowerCase()}`,
       authorAvatar:
         userProfile?.avatar ||
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80",
+        "/avatars/avatar-1.png",
       spaceName: "Crack Designers",
       spaceIcon: "👥",
       role: "Member",
@@ -577,9 +607,15 @@ export default function CommunityFeedPage() {
                           {post.timeAgo}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#5A5F70] font-semibold">
-                        {post.role}
-                      </span>
+                      {post.role === "Instructor" ? (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-[9px] uppercase tracking-wider rounded font-mono w-fit">
+                          ★ Official Instructor
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-[#5A5F70] font-semibold">
+                          {post.role}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -796,6 +832,11 @@ export default function CommunityFeedPage() {
                                 <span className="font-bold text-white font-sans text-xs">
                                   {comment.author.name}
                                 </span>
+                                {comment.author.role === "INSTRUCTOR" && (
+                                  <span className="px-1.5 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-[9px] uppercase tracking-wider rounded font-mono">
+                                    ★ Instructor
+                                  </span>
+                                )}
                               </div>
                               <span className="text-[10px] font-mono text-[#5A5F70]">
                                 {new Date(comment.createdAt).toLocaleTimeString([], {

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Settings,
   User,
@@ -13,15 +14,61 @@ import {
   Key,
   ExternalLink,
   Flame,
+  Sparkles,
 } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES" | "SECURITY">("PROFILE");
   const [name, setName] = useState("Tanmay Sharma");
-  const [handle, setHandle] = useState("tanmay.sdet");
+  const [handle, setHandle] = useState("GigaChad_Dev");
+  const [avatarUrl, setAvatarUrl] = useState("/avatars/avatar-1.png");
   const [email, setEmail] = useState("tanmay.sharma@example.com");
   const [bio, setBio] = useState("Aspiring SDET & Test Automation Architect. Currently mastering Selenium 4, ThreadLocal parallel execution, and AI self-healing locators.");
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    async function loadStudentProfile() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          if (user.email) setEmail(user.email);
+          const res = await fetch(`/api/student-profile?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.profile) {
+              setHandle(data.profile.username);
+              setAvatarUrl(data.profile.avatar_url);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load student profile in settings:", err);
+      }
+    }
+
+    loadStudentProfile();
+
+    const handleProfileUpdate = (e: any) => {
+      if (e.detail) {
+        if (e.detail.username) setHandle(e.detail.username);
+        if (e.detail.avatar_url) setAvatarUrl(e.detail.avatar_url);
+      }
+    };
+
+    window.addEventListener("student-profile-updated", handleProfileUpdate);
+    return () => {
+      window.removeEventListener("student-profile-updated", handleProfileUpdate);
+    };
+  }, []);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,6 +151,42 @@ export default function SettingsPage() {
             <div className="border-b border-[#3E3E43] pb-3 flex items-center justify-between">
               <h3 className="font-bold text-white uppercase text-sm">PERSONAL INFORMATION</h3>
               <span className="text-[10px] text-[#EFFF4F]">VERIFIED LEARNER</span>
+            </div>
+
+            {/* 3D Student Persona Banner */}
+            <div className="p-4 bg-[#202023] border border-white/10 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-[#EFFF4F] bg-neutral-900 shrink-0 shadow-lemon-sm">
+                  <Image
+                    src={avatarUrl}
+                    alt="Persona"
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-white text-sm font-mono">
+                      @{handle}
+                    </span>
+                    <span className="px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[10px] font-mono font-bold uppercase rounded">
+                      Gamer Persona
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#A0A5B5] font-sans">
+                    Your custom 3D avatar & homies username across all LMS threads and leaderboards.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-student-onboarding"))}
+                className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 font-mono text-xs uppercase font-bold transition-all shadow-lemon-sm rounded-lg shrink-0 cursor-pointer"
+              >
+                Change Persona
+              </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

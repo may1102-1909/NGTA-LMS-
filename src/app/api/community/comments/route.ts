@@ -66,19 +66,49 @@ export async function GET(request: Request) {
       },
     });
 
+    const userIds = Array.from(
+      new Set(comments.map((c: any) => c.user_id).filter(Boolean))
+    );
+    const studentProfiles = await prisma.student_profiles.findMany({
+      where: { user_id: { in: userIds as string[] } },
+    });
+    const studentMap = new Map<string, any>(studentProfiles.map((s: any) => [s.user_id, s]));
+
     return NextResponse.json({
       success: true,
-      comments: comments.map((c: any) => ({
-        id: c.id,
-        postId: c.post_id,
-        content: c.content,
-        createdAt: c.created_at,
-        author: {
-          id: c.profiles?.id,
-          name: c.profiles?.full_name || c.profiles?.email?.split("@")[0] || "Learner",
-          avatar: c.profiles?.avatar_url || null,
-        },
-      })),
+      comments: comments.map((c: any) => {
+        const student: any = studentMap.get(c.user_id);
+        const isInstructor =
+          c.profiles?.email?.toLowerCase().includes("rahul") ||
+          c.profiles?.full_name?.toLowerCase().includes("rahul");
+
+        let authorName = c.profiles?.full_name || c.profiles?.email?.split("@")[0] || "Learner";
+        let authorAvatar = c.profiles?.avatar_url || null;
+        let role = "STUDENT";
+
+        if (isInstructor) {
+          authorName = "Rahul Kamat";
+          authorAvatar = "/instructor/rahul-kamat.png";
+          role = "INSTRUCTOR";
+        } else if (student) {
+          authorName = `@${student.username}`;
+          authorAvatar = student.avatar_url;
+          role = "STUDENT";
+        }
+
+        return {
+          id: c.id,
+          postId: c.post_id,
+          content: c.content,
+          createdAt: c.created_at,
+          author: {
+            id: c.profiles?.id,
+            name: authorName,
+            avatar: authorAvatar,
+            role,
+          },
+        };
+      }),
     });
   } catch (error: any) {
     console.error("Error fetching comments from database:", error);
@@ -188,6 +218,29 @@ export async function POST(request: Request) {
       console.warn("User activity logging notice in comment:", actErr);
     }
 
+    // Resolve student persona or instructor profile for returned comment author
+    const studentProfile = await prisma.student_profiles.findUnique({
+      where: { user_id: targetUserId },
+    });
+
+    const isInstructor =
+      profile?.email?.toLowerCase().includes("rahul") ||
+      profile?.full_name?.toLowerCase().includes("rahul");
+
+    let authorName = profile?.full_name || profile?.email?.split("@")[0] || "Learner";
+    let authorAvatar = profile?.avatar_url || null;
+    let authorRole = "STUDENT";
+
+    if (isInstructor) {
+      authorName = "Rahul Kamat";
+      authorAvatar = "/instructor/rahul-kamat.png";
+      authorRole = "INSTRUCTOR";
+    } else if (studentProfile) {
+      authorName = `@${studentProfile.username}`;
+      authorAvatar = studentProfile.avatar_url;
+      authorRole = "STUDENT";
+    }
+
     return NextResponse.json({
       success: true,
       comment: {
@@ -197,11 +250,9 @@ export async function POST(request: Request) {
         createdAt: commentRecord.created_at,
         author: {
           id: commentRecord.profiles?.id,
-          name:
-            commentRecord.profiles?.full_name ||
-            commentRecord.profiles?.email?.split("@")[0] ||
-            "Learner",
-          avatar: commentRecord.profiles?.avatar_url || null,
+          name: authorName,
+          avatar: authorAvatar,
+          role: authorRole,
         },
       },
     });

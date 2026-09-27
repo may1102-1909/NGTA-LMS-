@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu,
@@ -9,6 +10,7 @@ import {
   Flame,
   Zap,
 } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface HeaderProps {
   onToggleSidebar?: () => void;
@@ -17,6 +19,60 @@ interface HeaderProps {
 export default function Header({ onToggleSidebar }: HeaderProps) {
   const pathname = usePathname();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [studentProfile, setStudentProfile] = useState<{
+    username: string;
+    avatar_url: string;
+  } | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadStudentProfile() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user?.id) {
+          const res = await fetch(`/api/student-profile?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.profile && isMounted) {
+              setStudentProfile({
+                username: data.profile.username,
+                avatar_url: data.profile.avatar_url,
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load student profile in Header:", err);
+      }
+    }
+
+    loadStudentProfile();
+
+    // Listen to real-time persona updates from onboarding modal
+    const handleProfileUpdate = (e: any) => {
+      if (e.detail && isMounted) {
+        setStudentProfile({
+          username: e.detail.username,
+          avatar_url: e.detail.avatar_url,
+        });
+      }
+    };
+
+    window.addEventListener("student-profile-updated", handleProfileUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("student-profile-updated", handleProfileUpdate);
+    };
+  }, []);
 
   if (pathname === "/") {
     return null;
@@ -38,7 +94,8 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
             <div className="flex items-center gap-2">
               <span className="text-xs sm:text-sm font-bold text-white font-sans truncate">
-                Welcome back to NextGen Academy! 🚀
+                Welcome back to NextGen Academy
+                {studentProfile?.username ? `, @${studentProfile.username}` : ""}! 🚀
               </span>
             </div>
           </div>
@@ -108,13 +165,30 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
               )}
             </div>
 
-            {/* User Avatar Circle Badge */}
+            {/* Student Custom Avatar & Homies Username */}
             <Link
               href="/settings"
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/40 text-blue-400 font-bold text-xs hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-all"
-              title="Settings & Profile"
+              className="flex items-center gap-2 px-2 py-1 rounded-full bg-[#333336] border border-[#3E3E43] hover:border-[#EFFF4F]/50 transition-all group"
+              title="Settings & Persona Profile"
             >
-              SD
+              <div className="w-7 h-7 rounded-full overflow-hidden border border-[#EFFF4F]/60 bg-neutral-900 flex items-center justify-center text-xs font-bold shrink-0">
+                {studentProfile?.avatar_url ? (
+                  <Image
+                    src={studentProfile.avatar_url}
+                    alt={studentProfile.username || "Persona"}
+                    width={28}
+                    height={28}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-white text-[10px]">
+                    {studentProfile?.username?.slice(0, 2).toUpperCase() || "SD"}
+                  </span>
+                )}
+              </div>
+              <span className="font-bold text-white text-[11px] font-mono group-hover:text-[#EFFF4F] transition-colors truncate max-w-[110px] hidden sm:inline">
+                @{studentProfile?.username || "GigaChad_Dev"}
+              </span>
             </Link>
           </div>
         </div>
