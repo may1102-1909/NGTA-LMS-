@@ -37,14 +37,6 @@ export default function CommunityWelcomePage() {
             Stop being an NPC. Lock in with real builders and level up your skills.
           </p>
         </div>
-
-        <Link
-          href="/community/feed"
-          className="px-6 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center gap-2"
-        >
-          <span>Open Live Feed</span>
-          <ArrowRight className="w-4 h-4" />
-        </Link>
       </div>
 
       {/* Main Hero Card Container */}
@@ -244,20 +236,13 @@ export default function CommunityWelcomePage() {
           </p>
 
           {/* Primary Action Button: "Get Started" */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-2 flex items-center justify-center">
             <Link
               href="/community/feed"
               className="px-8 py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-all shadow-lemon-sm flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
             >
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/community/feed"
-              className="px-6 py-3.5 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white hover:border-[#EFFF4F]/40 font-mono text-xs font-bold uppercase transition-colors"
-            >
-              Sign In To Community
             </Link>
           </div>
         </div>

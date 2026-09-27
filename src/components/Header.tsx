@@ -8,7 +8,6 @@ import {
   Bell,
   Flame,
   Zap,
-  BookOpen,
 } from "lucide-react";
 
 interface HeaderProps {
@@ -46,15 +45,6 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
           {/* Right: Gamified Badges + Notifications + Profile Avatar */}
           <div className="flex items-center gap-2 sm:gap-3 font-mono text-xs">
-            {/* Quick Catalog Link */}
-            <Link
-              href="/courses"
-              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-[#EFFF4F] hover:border-[#EFFF4F]/40 transition-colors text-[11px] font-bold uppercase"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Catalog</span>
-            </Link>
-
             {/* Streak Badge */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full font-bold text-[11px]">
               <Flame className="w-3.5 h-3.5 fill-orange-400" />
