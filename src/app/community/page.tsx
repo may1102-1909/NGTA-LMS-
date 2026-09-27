@@ -210,7 +210,7 @@ export default function CommunityWelcomePage() {
             {/* Primary Action Button: "Get Started" */}
             <div className="pt-2">
               <Link
-                href="/community/signup"
+                href="/community/feed"
                 className="w-full block py-3.5 px-6 rounded-full bg-white text-black font-bold text-sm hover:bg-neutral-200 active:scale-[0.98] transition-all shadow-xl shadow-white/10"
               >
                 Get Started
