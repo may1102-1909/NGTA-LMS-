@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { INITIAL_COURSES, INITIAL_LIVE_SESSIONS } from "@/lib/mockData";
 import {
@@ -32,12 +32,49 @@ import CredentialCard from "@/components/gamification/CredentialCard";
 import LeaderboardTable from "@/components/gamification/LeaderboardTable";
 import ChallengeStepLog from "@/components/gamification/ChallengeStepLog";
 import { INITIAL_CREDENTIALS, CredentialItem } from "@/lib/gamification";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"LEARNER" | "INSTRUCTOR" | "ADMIN">("LEARNER");
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [credentialsFilter, setCredentialsFilter] = useState<"ALL" | "CERTIFICATE" | "BADGE">("ALL");
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([]);
+
+  // Fetch logged-in user's active enrollments from Supabase database
+  useEffect(() => {
+    async function checkUserEnrollments() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user?.id) {
+          const res = await fetch(`/api/payments/verify?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.enrolledCourseIds)) {
+              setEnrolledCourseIds(data.enrolledCourseIds);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not check enrollments in dashboard:", err);
+      }
+    }
+
+    checkUserEnrollments();
+  }, []);
+
+  const isHeroCourseEnrolled = enrolledCourseIds.includes("course-1");
+  const enrolledCourses = INITIAL_COURSES.filter((c) =>
+    enrolledCourseIds.includes(c.id)
+  );
 
   const filteredCredentials = INITIAL_CREDENTIALS.filter((c) => {
     if (credentialsFilter === "ALL") return true;
@@ -174,10 +211,14 @@ export default function DashboardPage() {
 
               <div className="shrink-0 flex items-center">
                 <Link
-                  href="/learn/course-1"
-                  className="px-6 py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-all flex items-center gap-2 shadow-lg shadow-cyan-500/20"
+                  href={isHeroCourseEnrolled ? "/learn/course-1" : "/courses"}
+                  className={`px-6 py-3.5 font-mono text-xs uppercase font-bold transition-all flex items-center gap-2 shadow-lg ${
+                    isHeroCourseEnrolled
+                      ? "bg-cyan-400 text-[#10131A] hover:bg-cyan-300 shadow-cyan-500/20"
+                      : "bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 shadow-lemon-sm"
+                  }`}
                 >
-                  <span>Resume Learning</span>
+                  <span>{isHeroCourseEnrolled ? "Resume Learning" : "Enroll in Course"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -428,47 +469,65 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-4">
-              {INITIAL_COURSES.map((course, idx) => {
-                const progress = idx === 0 ? 75 : 10;
-                return (
-                  <div
-                    key={course.id}
-                    className="border border-[#3E3E43] p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#28282B]"
-                  >
-                    <div className="space-y-1 max-w-xl">
-                      <div className="font-mono text-[10px] text-[#5A5F70] uppercase">
-                        {course.category} • {course.difficultyLevel}
-                      </div>
-                      <h4 className="text-lg font-bold text-white">{course.title}</h4>
-                      <div className="font-mono text-xs text-[#5A5F70]">
-                        Instructor: {course.instructorName}
-                      </div>
-                    </div>
-
-                    <div className="w-full md:w-64 space-y-2">
-                      <div className="flex justify-between font-mono text-xs">
-                        <span className="text-[#5A5F70]">PROGRESS:</span>
-                        <span className="font-bold text-white">{progress}%</span>
-                      </div>
-                      <div className="w-full h-2.5 bg-[#3E3E43] border border-[#3E3E43] overflow-hidden">
-                        <div
-                          className="h-full bg-[#EFFF4F]"
-                          style={{ width: `${progress}%` }}
-                        ></div>
-                      </div>
-                      <div className="pt-2 flex justify-end">
-                        <Link
-                          href={`/learn/${course.id}`}
-                          className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
-                        >
-                          <PlayCircle className="w-3.5 h-3.5" />
-                          <span>CONTINUE LEARNING</span>
-                        </Link>
-                      </div>
-                    </div>
+              {enrolledCourses.length === 0 ? (
+                <div className="border border-[#3E3E43] bg-[#28282B] p-8 text-center space-y-3 font-mono text-xs">
+                  <p className="text-white font-bold text-sm">No active enrolled tracks yet.</p>
+                  <p className="text-[#A0A5B5] max-w-md mx-auto">
+                    Enroll in Selenium Java, Playwright, or our SDET masterclasses to unlock high-definition lessons and live coding sessions.
+                  </p>
+                  <div className="pt-2">
+                    <Link
+                      href="/courses"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
+                    >
+                      <span>Explore Course Catalog</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
-                );
-              })}
+                </div>
+              ) : (
+                enrolledCourses.map((course, idx) => {
+                  const progress = idx === 0 ? 75 : 10;
+                  return (
+                    <div
+                      key={course.id}
+                      className="border border-[#3E3E43] p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#28282B]"
+                    >
+                      <div className="space-y-1 max-w-xl">
+                        <div className="font-mono text-[10px] text-[#5A5F70] uppercase">
+                          {course.category} • {course.difficultyLevel}
+                        </div>
+                        <h4 className="text-lg font-bold text-white">{course.title}</h4>
+                        <div className="font-mono text-xs text-[#5A5F70]">
+                          Instructor: {course.instructorName}
+                        </div>
+                      </div>
+
+                      <div className="w-full md:w-64 space-y-2">
+                        <div className="flex justify-between font-mono text-xs">
+                          <span className="text-[#5A5F70]">PROGRESS:</span>
+                          <span className="font-bold text-white">{progress}%</span>
+                        </div>
+                        <div className="w-full h-2.5 bg-[#3E3E43] border border-[#3E3E43] overflow-hidden">
+                          <div
+                            className="h-full bg-[#EFFF4F]"
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                        </div>
+                        <div className="pt-2 flex justify-end">
+                          <Link
+                            href={`/learn/${course.id}`}
+                            className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                          >
+                            <PlayCircle className="w-3.5 h-3.5" />
+                            <span>CONTINUE LEARNING</span>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
 

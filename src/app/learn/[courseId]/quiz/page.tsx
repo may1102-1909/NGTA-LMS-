@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { INITIAL_QUIZ, INITIAL_COURSES } from "@/lib/mockData";
@@ -14,7 +14,10 @@ import {
   ChevronLeft,
   ShieldCheck,
   AlertCircle,
+  Lock,
+  Loader2,
 } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function QuizAssessmentPage() {
   const params = useParams();
@@ -23,6 +26,65 @@ export default function QuizAssessmentPage() {
 
   const course = INITIAL_COURSES.find((c) => c.id === courseId) || INITIAL_COURSES[0];
   const quiz = INITIAL_QUIZ;
+
+  const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  // Gated Assessment Access: Verify user is logged in and enrolled in the course
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkEnrollmentAccess() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+          if (isMounted) router.replace("/courses");
+          return;
+        }
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user?.id) {
+          if (isMounted) router.replace("/courses");
+          return;
+        }
+
+        const res = await fetch(
+          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isEnrolled) {
+            if (isMounted) {
+              setIsEnrolled(true);
+              setIsVerifyingEnrollment(false);
+            }
+            return;
+          }
+        }
+
+        if (isMounted) {
+          router.replace("/courses");
+        }
+      } catch (err) {
+        console.error("Quiz enrollment check error:", err);
+        if (isMounted) {
+          router.replace("/courses");
+        }
+      }
+    }
+
+    checkEnrollmentAccess();
+    return () => {
+      isMounted = false;
+    };
+  }, [course.id, router]);
 
   const [selectedAnswers, setSelectedAnswers] = useState<{ [questionId: string]: string }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -53,6 +115,34 @@ export default function QuizAssessmentPage() {
     setIsSubmitted(false);
     setAttemptCount((prev) => prev + 1);
   };
+
+  if (isVerifyingEnrollment) {
+    return (
+      <div className="min-h-screen bg-[#28282B] flex flex-col items-center justify-center font-mono text-xs text-white p-6">
+        <div className="border border-[#3E3E43] bg-[#202023] p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 flex items-center justify-center mx-auto text-[#EFFF4F]">
+            <Lock className="w-6 h-6 animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-base font-bold text-white uppercase font-sans">
+              Verifying Enrollment Access
+            </h2>
+            <p className="text-xs text-[#A0A5B5]">
+              Confirming course credentials for {course.title}...
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-[11px] text-[#5A5F70]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#EFFF4F]" />
+            <span>Syncing database credentials...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isEnrolled) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#28282B] text-white font-sans py-12 px-4 sm:px-6 lg:px-8">

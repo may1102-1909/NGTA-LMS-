@@ -16,8 +16,10 @@ import {
   Video,
   FileCode,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import RankTag from "@/components/gamification/RankTag";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function LearnPlayerPage() {
   const params = useParams();
@@ -26,6 +28,68 @@ export default function LearnPlayerPage() {
 
   const course = INITIAL_COURSES.find((c) => c.id === courseId) || INITIAL_COURSES[0];
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  // Gated Course Access: Verify user is logged in and has an active payment for this course
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkEnrollmentAccess() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+          if (isMounted) router.replace("/courses");
+          return;
+        }
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user?.id) {
+          // User not logged in -> redirect to /courses
+          if (isMounted) router.replace("/courses");
+          return;
+        }
+
+        // Query database to check if user has purchased this course
+        const res = await fetch(
+          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isEnrolled) {
+            if (isMounted) {
+              setIsEnrolled(true);
+              setIsVerifyingEnrollment(false);
+            }
+            return;
+          }
+        }
+
+        // User hasn't purchased the course -> redirect to /courses
+        if (isMounted) {
+          router.replace("/courses");
+        }
+      } catch (err) {
+        console.error("Enrollment verification error:", err);
+        if (isMounted) {
+          router.replace("/courses");
+        }
+      }
+    }
+
+    checkEnrollmentAccess();
+    return () => {
+      isMounted = false;
+    };
+  }, [course.id, router]);
 
   const allLessons = course.modules.flatMap((m) =>
     m.chapters.flatMap((c) => c.lessons)
@@ -55,6 +119,34 @@ export default function LearnPlayerPage() {
   };
 
   const isEligibleForCertificate = progressPercentage >= 75;
+
+  if (isVerifyingEnrollment) {
+    return (
+      <div className="min-h-screen bg-[#28282B] flex flex-col items-center justify-center font-mono text-xs text-white p-6">
+        <div className="border border-[#3E3E43] bg-[#202023] p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 flex items-center justify-center mx-auto text-[#EFFF4F]">
+            <Lock className="w-6 h-6 animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-base font-bold text-white uppercase font-sans">
+              Verifying Enrollment Access
+            </h2>
+            <p className="text-xs text-[#A0A5B5]">
+              Confirming course credentials for {course.title}...
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-[11px] text-[#5A5F70]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#EFFF4F]" />
+            <span>Syncing database credentials...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isEnrolled) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#28282B] text-white flex flex-col font-sans">

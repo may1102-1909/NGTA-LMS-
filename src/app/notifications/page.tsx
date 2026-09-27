@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   CheckCircle2,
@@ -14,6 +15,7 @@ import {
   Check,
 } from "lucide-react";
 import PushNotificationButton from "@/components/PushNotificationButton";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface NotificationItem {
   id: string;
@@ -80,8 +82,58 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 ];
 
 export default function NotificationsPage() {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [filter, setFilter] = useState<"ALL" | "UNREAD" | "COURSE" | "LIVE">("ALL");
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([]);
+
+  // Fetch logged-in user's active enrollments from Supabase database
+  useEffect(() => {
+    async function checkUserEnrollments() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user?.id) {
+          const res = await fetch(`/api/payments/verify?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.enrolledCourseIds)) {
+              setEnrolledCourseIds(data.enrolledCourseIds);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not check enrollments in notifications:", err);
+      }
+    }
+
+    checkUserEnrollments();
+  }, []);
+
+  // Helper to resolve link: redirects unenrolled users to /courses
+  const resolveNotificationLink = (linkHref?: string) => {
+    if (!linkHref) return "";
+
+    if (linkHref.startsWith("/learn/")) {
+      const parts = linkHref.split("/");
+      const courseId = parts[2]; // e.g. "course-1"
+      const isEnrolled = enrolledCourseIds.includes(courseId);
+
+      // If user hasn't enrolled in this course, redirect to /courses
+      if (!isEnrolled) {
+        return "/courses";
+      }
+    }
+
+    return linkHref;
+  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -251,8 +303,8 @@ export default function NotificationsPage() {
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-[#3E3E43]">
                 {notif.linkHref && notif.linkText && (
                   <Link
-                    href={notif.linkHref}
-                    className="px-3 py-1.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 shadow-lemon-sm"
+                    href={resolveNotificationLink(notif.linkHref)}
+                    className="px-3.5 py-1.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 shadow-lemon-sm"
                   >
                     <span>{notif.linkText}</span>
                     <ArrowRight className="w-3 h-3" />
