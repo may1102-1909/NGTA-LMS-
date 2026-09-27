@@ -200,11 +200,11 @@ export default function CommunityWelcomePage() {
           {/* Bottom: Typography & Call To Actions */}
           <div className="w-full text-center space-y-4 z-10 pb-2">
             <h1 className="text-2xl sm:text-[28px] font-black text-white leading-tight tracking-tight">
-              Where Interest Become<br />
-              Community
+              The Tribe Where<br />
+              Everyone Cooks
             </h1>
-            <p className="text-xs sm:text-[13px] text-zinc-400 max-w-[280px] mx-auto leading-relaxed">
-              Join communities built around your interest, not just the people you know.
+            <p className="text-xs sm:text-[13px] text-zinc-400 max-w-[300px] mx-auto leading-relaxed">
+              Stop being an NPC. Lock in with real builders and level up your skills.
             </p>
 
             {/* Primary Action Button: "Get Started" */}
