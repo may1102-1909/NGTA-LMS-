@@ -28,8 +28,22 @@ import {
   ArrowRight,
   TrendingUp,
   Hash,
+  Loader2,
+  CornerDownRight,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+
+interface CommentItem {
+  id: string;
+  postId: string;
+  content: string;
+  createdAt: string;
+  author: {
+    id?: string;
+    name: string;
+    avatar: string | null;
+  };
+}
 
 interface Post {
   id: string;
@@ -63,7 +77,7 @@ const INITIAL_POSTS: Post[] = [
     timeAgo: "20m",
     content: "Clarity > Complexity",
     type: "MOCKUPS",
-    commentsCount: 8,
+    commentsCount: 2,
     likesCount: 12,
     repostsCount: 2,
   },
@@ -80,7 +94,7 @@ const INITIAL_POSTS: Post[] = [
     type: "MEDIA",
     mediaUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80",
     mediaCount: "1/3",
-    commentsCount: 15,
+    commentsCount: 1,
     likesCount: 84,
     repostsCount: 6,
   },
@@ -96,11 +110,60 @@ const INITIAL_POSTS: Post[] = [
     content: "Live Automation Workshop starts this weekend! Check the architecture diagram below.",
     type: "MEDIA",
     mediaUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-    commentsCount: 32,
+    commentsCount: 3,
     likesCount: 142,
     repostsCount: 19,
   },
 ];
+
+const INITIAL_SEED_COMMENTS: Record<string, CommentItem[]> = {
+  "post-1": [
+    {
+      id: "seed-1",
+      postId: "post-1",
+      content: "Simplicity is the ultimate sophistication. Clean token system here!",
+      createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+      author: {
+        name: "Rahul Kamat",
+        avatar: "/instructor/rahul-kamat.png",
+      },
+    },
+    {
+      id: "seed-2",
+      postId: "post-1",
+      content: "Love the high contrast dark mode aesthetics.",
+      createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+      author: {
+        name: "Sarah Jenkins",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
+      },
+    },
+  ],
+  "post-2": [
+    {
+      id: "seed-3",
+      postId: "post-2",
+      content: "Consistency beats intensity every single day. Keep crushing it!",
+      createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+      author: {
+        name: "Devon Miles",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
+      },
+    },
+  ],
+  "post-3": [
+    {
+      id: "seed-4",
+      postId: "post-3",
+      content: "Will the recording be available in the LMS portal after the live stream?",
+      createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+      author: {
+        name: "Tanmay Sharma",
+        avatar: null,
+      },
+    },
+  ],
+};
 
 const TRENDING_SPACES = [
   { name: "Selenium Frameworks", tag: "#selenium-frameworks", members: "1.4k members", icon: "⚡" },
@@ -113,7 +176,7 @@ export default function CommunityFeedPage() {
   const [activeTab, setActiveTab] = useState<"FOR_YOU" | "TRENDING" | "COMMUNITIES" | "NEWS">("FOR_YOU");
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
-  const [userProfile, setUserProfile] = useState<{ avatar?: string; name?: string } | null>(null);
+  const [userProfile, setUserProfile] = useState<{ id?: string; email?: string; name?: string; avatar?: string } | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostText, setNewPostText] = useState("");
   const [askModalOpen, setAskModalOpen] = useState(false);
@@ -121,39 +184,175 @@ export default function CommunityFeedPage() {
   const [askAnswer, setAskAnswer] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
 
+  // Comments state
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
+  const [postComments, setPostComments] = useState<Record<string, CommentItem[]>>(INITIAL_SEED_COMMENTS);
+  const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
+  const [submittingComment, setSubmittingComment] = useState<Record<string, boolean>>({});
+  const [loadingComments, setLoadingComments] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
-    async function loadUser() {
+    async function loadUserAndLikes() {
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser();
+
+        let currentUserId = user?.id;
         if (user) {
           setUserProfile({
+            id: user.id,
+            email: user.email,
             name: user.user_metadata?.full_name || user.email?.split("@")[0],
             avatar: user.user_metadata?.avatar_url,
           });
         }
+
+        // Fetch persisted likes from Supabase database user_activities table via API
+        const likesRes = await fetch(`/api/community/likes${currentUserId ? `?userId=${currentUserId}` : ""}`);
+        if (likesRes.ok) {
+          const likesData = await likesRes.json();
+          if (likesData?.likedPostIds && Array.isArray(likesData.likedPostIds)) {
+            const likedSet = new Set(likesData.likedPostIds);
+            setPosts((prev) =>
+              prev.map((p) => ({
+                ...p,
+                isLiked: likedSet.has(p.id) || p.isLiked,
+              }))
+            );
+          }
+        }
       } catch (e) {
-        console.warn("Could not load user in community feed:", e);
+        console.warn("Could not load user/likes in community feed:", e);
       }
     }
-    loadUser();
+    loadUserAndLikes();
   }, []);
 
-  const handleToggleLike = (postId: string) => {
+  // Fetch comments for a specific post
+  const fetchCommentsForPost = async (postId: string) => {
+    try {
+      setLoadingComments((prev) => ({ ...prev, [postId]: true }));
+      const res = await fetch(`/api/community/comments?postId=${postId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.comments)) {
+          setPostComments((prev) => {
+            const seed = INITIAL_SEED_COMMENTS[postId] || [];
+            // Merge seed and database comments uniquely by id
+            const existingIds = new Set(data.comments.map((c: CommentItem) => c.id));
+            const filteredSeed = seed.filter((s) => !existingIds.has(s.id));
+            return {
+              ...prev,
+              [postId]: [...filteredSeed, ...data.comments],
+            };
+          });
+        }
+      }
+    } catch (err) {
+      console.warn(`Error fetching comments for ${postId}:`, err);
+    } finally {
+      setLoadingComments((prev) => ({ ...prev, [postId]: false }));
+    }
+  };
+
+  // Toggle comments drawer for a post
+  const handleToggleComments = (postId: string) => {
+    const isNowExpanded = !expandedComments[postId];
+    setExpandedComments((prev) => ({ ...prev, [postId]: isNowExpanded }));
+    if (isNowExpanded) {
+      fetchCommentsForPost(postId);
+    }
+  };
+
+  // Save like to Supabase user_activities table
+  const handleToggleLike = async (postId: string) => {
+    // 1. Optimistic UI update
+    let newLikedState = false;
     setPosts((prev) =>
       prev.map((p) => {
         if (p.id === postId) {
-          const isLiked = !p.isLiked;
+          newLikedState = !p.isLiked;
           return {
             ...p,
-            isLiked,
-            likesCount: isLiked ? p.likesCount + 1 : Math.max(0, p.likesCount - 1),
+            isLiked: newLikedState,
+            likesCount: newLikedState ? p.likesCount + 1 : Math.max(0, p.likesCount - 1),
           };
         }
         return p;
       })
     );
+
+    // 2. Persist to Supabase database user_activities table
+    try {
+      const res = await fetch("/api/community/likes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId,
+          userId: userProfile?.id,
+          userEmail: userProfile?.email,
+          userName: userProfile?.name,
+          isLiked: newLikedState,
+        }),
+      });
+
+      if (!res.ok) {
+        console.warn("Non-ok response from /api/community/likes");
+      }
+    } catch (err) {
+      console.error("Error saving like to Supabase user_activities:", err);
+    }
+  };
+
+  // Submit comment to Supabase comments table
+  const handleSubmitComment = async (postId: string, e: React.FormEvent) => {
+    e.preventDefault();
+    const commentText = commentInputs[postId]?.trim();
+    if (!commentText) return;
+
+    try {
+      setSubmittingComment((prev) => ({ ...prev, [postId]: true }));
+
+      const res = await fetch("/api/community/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId,
+          content: commentText,
+          userId: userProfile?.id,
+          userEmail: userProfile?.email,
+          userName: userProfile?.name,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to post comment");
+      }
+
+      // Add newly saved comment to local state
+      const createdComment: CommentItem = data.comment;
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), createdComment],
+      }));
+
+      // Increment commentsCount in post
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, commentsCount: p.commentsCount + 1 } : p
+        )
+      );
+
+      // Clear input
+      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+    } catch (err: any) {
+      console.error("Error submitting comment:", err);
+      alert(err.message || "Failed to submit comment. Please ensure you are logged in.");
+    } finally {
+      setSubmittingComment((prev) => ({ ...prev, [postId]: false }));
+    }
   };
 
   const handleToggleBookmark = (postId: string) => {
@@ -190,6 +389,19 @@ export default function CommunityFeedPage() {
     setPosts([newPost, ...posts]);
     setNewPostText("");
     setShowCreateModal(false);
+
+    // Also persist like for author's own new post in user_activities
+    fetch("/api/community/likes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId: newPost.id,
+        userId: userProfile?.id,
+        userEmail: userProfile?.email,
+        userName: userProfile?.name,
+        isLiked: true,
+      }),
+    }).catch(console.warn);
   };
 
   const handleAskAI = (e: React.FormEvent) => {
@@ -471,13 +683,21 @@ export default function CommunityFeedPage() {
                 {/* Interactive Action Row: Comments / Likes / Reposts / Gift / Bookmark */}
                 <div className="flex items-center justify-between pt-2 border-t border-[#3E3E43] text-[#A0A5B5] text-xs font-mono">
                   <div className="flex items-center gap-5">
-                    {/* Comments */}
-                    <button className="flex items-center gap-1.5 hover:text-white transition-colors">
+                    {/* Comments Toggle Button */}
+                    <button
+                      onClick={() => handleToggleComments(post.id)}
+                      className={`flex items-center gap-1.5 transition-colors ${
+                        expandedComments[post.id]
+                          ? "text-[#EFFF4F] font-bold"
+                          : "hover:text-white"
+                      }`}
+                      title="View & Add Comments"
+                    >
                       <MessageCircle className="w-4 h-4" />
                       <span>{post.commentsCount}</span>
                     </button>
 
-                    {/* Likes */}
+                    {/* Likes Button (Persisted to Supabase user_activities table!) */}
                     <button
                       onClick={() => handleToggleLike(post.id)}
                       className={`flex items-center gap-1.5 transition-colors ${
@@ -485,6 +705,7 @@ export default function CommunityFeedPage() {
                           ? "text-red-400 font-bold"
                           : "hover:text-red-400"
                       }`}
+                      title={post.isLiked ? "Unlike post" : "Like post"}
                     >
                       <Heart
                         className={`w-4 h-4 ${
@@ -528,6 +749,104 @@ export default function CommunityFeedPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* EXPANDABLE COMMENTS THREAD (Persisted directly to Supabase comments table) */}
+                {expandedComments[post.id] && (
+                  <div className="pt-4 border-t border-[#3E3E43]/80 space-y-4 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between text-xs font-mono text-[#A0A5B5]">
+                      <span className="font-bold text-white flex items-center gap-1.5">
+                        <CornerDownRight className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                        <span>Thread Discussion</span>
+                      </span>
+                      {loadingComments[post.id] && (
+                        <span className="flex items-center gap-1 text-[11px] text-[#5A5F70]">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span>Loading replies...</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Comments List */}
+                    <div className="space-y-3 pl-3 border-l-2 border-[#3E3E43]">
+                      {(postComments[post.id] || []).length === 0 ? (
+                        <p className="text-xs text-[#5A5F70] italic py-1">
+                          No replies yet. Be the first to share your thoughts!
+                        </p>
+                      ) : (
+                        (postComments[post.id] || []).map((comment) => (
+                          <div
+                            key={comment.id}
+                            className="p-3 bg-[#1C1C20] border border-[#3E3E43] rounded space-y-1.5"
+                          >
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full overflow-hidden bg-neutral-800 border border-[#3E3E43] flex items-center justify-center text-[10px] font-bold text-white">
+                                  {comment.author.avatar ? (
+                                    <Image
+                                      src={comment.author.avatar}
+                                      alt={comment.author.name}
+                                      width={24}
+                                      height={24}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    comment.author.name.charAt(0).toUpperCase()
+                                  )}
+                                </div>
+                                <span className="font-bold text-white font-sans text-xs">
+                                  {comment.author.name}
+                                </span>
+                              </div>
+                              <span className="text-[10px] font-mono text-[#5A5F70]">
+                                {new Date(comment.createdAt).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </div>
+                            <p className="text-xs text-[#C5C8D4] font-sans leading-relaxed pl-8">
+                              {comment.content}
+                            </p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* New Comment Input Form */}
+                    <form
+                      onSubmit={(e) => handleSubmitComment(post.id, e)}
+                      className="flex items-center gap-2 pt-2"
+                    >
+                      <input
+                        type="text"
+                        value={commentInputs[post.id] || ""}
+                        onChange={(e) =>
+                          setCommentInputs((prev) => ({
+                            ...prev,
+                            [post.id]: e.target.value,
+                          }))
+                        }
+                        placeholder={`Reply in #${post.spaceName}...`}
+                        className="flex-1 px-3.5 py-2.5 bg-[#18181C] border border-[#3E3E43] text-xs text-white placeholder-[#5A5F70] focus:outline-none focus:border-[#EFFF4F]/50 font-sans transition-colors"
+                      />
+                      <button
+                        type="submit"
+                        disabled={
+                          !commentInputs[post.id]?.trim() ||
+                          submittingComment[post.id]
+                        }
+                        className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 disabled:opacity-50 disabled:cursor-not-allowed font-mono text-xs font-bold uppercase transition-all shadow-lemon-sm flex items-center gap-1.5 shrink-0"
+                      >
+                        {submittingComment[post.id] ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Send className="w-3.5 h-3.5" />
+                        )}
+                        <span>Reply</span>
+                      </button>
+                    </form>
+                  </div>
+                )}
               </div>
             ))
           )}
@@ -596,7 +915,7 @@ export default function CommunityFeedPage() {
             </span>
             <p className="text-xs text-[#A0A5B5] leading-relaxed">
               1. Share reproducible code snippets.<br />
-              2. Peer reviews earn +35 XP in Leaderboard.<br />
+              2. Comments add to your community reputation score.<br />
               3. Keep conversations respectful and high signal.
             </p>
           </div>
