@@ -47,7 +47,7 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
     timestamp: "2 hours ago",
     read: false,
     linkText: "View Session Details",
-    linkHref: "/live",
+    linkHref: "/courses",
   },
   {
     id: "notif-3",

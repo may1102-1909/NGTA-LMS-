@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   BookOpen,
   Bell,
-  Video,
   Users,
   Trophy,
   Zap,
@@ -47,12 +46,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       icon: Bell,
       badge: "3",
       active: pathname === "/notifications",
-    },
-    {
-      label: "Live Classes",
-      href: "/live",
-      icon: Video,
-      active: pathname === "/live" || pathname === "/live-classes",
     },
     {
       label: "Community",

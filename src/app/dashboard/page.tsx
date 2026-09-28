@@ -246,7 +246,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <Link
-                href="/live"
+                href="/courses"
                 className="pt-2 text-[11px] text-[#EFFF4F] hover:underline flex items-center gap-1 font-bold"
               >
                 <span>View Session Details</span>

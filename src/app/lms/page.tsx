@@ -286,7 +286,7 @@ export default async function HomePage() {
                 <span className="w-2.5 h-2.5 rounded-full bg-[#EFFF4F] animate-ping"></span>
                 <span className="font-mono text-xs uppercase font-bold text-white">LIVE SDET BOOTCAMPS</span>
               </div>
-              <Link href="/live" className="font-mono text-xs text-[#EFFF4F] hover:underline">VIEW ALL</Link>
+              <Link href="/courses" className="font-mono text-xs text-[#EFFF4F] hover:underline">VIEW ALL</Link>
             </div>
 
             <div className="space-y-4">

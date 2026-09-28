@@ -55,7 +55,7 @@ export default function Footer() {
               PROGRAMS
             </div>
             <ul className="space-y-2 text-[#A0A5B5]">
-              <li><Link href="/live" className="hover:text-[#EFFF4F] transition-colors">Live SDET Bootcamps</Link></li>
+              <li><Link href="/courses" className="hover:text-[#EFFF4F] transition-colors">SDET Bootcamps</Link></li>
               <li><Link href="/community" className="hover:text-[#EFFF4F] transition-colors">Peer Code Review Channels</Link></li>
               <li><Link href="/verify" className="hover:text-[#EFFF4F] transition-colors">Certificate Verification</Link></li>
               <li><Link href="/courses" className="hover:text-[#EFFF4F] transition-colors">1-on-1 SDET Mentorship</Link></li>
