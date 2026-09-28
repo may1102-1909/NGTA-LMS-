@@ -31,6 +31,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { INITIAL_CHALLENGE_TASKS, ChallengeTask } from "@/lib/gamification";
+import ByteMascot from "@/components/challenge/ByteMascot";
 
 /* Subtle Web Audio Synthesizer for rich tactile feedback */
 function playAudioBlip(type: "click" | "check" | "run" | "success", soundEnabled = true) {
@@ -97,6 +98,10 @@ export default function ChallengePage() {
   const [activeCodeTab, setActiveCodeTab] = useState<"dataprovider" | "excel" | "pom" | "terminal">("terminal");
   const [copiedCode, setCopiedCode] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Duolingo Mascot Triggers
+  const [mascotOpenTrigger, setMascotOpenTrigger] = useState(0);
+  const [mascotStreakTrigger, setMascotStreakTrigger] = useState(0);
 
   // Acceptance criteria checkboxes state
   const [checkedCriteria, setCheckedCriteria] = useState<Record<number, boolean>>({
@@ -318,14 +323,33 @@ public void testDynamicAuthentication(String username, String password, String e
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Byte Mascot & Streak Triggers */}
+            <button
+              onClick={() => setMascotStreakTrigger((prev) => prev + 1)}
+              className="flex items-center gap-1 text-amber-400 font-bold bg-[#202023] px-2.5 py-1 rounded border border-amber-400/40 hover:bg-amber-400/10 transition-colors"
+              title="Click to check your streak status with Byte"
+            >
+              <Flame className="w-3.5 h-3.5 fill-current text-amber-400" />
+              <span>7d STREAK</span>
+            </button>
+
+            <button
+              onClick={() => setMascotOpenTrigger((prev) => prev + 1)}
+              className="flex items-center gap-1.5 text-[#EFFF4F] font-bold bg-[#202023] px-2.5 py-1 rounded border border-[#EFFF4F]/40 hover:bg-[#EFFF4F]/10 transition-colors"
+              title="Summon Byte the Mascot Coach"
+            >
+              <span>🦉 BYTE</span>
+              <span className="hidden sm:inline text-[10px] text-[#A0A5B5]">COACH</span>
+            </button>
+
             {/* Live Countdown */}
-            <div className="flex items-center gap-1.5 text-white font-bold bg-[#202023] px-3 py-1 rounded border border-[#3E3E43]">
+            <div className="flex items-center gap-1.5 text-white font-bold bg-[#202023] px-2.5 sm:px-3 py-1 rounded border border-[#3E3E43]">
               <Clock className="w-3.5 h-3.5 text-amber-400" />
               <span>
                 {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
               </span>
-              <span className="text-[10px] text-[#A0A5B5]">LEFT</span>
+              <span className="text-[10px] text-[#A0A5B5] hidden sm:inline">LEFT</span>
             </div>
 
             {/* Audio Toggle */}
@@ -628,9 +652,18 @@ public void testDynamicAuthentication(String username, String password, String e
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     <span>ACCEPTANCE CRITERIA:</span>
                   </h3>
-                  <span className="text-[11px] text-[#EFFF4F] font-bold">
-                    {criteriaCompletedCount}/4 COMPLETED
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setMascotOpenTrigger((prev) => prev + 1)}
+                      className="text-[10px] text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors flex items-center gap-1"
+                      title="Byte's coaching notes"
+                    >
+                      <span>🦉 Byte is evaluating</span>
+                    </button>
+                    <span className="text-[11px] text-[#EFFF4F] font-bold">
+                      {criteriaCompletedCount}/4 COMPLETED
+                    </span>
+                  </div>
                 </div>
 
                 <div className="space-y-2 font-mono text-xs">
@@ -984,6 +1017,19 @@ public void testDynamicAuthentication(String username, String password, String e
             </div>
           </div>
         </div>
+
+        {/* DUOLINGO-STYLE BYTE MASCOT COACH & POPUPS */}
+        <ByteMascot
+          currentDay={selectedDay}
+          completedCriteriaCount={criteriaCompletedCount}
+          totalCriteriaCount={criteriaList.length}
+          terminalRunning={terminalRunning}
+          pipelineState={pipelineState}
+          onTriggerRunTests={runTerminalTests}
+          soundEnabled={soundEnabled}
+          externalOpenTrigger={mascotOpenTrigger}
+          externalStreakTrigger={mascotStreakTrigger}
+        />
       </div>
     </div>
   );
