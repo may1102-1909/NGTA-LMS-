@@ -17,6 +17,7 @@ import {
   FileCode,
   Sparkles,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
 import RankTag from "@/components/gamification/RankTag";
 import { createBrowserClient } from "@supabase/ssr";
@@ -209,14 +210,60 @@ export default function LearnPlayerPage() {
         <div className="lg:col-span-8 flex flex-col bg-[#0C0E14] border-r border-[#3E3E43]">
           <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#3E3E43]">
             {activeLesson.type === "video" ? (
-              <video
-                ref={videoRef}
-                controls
-                src={activeLesson.videoUrl || "https://www.w3schools.com/html/mov_bbb.mp4"}
-                className="w-full h-full object-contain"
-                onTimeUpdate={(e) => setPlaybackTime(e.currentTarget.currentTime)}
-                onEnded={() => handleMarkCompleted(activeLesson.id)}
-              />
+              (() => {
+                const url = activeLesson.videoUrl || "";
+                const isDrive = url.includes("drive.google.com");
+                const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
+
+                if (isDrive) {
+                  const match =
+                    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                    url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                  const previewUrl =
+                    match && match[1]
+                      ? `https://drive.google.com/file/d/${match[1]}/preview`
+                      : url;
+
+                  return (
+                    <iframe
+                      src={previewUrl}
+                      className="w-full h-full border-0"
+                      allow="autoplay; encrypted-media; fullscreen"
+                      allowFullScreen
+                      title={activeLesson.title}
+                    />
+                  );
+                }
+
+                if (isYouTube) {
+                  const ytMatch = url.match(/(?:youtu\.be\/|watch\?v=)([a-zA-Z0-9_-]+)/);
+                  const embedUrl =
+                    ytMatch && ytMatch[1]
+                      ? `https://www.youtube.com/embed/${ytMatch[1]}`
+                      : url;
+
+                  return (
+                    <iframe
+                      src={embedUrl}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={activeLesson.title}
+                    />
+                  );
+                }
+
+                return (
+                  <video
+                    ref={videoRef}
+                    controls
+                    src={url || "https://www.w3schools.com/html/mov_bbb.mp4"}
+                    className="w-full h-full object-contain"
+                    onTimeUpdate={(e) => setPlaybackTime(e.currentTarget.currentTime)}
+                    onEnded={() => handleMarkCompleted(activeLesson.id)}
+                  />
+                );
+              })()
             ) : (
               <div className="p-8 text-center space-y-4">
                 <HelpCircle className="w-16 h-16 text-[#EFFF4F] mx-auto" />
@@ -250,6 +297,19 @@ export default function LearnPlayerPage() {
               </div>
 
               <div className="flex items-center gap-3">
+                {activeLesson.videoUrl && activeLesson.videoUrl.includes("drive.google.com") && (
+                  <a
+                    href={activeLesson.videoUrl.replace("/preview", "/view")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 font-mono text-xs text-[#A0A5B5] hover:text-[#EFFF4F] border border-[#3E3E43] hover:border-[#EFFF4F]/40 transition-colors flex items-center gap-1.5"
+                    title="Open full video in Google Drive"
+                  >
+                    <span>DRIVE SOURCE</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+
                 <button
                   onClick={() => handleMarkCompleted(activeLesson.id)}
                   className={`px-4 py-2 font-mono text-xs uppercase font-bold flex items-center gap-2 transition-colors border ${
