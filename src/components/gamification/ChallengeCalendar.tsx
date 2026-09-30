@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Filter,
   Check,
+  Gift,
 } from "lucide-react";
 import { ChallengeTask } from "@/lib/gamification";
 
@@ -204,7 +205,8 @@ export default function ChallengeCalendar({
           const isSelected = selectedDay === task.dayNumber;
           const isToday = task.dayNumber === todayDayNumber;
           const isAnimating = animatingDay === task.dayNumber;
-          const isBossDay = task.dayNumber % 7 === 0 || task.dayNumber === 30;
+          const isDay15 = task.dayNumber === 15;
+          const isBossDay = task.dayNumber === 7 || task.dayNumber === 21 || task.dayNumber === 30;
 
           return (
             <div
@@ -222,6 +224,8 @@ export default function ChallengeCalendar({
                   ? "border-emerald-500/40 bg-[#202722] hover:border-emerald-400 hover:bg-[#253028]"
                   : isToday
                   ? "border-amber-400/80 bg-gradient-to-b from-[#333338] via-[#2A2A2E] to-[#202024] ring-1 ring-amber-400/50 shadow-md hover:border-amber-300"
+                  : isDay15
+                  ? "border-amber-400/60 bg-gradient-to-b from-[#2E281C] via-[#252220] to-[#1E1E22] ring-1 ring-amber-400/40 shadow-sm hover:border-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]"
                   : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-75 hover:opacity-100"
               }`}
             >
@@ -234,31 +238,42 @@ export default function ChallengeCalendar({
               {isAnimating && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 animate-coin-burst whitespace-nowrap">
                   <span className="px-3 py-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black text-xs rounded-full shadow-[0_4px_18px_rgba(245,158,11,0.8)] border-2 border-white flex items-center gap-1.5">
-                    <span className="text-sm">🪙</span>
+                    <span className="text-sm">{isDay15 ? "🎁" : "🪙"}</span>
                     <span>+{task.pointsReward} PTS!</span>
-                    <Sparkles className="w-3.5 h-3.5 fill-current text-white" />
+                    {isDay15 ? (
+                      <Trophy className="w-3.5 h-3.5 fill-current text-[#18181B]" />
+                    ) : (
+                      <Sparkles className="w-3.5 h-3.5 fill-current text-white" />
+                    )}
                   </span>
                 </div>
               )}
 
-              {/* Top Row: Date Label (e.g. OCT 12) & Day Number badge */}
+              {/* Top Row: Date Label (e.g. OCT 15) & Day Number badge */}
               <div className="w-full flex items-center justify-between text-[10px]">
                 <span className="text-[#A0A5B5] font-mono">
                   {getDayDateLabel(task.dayNumber)}
                 </span>
-                <span
-                  className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold ${
-                    isAnimating
-                      ? "text-amber-300 bg-amber-400/20 font-black"
-                      : task.isCompleted
-                      ? "text-emerald-400 bg-emerald-500/10"
-                      : isToday
-                      ? "text-amber-400 bg-amber-500/15"
-                      : "text-[#5A5F70] bg-[#18181A]"
-                  }`}
-                >
-                  D{String(task.dayNumber).padStart(2, "0")}
-                </span>
+                {isDay15 && !task.isCompleted ? (
+                  <span className="font-mono text-[8px] px-1.5 py-0.2 rounded font-black bg-gradient-to-r from-amber-400 to-yellow-300 text-[#18181B] shadow-sm flex items-center gap-0.5">
+                    <Gift className="w-2.5 h-2.5" />
+                    <span>GIFT</span>
+                  </span>
+                ) : (
+                  <span
+                    className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold ${
+                      isAnimating
+                        ? "text-amber-300 bg-amber-400/20 font-black"
+                        : task.isCompleted
+                        ? "text-emerald-400 bg-emerald-500/10"
+                        : isToday
+                        ? "text-amber-400 bg-amber-500/15"
+                        : "text-[#5A5F70] bg-[#18181A]"
+                    }`}
+                  >
+                    D{String(task.dayNumber).padStart(2, "0")}
+                  </span>
+                )}
               </div>
 
               {/* Center: Big Prominent Calendar Date & Status Icon */}
@@ -283,7 +298,7 @@ export default function ChallengeCalendar({
                 <div className="flex items-center justify-center mt-0.5">
                   {isAnimating ? (
                     <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 text-[#18181B] font-black shadow-md border-2 border-white text-xs">
-                      🪙
+                      {isDay15 ? "🎁" : "🪙"}
                     </span>
                   ) : task.isCompleted ? (
                     <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50">
@@ -293,6 +308,11 @@ export default function ChallengeCalendar({
                     <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse">
                       <Flame className="w-3 h-3 fill-current" />
                     </span>
+                  ) : isDay15 ? (
+                    <div className="flex items-center gap-1 text-amber-400 animate-pulse" title="Day 15 Halfway Gift & Trophy (+50 PTS)">
+                      <Trophy className="w-4 h-4 text-amber-400" />
+                      <Gift className="w-3.5 h-3.5 text-yellow-300" />
+                    </div>
                   ) : isBossDay ? (
                     <Trophy className="w-3.5 h-3.5 text-amber-400/70" />
                   ) : (
@@ -309,6 +329,8 @@ export default function ChallengeCalendar({
                   className={`font-mono text-[9px] ${
                     isAnimating
                       ? "text-amber-300 font-bold"
+                      : isDay15
+                      ? "text-amber-300 font-black flex items-center gap-0.5"
                       : task.isCompleted
                       ? "text-emerald-400 font-bold"
                       : isToday
@@ -316,12 +338,12 @@ export default function ChallengeCalendar({
                       : "text-[#A0A5B5]"
                   }`}
                 >
-                  +{task.pointsReward}P
+                  +{task.pointsReward}P{isDay15 && " 🎁"}
                 </span>
 
                 {isAnimating ? (
                   <span className="animate-stamp bg-gradient-to-r from-amber-400 to-yellow-300 text-[#18181B] font-black text-[9px] px-1.5 py-0.2 rounded border border-white uppercase tracking-wider">
-                    FLIPPED!
+                    {isDay15 ? "UNLOCKED!" : "FLIPPED!"}
                   </span>
                 ) : task.isCompleted ? (
                   <span className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-black text-[9px] px-1.5 py-0.2 rounded border uppercase tracking-wider">
@@ -330,6 +352,10 @@ export default function ChallengeCalendar({
                 ) : isToday ? (
                   <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold text-[8px] px-1 py-0.2 rounded uppercase">
                     TODAY
+                  </span>
+                ) : isDay15 ? (
+                  <span className="text-[8px] font-black text-amber-300 bg-amber-400/15 px-1 py-0.2 rounded border border-amber-400/30 uppercase">
+                    HALFWAY
                   </span>
                 ) : (
                   <span className="text-[9px] text-[#5A5F70]">DAY {task.dayNumber}</span>

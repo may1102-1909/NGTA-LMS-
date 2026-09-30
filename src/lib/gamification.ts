@@ -627,7 +627,7 @@ export const INITIAL_CHALLENGE_TASKS: ChallengeTask[] = [
   { dayNumber: 12, title: "Actions API: Hover, Drag and Drop, Key sequences", commandSnippet: "new Actions(driver).moveToElement(el).perform();", isCompleted: false, pointsReward: 20 },
   { dayNumber: 13, title: "JavaScript Executor: DOM manipulation & forced clicks", commandSnippet: "((JavascriptExecutor) driver).executeScript(...)", isCompleted: false, pointsReward: 20 },
   { dayNumber: 14, title: "Page Object Model (POM) foundation without PageFactory", commandSnippet: "public class LoginPage { private final WebDriver driver; }", isCompleted: false, pointsReward: 25 },
-  { dayNumber: 15, title: "Page Factory pattern & CacheLookup annotations", commandSnippet: "@FindBy(id = \"login-btn\") private WebElement btn;", isCompleted: false, pointsReward: 25 },
+  { dayNumber: 15, title: "Page Factory pattern & CacheLookup annotations (Halfway Milestone Gift)", commandSnippet: "@FindBy(id = \"login-btn\") private WebElement btn;", isCompleted: false, pointsReward: 50 },
   { dayNumber: 16, title: "Data-Driven Testing: Apache POI Excel sheet reader", commandSnippet: "WorkbookFactory.create(new File(\"testdata.xlsx\"))", isCompleted: false, pointsReward: 30 },
   { dayNumber: 17, title: "JSON & YAML configuration test payload parser", commandSnippet: "ObjectMapper mapper = new ObjectMapper();", isCompleted: false, pointsReward: 30 },
   { dayNumber: 18, title: "TestNG Listeners: ITestListener screenshot on failure", commandSnippet: "public void onTestFailure(ITestResult result)", isCompleted: false, pointsReward: 30 },

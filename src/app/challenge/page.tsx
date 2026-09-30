@@ -23,6 +23,7 @@ import {
   Shield,
   Award,
   Users,
+  Gift,
 } from "lucide-react";
 import { INITIAL_CHALLENGE_TASKS, ChallengeTask } from "@/lib/gamification";
 import ChallengeCalendar from "@/components/gamification/ChallengeCalendar";
@@ -380,10 +381,18 @@ export default function ChallengePage() {
           </div>
 
           <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-            <span className="px-3.5 py-1.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold text-xs flex items-center gap-1.5 rounded-lg">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>BOUNTY: +{currentTask.pointsReward} PTS & 1 STREAK</span>
-            </span>
+            {selectedDay === 15 ? (
+              <span className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400/25 via-yellow-400/20 to-amber-500/25 border-2 border-amber-400 text-amber-300 font-bold text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.35)]">
+                <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
+                <Gift className="w-4 h-4 text-yellow-300 animate-bounce shrink-0" />
+                <span>HALFWAY MILESTONE: +{currentTask.pointsReward} PTS & POM ARCHITECT GIFT 🎁</span>
+              </span>
+            ) : (
+              <span className="px-3.5 py-1.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold text-xs flex items-center gap-1.5 rounded-lg">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>BOUNTY: +{currentTask.pointsReward} PTS & 1 STREAK</span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -577,11 +586,14 @@ export default function ChallengePage() {
               <div className="text-[9px] text-emerald-300">✔ UNLOCKED</div>
             </div>
 
-            <div className="p-3 border border-amber-400/40 bg-amber-400/10 rounded-lg space-y-1 text-center animate-pulse">
-              <div className="text-xl">⚡</div>
-              <div className="font-bold text-white text-xs">Day 15 Milestone</div>
-              <div className="text-[10px] text-amber-400 font-bold">POM ARCHITECT</div>
-              <div className="text-[9px] text-amber-300">3 DAYS REMAINING</div>
+            <div className="p-3 border-2 border-amber-400/60 bg-gradient-to-b from-amber-400/15 via-amber-400/5 to-transparent rounded-lg space-y-1 text-center shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+              <div className="text-xl flex items-center justify-center gap-1">
+                <span>🏆</span>
+                <span>🎁</span>
+              </div>
+              <div className="font-bold text-white text-xs">Day 15 Halfway Gift</div>
+              <div className="text-[10px] text-amber-400 font-black">+50 PTS & POM ARCHITECT</div>
+              <div className="text-[9px] text-amber-300 font-mono">3 DAYS REMAINING</div>
             </div>
 
             <div className="p-3 border border-[#3E3E43] bg-[#242427] rounded-lg space-y-1 text-center opacity-70">
