@@ -181,8 +181,8 @@ export default function ChallengeCalendar({
         ))}
       </div>
 
-      {/* 30-Day Calendar Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2.5 sm:gap-3">
+      {/* 30-Day Calendar Grid (Clean Date Cells without Task Titles) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2.5 sm:gap-3">
         {filteredTasks.map((task) => {
           const isSelected = selectedDay === task.dayNumber;
           const isToday = task.dayNumber === todayDayNumber;
@@ -196,21 +196,21 @@ export default function ChallengeCalendar({
                 onSelectDay(task.dayNumber);
                 playCalendarSound("click", soundEnabled);
               }}
-              className={`relative rounded-lg p-3 cursor-pointer transition-all duration-200 select-none overflow-hidden flex flex-col justify-between min-h-[110px] sm:min-h-[120px] border ${
+              className={`relative rounded-xl p-3 cursor-pointer transition-all duration-200 select-none overflow-hidden flex flex-col justify-between items-center text-center min-h-[92px] sm:min-h-[105px] border ${
                 isAnimating
-                  ? "animate-date-complete z-20 border-emerald-400 bg-emerald-950/60"
+                  ? "animate-date-complete z-20 border-emerald-400 bg-emerald-950/70"
                   : isSelected
-                  ? "border-[#EFFF4F] bg-[#38383D] ring-2 ring-[#EFFF4F]/40 shadow-lemon-sm scale-[1.02] z-10"
+                  ? "border-[#EFFF4F] bg-[#38383D] ring-2 ring-[#EFFF4F]/50 shadow-lemon-sm scale-[1.04] z-10"
                   : task.isCompleted
-                  ? "border-emerald-500/40 bg-[#222925] hover:border-emerald-400 hover:bg-[#26312a]"
+                  ? "border-emerald-500/40 bg-[#202722] hover:border-emerald-400 hover:bg-[#253028]"
                   : isToday
-                  ? "border-amber-400/80 bg-gradient-to-br from-[#333338] via-[#2A2A2E] to-[#202024] ring-1 ring-amber-400/50 shadow-md"
-                  : "border-[#3E3E43] bg-[#242427] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-80 hover:opacity-100"
+                  ? "border-amber-400/80 bg-gradient-to-b from-[#333338] via-[#2A2A2E] to-[#202024] ring-1 ring-amber-400/50 shadow-md hover:border-amber-300"
+                  : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-75 hover:opacity-100"
               }`}
             >
               {/* Subtle Ambient Ripple on Animation */}
               {isAnimating && (
-                <div className="absolute inset-0 bg-emerald-400/30 rounded-lg animate-ripple pointer-events-none" />
+                <div className="absolute inset-0 bg-emerald-400/30 rounded-xl animate-ripple pointer-events-none" />
               )}
 
               {/* Floating Points Burst on Completion */}
@@ -223,31 +223,44 @@ export default function ChallengeCalendar({
                 </div>
               )}
 
-              {/* Top Row: Date Badge & Status Indicator */}
-              <div className="flex items-center justify-between gap-1 mb-1.5">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`font-black text-xs ${
-                      task.isCompleted
-                        ? "text-emerald-400"
-                        : isToday
-                        ? "text-amber-400"
-                        : isSelected
-                        ? "text-[#EFFF4F]"
-                        : "text-white"
-                    }`}
-                  >
-                    D{String(task.dayNumber).padStart(2, "0")}
-                  </span>
-                  <span className="text-[10px] text-[#A0A5B5]">
-                    {getDayDateLabel(task.dayNumber)}
-                  </span>
-                </div>
+              {/* Top Row: Date Label (e.g. OCT 12) & Day Number badge */}
+              <div className="w-full flex items-center justify-between text-[10px]">
+                <span className="text-[#A0A5B5] font-mono">
+                  {getDayDateLabel(task.dayNumber)}
+                </span>
+                <span
+                  className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold ${
+                    task.isCompleted
+                      ? "text-emerald-400 bg-emerald-500/10"
+                      : isToday
+                      ? "text-amber-400 bg-amber-500/15"
+                      : "text-[#5A5F70] bg-[#18181A]"
+                  }`}
+                >
+                  D{String(task.dayNumber).padStart(2, "0")}
+                </span>
+              </div>
 
-                {/* Status Icon */}
-                <div>
+              {/* Center: Big Prominent Calendar Date & Status Icon */}
+              <div className="my-auto py-1 flex flex-col items-center justify-center gap-1">
+                <span
+                  className={`font-black text-xl sm:text-2xl tracking-tight leading-none ${
+                    task.isCompleted
+                      ? "text-emerald-300"
+                      : isToday
+                      ? "text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+                      : isSelected
+                      ? "text-[#EFFF4F]"
+                      : "text-white"
+                  }`}
+                >
+                  {String(task.dayNumber).padStart(2, "0")}
+                </span>
+
+                {/* Status Indicator Icon */}
+                <div className="flex items-center justify-center mt-0.5">
                   {task.isCompleted ? (
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50">
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                   ) : isToday ? (
@@ -255,45 +268,29 @@ export default function ChallengeCalendar({
                       <Flame className="w-3 h-3 fill-current" />
                     </span>
                   ) : isBossDay ? (
-                    <Trophy className="w-3.5 h-3.5 text-amber-400/80" />
+                    <Trophy className="w-3.5 h-3.5 text-amber-400/70" />
                   ) : (
-                    <span className="text-[10px] text-[#5A5F70]">
+                    <span className="text-[#5A5F70]">
                       <Lock className="w-3 h-3" />
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Center: Challenge Title Snippet */}
-              <div className="py-1">
-                <p
-                  className={`text-[11px] font-sans leading-tight line-clamp-2 ${
-                    task.isCompleted
-                      ? "text-emerald-200/90 font-medium"
-                      : isToday
-                      ? "text-white font-bold"
-                      : "text-[#A0A5B5]"
-                  }`}
-                >
-                  {task.title}
-                </p>
-              </div>
-
-              {/* Bottom Row: Points Reward & Dynamic Stamp */}
-              <div className="pt-2 border-t border-[#3E3E43]/40 flex items-center justify-between text-[10px]">
+              {/* Bottom Row: Points Reward & Completed Stamp */}
+              <div className="w-full pt-1.5 border-t border-[#3E3E43]/50 flex items-center justify-between text-[10px]">
                 <span
-                  className={
+                  className={`font-mono text-[9px] ${
                     task.isCompleted
                       ? "text-emerald-400 font-bold"
                       : isToday
                       ? "text-amber-400 font-bold"
                       : "text-[#A0A5B5]"
-                  }
+                  }`}
                 >
-                  +{task.pointsReward} PTS
+                  +{task.pointsReward}P
                 </span>
 
-                {/* Animated Completed Stamp Badge */}
                 {task.isCompleted ? (
                   <span
                     className={`font-black text-[9px] px-1.5 py-0.2 rounded border uppercase tracking-wider ${
@@ -302,11 +299,11 @@ export default function ChallengeCalendar({
                         : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
                     }`}
                   >
-                    ✔ DONE
+                    ✔
                   </span>
                 ) : isToday ? (
-                  <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold text-[9px] px-1.5 py-0.2 rounded">
-                    ACTIVE
+                  <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold text-[8px] px-1 py-0.2 rounded uppercase">
+                    TODAY
                   </span>
                 ) : (
                   <span className="text-[9px] text-[#5A5F70]">DAY {task.dayNumber}</span>
