@@ -6,6 +6,7 @@ import { Terminal, Check, Square, ChevronDown, ChevronUp } from "lucide-react";
 
 interface ChallengeStepLogProps {
   tasks?: ChallengeTask[];
+  streakDays?: number;
   onTaskToggle?: (dayNumber: number) => void;
   maxVisible?: number;
   className?: string;
@@ -13,11 +14,28 @@ interface ChallengeStepLogProps {
 
 export default function ChallengeStepLog({
   tasks = INITIAL_CHALLENGE_TASKS,
+  streakDays,
   onTaskToggle,
   maxVisible = 10,
   className = "",
 }: ChallengeStepLogProps) {
-  const [taskList, setTaskList] = useState<ChallengeTask[]>(tasks);
+  const [taskList, setTaskList] = useState<ChallengeTask[]>(() => {
+    if (typeof streakDays === "number" && streakDays > 0) {
+      return tasks.map((t) => ({ ...t, isCompleted: t.dayNumber <= streakDays }));
+    }
+    return tasks;
+  });
+
+  React.useEffect(() => {
+    if (typeof streakDays === "number") {
+      setTaskList((prev) =>
+        prev.map((t) => ({
+          ...t,
+          isCompleted: streakDays > 0 && t.dayNumber <= streakDays,
+        }))
+      );
+    }
+  }, [streakDays]);
   const [showAll, setShowAll] = useState(false);
   const [selectedTask, setSelectedTask] = useState<ChallengeTask | null>(null);
 

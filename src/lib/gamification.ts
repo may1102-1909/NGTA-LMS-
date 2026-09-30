@@ -613,13 +613,13 @@ export const INITIAL_LEADERBOARD: Record<"WEEK" | "MONTH" | "ALL_TIME", Leaderbo
 
 // 30-Day SDET Challenge Tasks
 export const INITIAL_CHALLENGE_TASKS: ChallengeTask[] = [
-  { dayNumber: 1, title: "Install Java JDK 21 & Verify environment PATH", commandSnippet: "javac -version", isCompleted: true, pointsReward: 10 },
-  { dayNumber: 2, title: "First program & JVM memory configuration", commandSnippet: "java -XshowSettings:vm Main", isCompleted: true, pointsReward: 10 },
-  { dayNumber: 3, title: "Variables, Primitive Types & Memory allocations", commandSnippet: "byte/short/int/long/float/double", isCompleted: true, pointsReward: 10 },
-  { dayNumber: 4, title: "Control Flow, Branching & Loops", commandSnippet: "switch-case pattern matching", isCompleted: true, pointsReward: 10 },
-  { dayNumber: 5, title: "OOP Architecture: Inheritance, Polymorphism, Abstract classes", commandSnippet: "abstract class BaseDriver", isCompleted: true, pointsReward: 15 },
-  { dayNumber: 6, title: "Maven POM dependencies & TestNG XML Suite runner", commandSnippet: "mvn clean test -DsuiteXmlFile=testng.xml", isCompleted: true, pointsReward: 15 },
-  { dayNumber: 7, title: "First Selenium WebDriver script with Chromium", commandSnippet: "WebDriver driver = new ChromeDriver();", isCompleted: true, pointsReward: 25 },
+  { dayNumber: 1, title: "Install Java JDK 21 & Verify environment PATH", commandSnippet: "javac -version", isCompleted: false, pointsReward: 10 },
+  { dayNumber: 2, title: "First program & JVM memory configuration", commandSnippet: "java -XshowSettings:vm Main", isCompleted: false, pointsReward: 10 },
+  { dayNumber: 3, title: "Variables, Primitive Types & Memory allocations", commandSnippet: "byte/short/int/long/float/double", isCompleted: false, pointsReward: 10 },
+  { dayNumber: 4, title: "Control Flow, Branching & Loops", commandSnippet: "switch-case pattern matching", isCompleted: false, pointsReward: 10 },
+  { dayNumber: 5, title: "OOP Architecture: Inheritance, Polymorphism, Abstract classes", commandSnippet: "abstract class BaseDriver", isCompleted: false, pointsReward: 15 },
+  { dayNumber: 6, title: "Maven POM dependencies & TestNG XML Suite runner", commandSnippet: "mvn clean test -DsuiteXmlFile=testng.xml", isCompleted: false, pointsReward: 15 },
+  { dayNumber: 7, title: "First Selenium WebDriver script with Chromium", commandSnippet: "WebDriver driver = new ChromeDriver();", isCompleted: false, pointsReward: 25 },
   { dayNumber: 8, title: "Locators: Advanced XPath axes & CSS Selectors", commandSnippet: "//div[contains(@class,'card')]//following-sibling::button", isCompleted: false, pointsReward: 15 },
   { dayNumber: 9, title: "Dynamic Synchronization: Explicit Waits vs Fluent Wait", commandSnippet: "new WebDriverWait(driver, Duration.ofSeconds(10))", isCompleted: false, pointsReward: 15 },
   { dayNumber: 10, title: "Handling Select dropdowns, Alerts & Modal dialogues", commandSnippet: "Select select = new Select(element);", isCompleted: false, pointsReward: 15 },

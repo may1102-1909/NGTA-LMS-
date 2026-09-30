@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Course } from "@/types";
-import { Star, ArrowUpRight, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Star, ArrowUpRight, ArrowRight, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
 import RazorpayCheckoutButton from "@/components/RazorpayCheckoutButton";
 
@@ -23,6 +23,7 @@ export default function CourseCard({
 }: CourseCardProps) {
   const router = useRouter();
   const [isEnrolled, setIsEnrolled] = useState<boolean>(initialIsEnrolled);
+  const [progressPercent, setProgressPercent] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(initialUserId);
 
@@ -57,12 +58,17 @@ export default function CourseCard({
           if (res.ok) {
             const data = await res.json();
             setIsEnrolled(Boolean(data.isEnrolled));
+            if (data.enrollment) {
+              setProgressPercent(data.enrollment.progress_percent ?? 0);
+            }
           } else {
             setIsEnrolled(false);
+            setProgressPercent(0);
           }
         } else {
           setUserId(null);
           setIsEnrolled(false);
+          setProgressPercent(0);
         }
       } catch (err) {
         console.error("Error checking live enrollment session:", err);
@@ -143,8 +149,21 @@ export default function CourseCard({
             alt={course.title}
             className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-300"
           />
-          <div className="absolute top-3 left-3 bg-[#28282B]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43]">
-            {course.category}
+          <div className="absolute top-3 left-3 flex items-center gap-2">
+            <div className="bg-[#28282B]/90 text-[#EFFF4F] font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43]">
+              {course.category}
+            </div>
+            {isEnrolled ? (
+              <div className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono text-[10px] uppercase font-bold px-2 py-0.5 flex items-center gap-1 shadow-sm">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Enrolled</span>
+              </div>
+            ) : (
+              <div className="bg-[#28282B]/90 text-[#A0A5B5] border border-[#3E3E43] font-mono text-[10px] uppercase font-bold px-2 py-0.5 flex items-center gap-1">
+                <Lock className="w-3 h-3 text-[#5A5F70]" />
+                <span>Locked</span>
+              </div>
+            )}
           </div>
           <div className="absolute top-3 right-3 bg-[#333336] text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[#3E3E43] flex items-center gap-1">
             <Star className="w-3 h-3 text-[#EFFF4F] fill-[#EFFF4F]" />
@@ -197,6 +216,22 @@ export default function CourseCard({
               </span>
             ))}
           </div>
+
+          {/* Real progress calculation: (completed_modules / total_modules) * 100 */}
+          {isEnrolled && (
+            <div className="pt-3 border-t border-[#3E3E43] space-y-1.5">
+              <div className="flex justify-between items-center font-mono text-[11px]">
+                <span className="text-[#A0A5B5]">Course Progress</span>
+                <span className="font-bold text-[#EFFF4F]">{progressPercent}% Completed</span>
+              </div>
+              <div className="w-full h-1.5 bg-[#202023] border border-[#3E3E43] overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-[#EFFF4F] transition-all duration-300"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -233,6 +268,10 @@ export default function CourseCard({
           </div>
         ) : (
           <div className="flex items-center gap-2">
+            <span className="px-2.5 py-1.5 bg-[#202023] border border-[#3E3E43] text-[#A0A5B5] font-mono text-xs font-bold flex items-center gap-1">
+              <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+              <span>LOCKED</span>
+            </span>
             <RazorpayCheckoutButton
               courseId={course.id}
               courseTitle={course.title}

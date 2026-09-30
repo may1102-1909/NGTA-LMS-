@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { LeaderboardEntry, INITIAL_LEADERBOARD } from "@/lib/gamification";
+import { LeaderboardEntry } from "@/lib/gamification";
 import { ArrowUpDown, Users, Award, Flame, CheckCircle2 } from "lucide-react";
 
 interface LeaderboardTableProps {
@@ -18,8 +18,29 @@ export default function LeaderboardTable({
   const [cohortFilter, setCohortFilter] = useState<string>("ALL");
   const [sortField, setSortField] = useState<"rank" | "points" | "streakDays">("rank");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [dbEntries, setDbEntries] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const rawEntries = INITIAL_LEADERBOARD[activeTab] || [];
+  useEffect(() => {
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch("/api/leaderboard");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.entries)) {
+            setDbEntries(data.entries);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load leaderboard from database:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLeaderboard();
+  }, []);
+
+  const rawEntries = dbEntries;
 
   const filteredAndSortedEntries = useMemo(() => {
     let list = [...rawEntries];
@@ -152,8 +173,17 @@ export default function LeaderboardTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-[#3E3E43]">
-            {filteredAndSortedEntries.map((entry) => {
-              const isFirst = entry.rank === 1;
+            {filteredAndSortedEntries.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-[#5A5F70] text-xs font-mono">
+                  {loading
+                    ? "Loading engineering rankings..."
+                    : "No students on the leaderboard yet. Start learning to claim rank #1!"}
+                </td>
+              </tr>
+            ) : (
+              filteredAndSortedEntries.map((entry) => {
+                const isFirst = entry.rank === 1;
               const isSecond = entry.rank === 2;
               const isThird = entry.rank === 3;
 
@@ -245,7 +275,7 @@ export default function LeaderboardTable({
                   </td>
                 </tr>
               );
-            })}
+            }))}
           </tbody>
         </table>
       </div>

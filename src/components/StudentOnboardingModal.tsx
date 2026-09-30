@@ -256,11 +256,10 @@ export default function StudentOnboardingModal({
                     key={avatar.id}
                     type="button"
                     onClick={() => setSelectedAvatar(avatar.url)}
-                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all p-0.5 group focus:outline-none ${
-                      isSelected
-                        ? "border-[#EFFF4F] ring-2 ring-[#EFFF4F] shadow-lemon-sm scale-105 bg-[#EFFF4F]/10"
-                        : "border-white/10 hover:border-white/40 bg-neutral-900/60 hover:scale-100"
-                    }`}
+                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all p-0.5 group focus:outline-none ${isSelected
+                      ? "border-[#EFFF4F] ring-2 ring-[#EFFF4F] shadow-lemon-sm scale-105 bg-[#EFFF4F]/10"
+                      : "border-white/10 hover:border-white/40 bg-neutral-900/60 hover:scale-100"
+                      }`}
                     title={avatar.label}
                   >
                     <Image

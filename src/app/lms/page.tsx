@@ -45,22 +45,30 @@ export default async function HomePage() {
       const { data } = await supabase.auth.getUser();
       user = data?.user || null;
 
-      // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
+      // Query Database for Enrollment: Check if an active record exists in enrollments or payments
       if (user?.id) {
-        for (const course of INITIAL_COURSES) {
-          const courseId = course.id;
-          try {
-            const payment = await prisma.payments.findFirst({
-              where: {
-                user_id: user.id,
-                course_id: courseId,
-                status: "SUCCESS",
-              },
-            });
-            enrollmentMap[courseId] = !!payment;
-          } catch (dbErr) {
-            console.error(`Database error checking enrollment for ${courseId}:`, dbErr);
+        try {
+          const [userEnrollments, userPayments] = await Promise.all([
+            prisma.enrollments.findMany({
+              where: { user_id: user.id, status: "ACTIVE" },
+              select: { course_id: true },
+            }),
+            prisma.payments.findMany({
+              where: { user_id: user.id, status: "SUCCESS" },
+              select: { course_id: true },
+            }),
+          ]);
+
+          const enrolledIds = new Set([
+            ...userEnrollments.map((e: any) => e.course_id),
+            ...userPayments.map((p: any) => p.course_id),
+          ]);
+
+          for (const course of INITIAL_COURSES) {
+            enrollmentMap[course.id] = enrolledIds.has(course.id);
           }
+        } catch (dbErr) {
+          console.error("Database error checking enrollments on LMS page:", dbErr);
         }
       }
     }

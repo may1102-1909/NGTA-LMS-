@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { DayStreak, INITIAL_STREAK_DAYS, INITIAL_30_DAY_STREAK } from "@/lib/gamification";
+import React, { useState, useMemo } from "react";
+import { DayStreak } from "@/lib/gamification";
 
 interface StreakGridProps {
   currentStreakDays?: number;
@@ -14,17 +14,36 @@ interface StreakGridProps {
 }
 
 export default function StreakGrid({
-  currentStreakDays = 7,
-  longestStreakDays = 14,
-  streakActive = true,
-  sevenDayStreaks = INITIAL_STREAK_DAYS,
-  thirtyDayStreaks = INITIAL_30_DAY_STREAK,
+  currentStreakDays = 0,
+  longestStreakDays,
+  streakActive,
+  sevenDayStreaks,
+  thirtyDayStreaks,
   compact = false,
   className = "",
 }: StreakGridProps) {
   const [viewMode, setViewMode] = useState<"7D" | "30D">("7D");
 
-  const displayData = viewMode === "7D" ? sevenDayStreaks : thirtyDayStreaks;
+  const isActuallyActive = streakActive !== undefined ? streakActive : currentStreakDays > 0;
+  const bestStreak = longestStreakDays !== undefined ? longestStreakDays : currentStreakDays;
+
+  const dynamic7DayStreaks: DayStreak[] = useMemo(() => {
+    if (sevenDayStreaks) return sevenDayStreaks;
+    const days = ["M", "T", "W", "T", "F", "S", "S"];
+    return days.map((dayLabel, idx) => {
+      const active = currentStreakDays > 0 && idx >= Math.max(0, 7 - currentStreakDays);
+      const isToday = idx === 6;
+      return {
+        date: `Day ${idx + 1}`,
+        dayLabel,
+        active,
+        isToday,
+        pointsEarned: active ? 50 : 0,
+      };
+    });
+  }, [sevenDayStreaks, currentStreakDays]);
+
+  const displayData = dynamic7DayStreaks;
 
   return (
     <div className={`font-mono text-xs space-y-2.5 ${className}`}>
@@ -33,13 +52,13 @@ export default function StreakGrid({
         <div className="flex items-center gap-2">
           <span
             className={`inline-block w-2 h-2 ${
-              streakActive
+              isActuallyActive
                 ? "bg-[#EFFF4F] shadow-[0_0_6px_rgba(239,255,79,0.8)]"
                 : "bg-[#5A5F70]"
             }`}
           />
           <span className="font-bold text-white uppercase tracking-tight">
-            {currentStreakDays}-DAY LEARNING STREAK {streakActive ? "ACTIVE" : "INACTIVE"}
+            {currentStreakDays}-DAY LEARNING STREAK {isActuallyActive ? "ACTIVE" : "INACTIVE"}
           </span>
         </div>
 
@@ -124,7 +143,7 @@ export default function StreakGrid({
             <span>TODAY</span>
           </div>
           <div>
-            BEST: <strong className="text-white">{longestStreakDays} DAYS</strong>
+            BEST: <strong className="text-white">{bestStreak} DAYS</strong>
           </div>
         </div>
       </div>

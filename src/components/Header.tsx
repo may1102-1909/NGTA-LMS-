@@ -22,6 +22,8 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
   const [studentProfile, setStudentProfile] = useState<{
     username: string;
     avatar_url: string;
+    xp_points: number;
+    current_streak: number;
   } | null>(null);
 
   useEffect(() => {
@@ -42,13 +44,22 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
           const res = await fetch(`/api/student-profile?userId=${user.id}`);
           if (res.ok) {
             const data = await res.json();
-            if (data.profile && isMounted) {
+            if (isMounted) {
               setStudentProfile({
-                username: data.profile.username,
-                avatar_url: data.profile.avatar_url,
+                username: data.profile?.username || "",
+                avatar_url: data.profile?.avatar_url || "",
+                xp_points: data.profile?.xp_points ?? data.xp_points ?? 0,
+                current_streak: data.profile?.current_streak ?? data.current_streak ?? 0,
               });
             }
           }
+        } else if (isMounted) {
+          setStudentProfile({
+            username: "",
+            avatar_url: "",
+            xp_points: 0,
+            current_streak: 0,
+          });
         }
       } catch (err) {
         console.warn("Could not load student profile in Header:", err);
@@ -60,10 +71,12 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
     // Listen to real-time persona updates from onboarding modal
     const handleProfileUpdate = (e: any) => {
       if (e.detail && isMounted) {
-        setStudentProfile({
-          username: e.detail.username,
-          avatar_url: e.detail.avatar_url,
-        });
+        setStudentProfile((prev) => ({
+          username: e.detail.username || prev?.username || "",
+          avatar_url: e.detail.avatar_url || prev?.avatar_url || "",
+          xp_points: e.detail.xp_points ?? prev?.xp_points ?? 0,
+          current_streak: e.detail.current_streak ?? prev?.current_streak ?? 0,
+        }));
       }
     };
 
@@ -105,13 +118,16 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
             {/* Streak Badge */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full font-bold text-[11px]">
               <Flame className="w-3.5 h-3.5 fill-orange-400" />
-              <span>1 Days</span>
+              <span>
+                {studentProfile?.current_streak ?? 0}{" "}
+                {(studentProfile?.current_streak ?? 0) === 1 ? "Day" : "Days"}
+              </span>
             </div>
 
             {/* XP Badge */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] rounded-full font-bold text-[11px] shadow-lemon-sm">
               <Zap className="w-3.5 h-3.5 fill-[#EFFF4F]" />
-              <span>4220 XP</span>
+              <span>{studentProfile?.xp_points ?? 0} XP</span>
             </div>
 
             {/* Notifications Button */}
@@ -145,7 +161,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
                   </div>
                   <div className="py-2 space-y-2 text-[#A0A5B5]">
                     <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
-                      <span className="font-bold text-white">Daily Streak Active:</span> Keep your streak going by finishing Module 1.2 today.
+                      <span className="font-bold text-white">Daily Streak Active:</span> Keep your streak going by finishing a lesson today.
                     </div>
                     <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
                       <span className="font-bold text-white">Live SDET Bootcamp:</span> Starts this Saturday at 10:00 AM IST.
@@ -187,7 +203,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
                 )}
               </div>
               <span className="font-bold text-white text-[11px] font-mono group-hover:text-[#EFFF4F] transition-colors truncate max-w-[110px] hidden sm:inline">
-                @{studentProfile?.username || "GigaChad_Dev"}
+                @{studentProfile?.username || "Learner"}
               </span>
             </Link>
           </div>

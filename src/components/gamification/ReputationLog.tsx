@@ -8,14 +8,16 @@ import { ChevronDown, ChevronUp, History } from "lucide-react";
 
 interface ReputationLogProps {
   totalPoints?: number;
+  currentStreakDays?: number;
   events?: GamificationPoint[];
   showStreakGrid?: boolean;
   className?: string;
 }
 
 export default function ReputationLog({
-  totalPoints = 420,
-  events = INITIAL_REPUTATION_LOG,
+  totalPoints = 0,
+  currentStreakDays = 0,
+  events = [],
   showStreakGrid = true,
   className = "",
 }: ReputationLogProps) {
@@ -62,7 +64,7 @@ export default function ReputationLog({
       {/* Component 3: STREAK GRID */}
       {showStreakGrid && (
         <div className="pt-1 border-t border-[#3E3E43]">
-          <StreakGrid currentStreakDays={7} streakActive={true} />
+          <StreakGrid currentStreakDays={currentStreakDays} streakActive={currentStreakDays > 0} />
         </div>
       )}
 
@@ -78,7 +80,12 @@ export default function ReputationLog({
             isExpanded ? "max-h-64" : "max-h-36"
           }`}
         >
-          {events.map((entry) => (
+          {events.length === 0 ? (
+            <div className="py-6 text-center text-[#5A5F70] text-xs">
+              No activity history logged yet. Complete lessons or challenges to earn points!
+            </div>
+          ) : (
+            events.map((entry) => (
             <div
               key={entry.id}
               className="pt-1.5 first:pt-0 flex items-baseline justify-between gap-2 text-[11px] leading-snug font-mono"
@@ -100,7 +107,7 @@ export default function ReputationLog({
                 {entry.timestamp}
               </span>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>

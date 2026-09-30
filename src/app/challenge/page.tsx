@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { INITIAL_CHALLENGE_TASKS, ChallengeTask } from "@/lib/gamification";
 import ChallengeCalendar from "@/components/gamification/ChallengeCalendar";
+import { createBrowserClient } from "@supabase/ssr";
 
 /* Subtle Web Audio synthesizer for tactile feedback */
 function playAudioBlip(type: "click" | "check" | "success" | "celebrate", soundEnabled = true) {
@@ -80,37 +81,78 @@ function playAudioBlip(type: "click" | "check" | "success" | "celebrate", soundE
 }
 
 export default function ChallengePage() {
-  // Tasks list (Days 1 to 30)
-  // Default: Days 1-11 are completed, Day 12 is active today
+  // Tasks list (Days 1 to 30) - Safe default zero completed
   const [tasks, setTasks] = useState<ChallengeTask[]>(() => {
     return INITIAL_CHALLENGE_TASKS.map((t) => ({
       ...t,
-      isCompleted: t.dayNumber < 12,
+      isCompleted: false,
     }));
   });
 
-  const [selectedDay, setSelectedDay] = useState<number>(12);
+  const [selectedDay, setSelectedDay] = useState<number>(1);
   const [animatingDay, setAnimatingDay] = useState<number | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [showDay30Victory, setShowDay30Victory] = useState(false);
 
-  // Dynamic user stats
-  const [streakCount, setStreakCount] = useState(7);
-  const [totalPoints, setTotalPoints] = useState(420);
+  // Dynamic user stats initialized to 0 for new signups
+  const [streakCount, setStreakCount] = useState<number>(0);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+
+  // Fetch real user gamification stats from Supabase
+  useEffect(() => {
+    let isMounted = true;
+    async function loadUserGamification() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user?.id) {
+          const res = await fetch(`/api/student-profile?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (isMounted) {
+              const streak = data.profile?.current_streak ?? data.current_streak ?? 0;
+              const xp = data.profile?.xp_points ?? data.xp_points ?? 0;
+              setStreakCount(streak);
+              setTotalPoints(xp);
+
+              // Dynamically mark tasks completed based on live streak
+              if (streak > 0) {
+                setTasks((prev) =>
+                  prev.map((t) => ({
+                    ...t,
+                    isCompleted: t.dayNumber <= streak,
+                  }))
+                );
+                setSelectedDay(Math.min(30, streak + 1));
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load gamification in challenge page:", err);
+      }
+    }
+    loadUserGamification();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Submission State
   const [submissionUrl, setSubmissionUrl] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [justCelebrated, setJustCelebrated] = useState(false);
 
-  // Acceptance criteria checkboxes for selected day
-  const [checkedCriteria, setCheckedCriteria] = useState<Record<number, boolean>>({
-    0: true,
-    1: true,
-    2: false,
-    3: false,
-  });
+  // Acceptance criteria checkboxes for selected day (default: empty for real action tracking)
+  const [checkedCriteria, setCheckedCriteria] = useState<Record<number, boolean>>({});
 
   // Daily countdown timer (to midnight)
   const [timeLeft, setTimeLeft] = useState({ hours: 7, minutes: 34, seconds: 12 });

@@ -40,8 +40,24 @@ export default function DashboardPage() {
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [credentialsFilter, setCredentialsFilter] = useState<"ALL" | "CERTIFICATE" | "BADGE">("ALL");
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([]);
+  const [enrollmentDetails, setEnrollmentDetails] = useState<
+    { course_id: string; completed_modules: number; total_modules: number; progress_percent: number }[]
+  >([]);
+  const [userStats, setUserStats] = useState<{
+    name: string;
+    username: string;
+    xp_points: number;
+    current_streak: number;
+    role: string;
+  }>({
+    name: "Learner",
+    username: "learner",
+    xp_points: 0,
+    current_streak: 0,
+    role: "STUDENT",
+  });
 
-  // Fetch logged-in user's active enrollments from Supabase database
+  // Fetch logged-in user's active enrollments and gamification stats from Supabase
   useEffect(() => {
     async function checkUserEnrollments() {
       try {
@@ -55,13 +71,37 @@ export default function DashboardPage() {
         } = await supabase.auth.getUser();
 
         if (user?.id) {
-          const res = await fetch(`/api/payments/verify?userId=${user.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (Array.isArray(data.enrolledCourseIds)) {
-              setEnrolledCourseIds(data.enrolledCourseIds);
-            }
+          const profilePromise = fetch(`/api/student-profile?userId=${user.id}`).then((r) =>
+            r.ok ? r.json() : null
+          );
+          const paymentPromise = fetch(`/api/payments/verify?userId=${user.id}`).then((r) =>
+            r.ok ? r.json() : null
+          );
+
+          const [profileData, paymentData] = await Promise.all([profilePromise, paymentPromise]);
+
+          if (paymentData?.enrolledCourseIds && Array.isArray(paymentData.enrolledCourseIds)) {
+            setEnrolledCourseIds(paymentData.enrolledCourseIds);
           }
+          if (paymentData?.enrollments && Array.isArray(paymentData.enrollments)) {
+            setEnrollmentDetails(paymentData.enrollments);
+          }
+
+          const rawFullName =
+            user.user_metadata?.full_name ||
+            profileData?.profile?.username ||
+            user.email?.split("@")[0] ||
+            "Learner";
+          const rawUsername =
+            profileData?.profile?.username || user.email?.split("@")[0] || "learner";
+
+          setUserStats({
+            name: rawFullName,
+            username: rawUsername,
+            xp_points: profileData?.profile?.xp_points ?? profileData?.xp_points ?? 0,
+            current_streak: profileData?.profile?.current_streak ?? profileData?.current_streak ?? 0,
+            role: profileData?.role || "STUDENT",
+          });
         }
       } catch (err) {
         console.warn("Could not check enrollments in dashboard:", err);
@@ -72,6 +112,14 @@ export default function DashboardPage() {
   }, []);
 
   const isHeroCourseEnrolled = enrolledCourseIds.includes("course-1");
+  const heroEnrollment = enrollmentDetails.find((e) => e.course_id === "course-1");
+  const heroCompleted = heroEnrollment?.completed_modules ?? 0;
+  const heroTotal = heroEnrollment?.total_modules ?? 10;
+  const heroProgress =
+    isHeroCourseEnrolled && heroTotal > 0
+      ? Math.round((heroCompleted / heroTotal) * 100)
+      : 0;
+
   const enrolledCourses = INITIAL_COURSES.filter((c) =>
     enrolledCourseIds.includes(c.id)
   );
@@ -143,7 +191,7 @@ export default function DashboardPage() {
                 <span>Daily Goal: Complete 1 Lesson</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-                <span>Welcome back, Aarav</span>
+                <span>Welcome back, {userStats.name}</span>
                 <span className="text-xl sm:text-2xl">👋</span>
               </h2>
               <p className="text-sm text-[#A0A5B5] max-w-2xl font-sans">
@@ -187,16 +235,16 @@ export default function DashboardPage() {
                   Selenium with Java – AI Integrated Masterclass
                 </h3>
 
-                {/* Progress Bar */}
+                {/* Progress Bar calculated dynamically */}
                 <div className="space-y-1.5 max-w-xl">
                   <div className="flex justify-between items-center text-xs font-mono">
                     <span className="text-[#A0A5B5]">Course Progress</span>
-                    <span className="font-bold text-[#EFFF4F]">72% Completed</span>
+                    <span className="font-bold text-[#EFFF4F]">{heroProgress}% Completed</span>
                   </div>
                   <div className="w-full h-2.5 bg-[#28282B] rounded-full overflow-hidden border border-[#3E3E43]">
                     <div
                       className="h-full bg-gradient-to-r from-cyan-400 to-[#EFFF4F] rounded-full transition-all duration-500"
-                      style={{ width: "72%" }}
+                      style={{ width: `${heroProgress}%` }}
                     />
                   </div>
                 </div>
@@ -315,8 +363,14 @@ export default function DashboardPage() {
                 <div className="flex justify-between items-center text-[#5A5F70] uppercase">
                   <span>ENROLLED COURSES</span>
                 </div>
-                <div className="text-3xl font-black text-white tabular-nums">02 ACTIVE</div>
-                <div className="text-[11px] text-[#5A5F70]">1 In-Progress • 1 Completed</div>
+                <div className="text-3xl font-black text-white tabular-nums">
+                  {String(enrolledCourses.length).padStart(2, "0")} ACTIVE
+                </div>
+                <div className="text-[11px] text-[#5A5F70]">
+                  {enrolledCourses.length > 0
+                    ? `${enrolledCourses.length} In-Progress`
+                    : "0 Enrolled Courses"}
+                </div>
               </div>
 
               {/* Learner Profile Drawer Toggle */}
@@ -338,14 +392,16 @@ export default function DashboardPage() {
               </div>
 
               <div className="flex flex-wrap items-baseline gap-2.5">
-                <div className="text-3xl font-black text-[#EFFF4F] tabular-nums">420 PTS</div>
-                <RankTag points={420} size="sm" />
+                <div className="text-3xl font-black text-[#EFFF4F] tabular-nums">
+                  {userStats.xp_points} PTS
+                </div>
+                <RankTag points={userStats.xp_points} size="sm" />
               </div>
 
-              <StreakGrid currentStreakDays={7} compact={true} />
+              <StreakGrid currentStreakDays={userStats.current_streak} compact={true} />
 
               <div className="pt-2 border-t border-[#3E3E43]">
-                <ReputationLog totalPoints={420} showStreakGrid={false} />
+                <ReputationLog totalPoints={userStats.xp_points} showStreakGrid={false} />
               </div>
             </div>
 
@@ -417,23 +473,31 @@ export default function DashboardPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="border border-[#3E3E43] bg-[#28282B] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">CANDIDATE</div>
-                  <div className="font-bold text-white text-sm">Tanmay Sharma</div>
-                  <div className="text-[#5A5F70] text-[10px]">@tanmay.sdet</div>
+                  <div className="font-bold text-white text-sm truncate">{userStats.name}</div>
+                  <div className="text-[#5A5F70] text-[10px] truncate">@{userStats.username}</div>
                 </div>
                 <div className="border border-[#3E3E43] bg-[#28282B] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">SYSTEM ROLE</div>
-                  <div className="font-bold text-[#EFFF4F] text-sm">LEARNER (PRO)</div>
+                  <div className="font-bold text-[#EFFF4F] text-sm">{userStats.role}</div>
                   <div className="text-[#5A5F70] text-[10px]">VERIFIED STUDENT</div>
                 </div>
                 <div className="border border-[#3E3E43] bg-[#28282B] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">SDET RANK</div>
-                  <div className="font-bold text-[#EFFF4F] text-sm">RANK: SDET-II</div>
-                  <div className="text-[#5A5F70] text-[10px]">420 / 750 PTS TO LEAD</div>
+                  <div className="font-bold text-[#EFFF4F] text-sm">
+                    {userStats.xp_points >= 1000
+                      ? "RANK: LEAD"
+                      : userStats.xp_points >= 400
+                      ? "RANK: SDET-II"
+                      : "RANK: SDET-I"}
+                  </div>
+                  <div className="text-[#5A5F70] text-[10px]">{userStats.xp_points} XP EARNED</div>
                 </div>
                 <div className="border border-[#3E3E43] bg-[#28282B] p-3 space-y-1">
                   <div className="text-[10px] text-[#5A5F70] uppercase">LEARNING CADENCE</div>
-                  <div className="font-bold text-[#EFFF4F] text-sm">7-DAY STREAK</div>
-                  <div className="text-[#5A5F70] text-[10px]">LONGEST: 14 DAYS</div>
+                  <div className="font-bold text-[#EFFF4F] text-sm">{userStats.current_streak}-DAY STREAK</div>
+                  <div className="text-[#5A5F70] text-[10px]">
+                    {userStats.current_streak > 0 ? "STREAK ACTIVE" : "0 DAYS ACTIVE"}
+                  </div>
                 </div>
               </div>
 
@@ -486,8 +550,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                enrolledCourses.map((course, idx) => {
-                  const progress = idx === 0 ? 75 : 10;
+                enrolledCourses.map((course) => {
+                  const enrollment = enrollmentDetails.find((e) => e.course_id === course.id);
+                  const completed = enrollment?.completed_modules ?? 0;
+                  const total = enrollment?.total_modules ?? (course.modules?.length || 10);
+                  const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
                   return (
                     <div
                       key={course.id}
@@ -537,7 +604,7 @@ export default function DashboardPage() {
               <LeaderboardTable />
             </div>
             <div className="lg:col-span-5">
-              <ChallengeStepLog />
+              <ChallengeStepLog streakDays={userStats.current_streak} />
             </div>
           </div>
 

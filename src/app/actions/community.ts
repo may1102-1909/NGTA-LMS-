@@ -142,28 +142,6 @@ export async function getCurrentUser() {
   return null;
 }
 
-async function ensureInitialSeedPosts() {
-  try {
-    const count = await prisma.community_posts.count();
-    if (count > 0) return;
-
-    const fallbackProfile = await prisma.profiles.findFirst();
-    if (!fallbackProfile) return;
-
-    // Seed initial post with existing profile to satisfy foreign key constraint
-    await prisma.community_posts.create({
-      data: {
-        id: SEED_POST_3_ID,
-        user_id: fallbackProfile.id,
-        content: "Live Automation Workshop starts this weekend! Check the architecture diagram below.",
-        image_url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-      },
-    });
-  } catch (seedErr) {
-    console.warn("Could not auto-seed community posts:", seedErr);
-  }
-}
-
 export async function createPost(content: string, imageUrl?: string) {
   try {
     const cleanContent = content?.trim();
@@ -301,11 +279,8 @@ export async function toggleLike(postId: string) {
       where: { post_id: postId },
     });
 
-    const baseLikes =
-      postId === SEED_POST_1_ID ? 10 : postId === SEED_POST_2_ID ? 82 : postId === SEED_POST_3_ID ? 141 : 0;
-
     revalidatePath("/community/feed");
-    return { success: true, isLiked, likesCount: baseLikes + likesCount, postId };
+    return { success: true, isLiked, likesCount, postId };
   } catch (error: any) {
     console.error("Error in toggleLike server action:", error);
     return { success: false, error: error?.message || "Failed to update like" };
@@ -454,11 +429,8 @@ export async function toggleRepost(postId: string) {
       where: { post_id: postId },
     });
 
-    const baseReposts =
-      postId === SEED_POST_1_ID ? 2 : postId === SEED_POST_2_ID ? 6 : postId === SEED_POST_3_ID ? 19 : 0;
-
     revalidatePath("/community/feed");
-    return { success: true, isReposted, repostsCount: baseReposts + repostsCount, postId };
+    return { success: true, isReposted, repostsCount, postId };
   } catch (error: any) {
     console.error("Error in toggleRepost server action:", error);
     return { success: false, error: error?.message || "Failed to toggle repost" };
@@ -467,9 +439,6 @@ export async function toggleRepost(postId: string) {
 
 export async function getCommunityFeed() {
   try {
-    // Auto-seed initial community posts if database table is currently empty
-    await ensureInitialSeedPosts();
-
     const user = await getCurrentUser();
     const currentUserId = user?.id;
 
@@ -556,11 +525,6 @@ export async function getCommunityFeed() {
 
       const timeAgo = formatTimeAgo(post.created_at);
 
-      const baseLikes =
-        post.id === SEED_POST_1_ID ? 10 : post.id === SEED_POST_2_ID ? 82 : post.id === SEED_POST_3_ID ? 141 : 0;
-      const baseReposts =
-        post.id === SEED_POST_1_ID ? 2 : post.id === SEED_POST_2_ID ? 6 : post.id === SEED_POST_3_ID ? 19 : 0;
-
       const comments = post.comments.map((c: any) => {
         const cStudent = studentMap.get(c.user_id);
         const cProfile = profileMap.get(c.user_id);
@@ -612,8 +576,8 @@ export async function getCommunityFeed() {
         type: (post.id === SEED_POST_1_ID ? "MOCKUPS" : post.image_url ? "MEDIA" : "MOCKUPS") as "MOCKUPS" | "MEDIA",
         mediaUrl: post.image_url || undefined,
         commentsCount: post._count.comments,
-        likesCount: baseLikes + post._count.likes,
-        repostsCount: baseReposts + post._count.reposts,
+        likesCount: post._count.likes,
+        repostsCount: post._count.reposts,
         isLiked,
         isReposted,
         comments,

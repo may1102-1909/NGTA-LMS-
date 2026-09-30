@@ -150,7 +150,7 @@ export default function ChallengeCalendar({
   selectedDay,
   onSelectDay,
   animatingDay,
-  todayDayNumber = 12,
+  todayDayNumber = 1,
   soundEnabled = true,
   showDay30Victory = false,
   onToggleDay30Victory,

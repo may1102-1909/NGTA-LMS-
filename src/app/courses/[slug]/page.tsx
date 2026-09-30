@@ -232,14 +232,20 @@ export default function CourseDetailPage() {
                   </Link>
                 </div>
               ) : (
-                <RazorpayCheckoutButton
-                  courseId={course.id}
-                  courseTitle={course.title}
-                  amountINR={course.discountPriceINR}
-                  className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
-                  buttonText="ENROLL VIA UPI / CARDS"
-                  onSuccess={() => setIsEnrolled(true)}
-                />
+                <div className="space-y-2">
+                  <div className="p-2 bg-[#202023] border border-[#3E3E43] text-[#A0A5B5] font-mono text-xs font-bold flex items-center justify-center gap-2">
+                    <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                    <span>STATUS: LOCKED (NOT ENROLLED)</span>
+                  </div>
+                  <RazorpayCheckoutButton
+                    courseId={course.id}
+                    courseTitle={course.title}
+                    amountINR={course.discountPriceINR}
+                    className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
+                    buttonText="ENROLL VIA UPI / CARDS"
+                    onSuccess={() => setIsEnrolled(true)}
+                  />
+                </div>
               )}
 
               <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
@@ -292,9 +298,17 @@ export default function CourseDetailPage() {
                     CURRICULUM & MODULES
                   </h3>
                 </div>
-                <span className="font-mono text-xs text-[#5A5F70]">
-                  {course.modules.length} MODULES • ALL LESSONS UNLOCKED
-                </span>
+                {isEnrolled ? (
+                  <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-bold">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{course.modules.length} MODULES • ALL LESSONS ENROLLED & UNLOCKED</span>
+                  </span>
+                ) : (
+                  <span className="font-mono text-xs text-[#A0A5B5] flex items-center gap-1.5 font-bold">
+                    <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                    <span>{course.modules.length} MODULES • ENROLL TO UNLOCK</span>
+                  </span>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -332,20 +346,29 @@ export default function CourseDetailPage() {
                                   className="flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs"
                                 >
                                   <div className="flex items-center gap-2 text-[#A0A5B5]">
-                                    {les.type === "video" && (
-                                      <PlayCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
-                                    )}
-                                    {les.type === "quiz" && (
-                                      <HelpCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
-                                    )}
-                                    {les.type === "document" && (
-                                      <FileText className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                    {isEnrolled ? (
+                                      les.type === "video" ? (
+                                        <PlayCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                                      ) : les.type === "quiz" ? (
+                                        <HelpCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                                      ) : (
+                                        <FileText className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                      )
+                                    ) : (
+                                      <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
                                     )}
                                     <span className="font-medium">{les.title}</span>
                                   </div>
-                                  <span className="font-mono text-[11px] text-[#5A5F70]">
-                                    {les.durationMinutes}m
-                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    {!isEnrolled && (
+                                      <span className="text-[10px] font-mono text-[#5A5F70] uppercase">
+                                        Locked
+                                      </span>
+                                    )}
+                                    <span className="font-mono text-[11px] text-[#5A5F70]">
+                                      {les.durationMinutes}m
+                                    </span>
+                                  </div>
                                 </div>
                               ))}
                             </div>

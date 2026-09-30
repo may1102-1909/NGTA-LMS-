@@ -55,44 +55,109 @@ export async function GET(request: Request) {
     }
 
     if (courseId) {
-      // Query Database for Enrollment: Check if a record exists in the payments table using Prisma
-      const payment = await prisma.payments.findFirst({
+      // Query Database for Enrollment: Check actual entries in the enrollments table (and fallback payments)
+      let enrollment = await prisma.enrollments.findUnique({
         where: {
-          user_id: userId,
-          course_id: courseId,
-          status: "SUCCESS",
-        },
-        orderBy: {
-          created_at: "desc",
+          user_id_course_id: {
+            user_id: userId,
+            course_id: courseId,
+          },
         },
       });
 
-      const isEnrolled = !!payment;
+      let payment = null;
+      if (!enrollment) {
+        payment = await prisma.payments.findFirst({
+          where: {
+            user_id: userId,
+            course_id: courseId,
+            status: "SUCCESS",
+          },
+          orderBy: { created_at: "desc" },
+        });
+
+        if (payment) {
+          enrollment = await prisma.enrollments.upsert({
+            where: {
+              user_id_course_id: {
+                user_id: userId,
+                course_id: courseId,
+              },
+            },
+            update: { status: "ACTIVE" },
+            create: {
+              user_id: userId,
+              course_id: courseId,
+              completed_modules: 0,
+              total_modules: 10,
+              status: "ACTIVE",
+            },
+          });
+        }
+      }
+
+      const isEnrolled = !!enrollment;
+      const progressPercent =
+        enrollment && enrollment.total_modules > 0
+          ? Math.round((enrollment.completed_modules / enrollment.total_modules) * 100)
+          : 0;
 
       return NextResponse.json({
         isEnrolled,
+        enrollment: enrollment
+          ? {
+              ...enrollment,
+              progress_percent: progressPercent,
+            }
+          : null,
         payment,
       });
     }
 
-    // Return all enrolled course IDs for this user
-    const userPayments = await prisma.payments.findMany({
-      where: {
-        user_id: userId,
-        status: "SUCCESS",
-      },
-      select: {
-        course_id: true,
-      },
-    });
+    // Return all enrolled course IDs and enrollment records for this user
+    const [userEnrollments, userPayments] = await Promise.all([
+      prisma.enrollments.findMany({
+        where: {
+          user_id: userId,
+          status: "ACTIVE",
+        },
+      }),
+      prisma.payments.findMany({
+        where: {
+          user_id: userId,
+          status: "SUCCESS",
+        },
+        select: {
+          course_id: true,
+        },
+      }),
+    ]);
 
-    const enrolledCourseIds = Array.from(
-      new Set(userPayments.map((p: { course_id: string }) => p.course_id))
-    );
+    // Ensure any paid course is in enrollments
+    const enrolledIdsSet = new Set<string>([
+      ...userEnrollments.map((e: any) => e.course_id),
+      ...userPayments.map((p: any) => p.course_id),
+    ]);
+
+    const enrolledCourseIds = Array.from(enrolledIdsSet);
+
+    const detailedEnrollments = enrolledCourseIds.map((cid) => {
+      const match = userEnrollments.find((e: any) => e.course_id === cid);
+      const completed = match?.completed_modules ?? 0;
+      const total = match?.total_modules ?? 10;
+      const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+      return {
+        course_id: cid,
+        completed_modules: completed,
+        total_modules: total,
+        progress_percent: progress,
+      };
+    });
 
     return NextResponse.json({
       isEnrolled: enrolledCourseIds.length > 0,
       enrolledCourseIds,
+      enrollments: detailedEnrollments,
     });
   } catch (error: any) {
     console.error("Error checking payment status:", error);
@@ -222,6 +287,28 @@ export async function POST(request: Request) {
         transaction_id: txnId,
       },
     });
+
+    // 2. Also record entry in public.enrollments table
+    try {
+      await prisma.enrollments.upsert({
+        where: {
+          user_id_course_id: {
+            user_id: targetUserId,
+            course_id: courseId || "course-1",
+          },
+        },
+        update: { status: "ACTIVE" },
+        create: {
+          user_id: targetUserId,
+          course_id: courseId || "course-1",
+          completed_modules: 0,
+          total_modules: 10,
+          status: "ACTIVE",
+        },
+      });
+    } catch (enrollErr) {
+      console.warn("Enrollment upsert non-critical warning:", enrollErr);
+    }
 
     // 2. Also add a record to user_activities with action_type: 'PAYMENT_SUCCESSFUL'
     try {

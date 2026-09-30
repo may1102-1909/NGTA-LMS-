@@ -20,11 +20,11 @@ import { createBrowserClient } from "@supabase/ssr";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES" | "SECURITY">("PROFILE");
-  const [name, setName] = useState("Tanmay Sharma");
-  const [handle, setHandle] = useState("GigaChad_Dev");
+  const [name, setName] = useState("");
+  const [handle, setHandle] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("/avatars/avatar-1.png");
-  const [email, setEmail] = useState("tanmay.sharma@example.com");
-  const [bio, setBio] = useState("Aspiring SDET & Test Automation Architect. Currently mastering Selenium 4, ThreadLocal parallel execution, and AI self-healing locators.");
+  const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -41,12 +41,20 @@ export default function SettingsPage() {
 
         if (user) {
           if (user.email) setEmail(user.email);
+          setName(
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email?.split("@")[0] ||
+            ""
+          );
           const res = await fetch(`/api/student-profile?userId=${user.id}`);
           if (res.ok) {
             const data = await res.json();
             if (data.profile) {
-              setHandle(data.profile.username);
-              setAvatarUrl(data.profile.avatar_url);
+              setHandle(data.profile.username || "");
+              if (data.profile.avatar_url) {
+                setAvatarUrl(data.profile.avatar_url);
+              }
             }
           }
         }
@@ -168,7 +176,7 @@ export default function SettingsPage() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-white text-sm font-mono">
-                      @{handle}
+                      @{handle || "learner"}
                     </span>
                     <span className="px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[10px] font-mono font-bold uppercase rounded">
                       Gamer Persona

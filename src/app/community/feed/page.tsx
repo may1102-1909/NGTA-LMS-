@@ -74,106 +74,6 @@ interface Post {
   isBookmarked?: boolean;
 }
 
-const INITIAL_POSTS: Post[] = [
-  {
-    id: "post-1",
-    authorName: "Pawpaw",
-    authorHandle: "@/Pawpaw",
-    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    spaceName: "Crack Designers",
-    spaceIcon: "👥",
-    role: "Member",
-    timeAgo: "20m",
-    content: "Clarity > Complexity",
-    type: "MOCKUPS",
-    commentsCount: 2,
-    likesCount: 12,
-    repostsCount: 2,
-  },
-  {
-    id: "post-2",
-    authorName: "Kanaan",
-    authorHandle: "@/Kanaan_",
-    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-    spaceName: "GymMotivation",
-    spaceIcon: "👥",
-    role: "Member",
-    timeAgo: "2hr",
-    content: "Divine Timing...",
-    type: "MEDIA",
-    mediaUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80",
-    mediaCount: "1/3",
-    commentsCount: 1,
-    likesCount: 84,
-    repostsCount: 6,
-  },
-  {
-    id: "post-3",
-    authorName: "Rahul Kamat",
-    authorHandle: "@/RahulKamat",
-    authorAvatar: "/instructor/rahul-kamat.png",
-    spaceName: "Selenium Java + AI Architect",
-    spaceIcon: "⚡",
-    role: "Instructor",
-    timeAgo: "4hr",
-    content: "Live Automation Workshop starts this weekend! Check the architecture diagram below.",
-    type: "MEDIA",
-    mediaUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-    commentsCount: 3,
-    likesCount: 142,
-    repostsCount: 19,
-  },
-];
-
-const INITIAL_SEED_COMMENTS: Record<string, CommentItem[]> = {
-  "post-1": [
-    {
-      id: "seed-1",
-      postId: "post-1",
-      content: "Simplicity is the ultimate sophistication. Clean token system here!",
-      createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-      author: {
-        name: "Rahul Kamat",
-        avatar: "/instructor/rahul-kamat.png",
-      },
-    },
-    {
-      id: "seed-2",
-      postId: "post-1",
-      content: "Love the high contrast dark mode aesthetics.",
-      createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-      author: {
-        name: "Sarah Jenkins",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      },
-    },
-  ],
-  "post-2": [
-    {
-      id: "seed-3",
-      postId: "post-2",
-      content: "Consistency beats intensity every single day. Keep crushing it!",
-      createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-      author: {
-        name: "Devon Miles",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-      },
-    },
-  ],
-  "post-3": [
-    {
-      id: "seed-4",
-      postId: "post-3",
-      content: "Will the recording be available in the LMS portal after the live stream?",
-      createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-      author: {
-        name: "Tanmay Sharma",
-        avatar: null,
-      },
-    },
-  ],
-};
-
 const TRENDING_SPACES = [
   { name: "Selenium Frameworks", tag: "#selenium-frameworks", members: "1.4k members", icon: "⚡" },
   { name: "Crack Designers", tag: "#crack-designers", members: "840 members", icon: "🎨" },
@@ -184,7 +84,8 @@ const TRENDING_SPACES = [
 export default function CommunityFeedPage() {
   const [activeTab, setActiveTab] = useState<"FOR_YOU" | "TRENDING" | "COMMUNITIES" | "NEWS">("FOR_YOU");
   const [searchQuery, setSearchQuery] = useState("");
-  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoadingFeed, setIsLoadingFeed] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<{ id?: string; email?: string; name?: string; avatar?: string; role?: string } | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostText, setNewPostText] = useState("");
@@ -196,7 +97,7 @@ export default function CommunityFeedPage() {
 
   // Comments state
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
-  const [postComments, setPostComments] = useState<Record<string, CommentItem[]>>(INITIAL_SEED_COMMENTS);
+  const [postComments, setPostComments] = useState<Record<string, CommentItem[]>>({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [submittingComment, setSubmittingComment] = useState<Record<string, boolean>>({});
   const [loadingComments, setLoadingComments] = useState<Record<string, boolean>>({});
@@ -204,9 +105,10 @@ export default function CommunityFeedPage() {
   useEffect(() => {
     async function loadCommunityData() {
       try {
+        setIsLoadingFeed(true);
         // Fetch persisted community feed with counts & likes from Supabase
         const feedRes = await getCommunityFeed();
-        if (feedRes.success && feedRes.posts && feedRes.posts.length > 0) {
+        if (feedRes.success && feedRes.posts) {
           setPosts(feedRes.posts as Post[]);
 
           const commentsMap: Record<string, CommentItem[]> = {};
@@ -215,7 +117,9 @@ export default function CommunityFeedPage() {
               commentsMap[p.id] = p.comments;
             }
           });
-          setPostComments((prev) => ({ ...prev, ...commentsMap }));
+          setPostComments(commentsMap);
+        } else {
+          setPosts([]);
         }
 
         if (feedRes.currentUser) {
@@ -260,6 +164,8 @@ export default function CommunityFeedPage() {
         }
       } catch (e) {
         console.warn("Could not load community feed in community feed page:", e);
+      } finally {
+        setIsLoadingFeed(false);
       }
     }
     loadCommunityData();
@@ -595,11 +501,29 @@ export default function CommunityFeedPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Left Column: Feed Posts (spans 2 columns) */}
         <div className="lg:col-span-2 space-y-5">
-          {filteredPosts.length === 0 ? (
-            <div className="border border-[#3E3E43] bg-[#202023] p-12 text-center text-[#A0A5B5] font-mono text-xs space-y-2">
-              <CheckCircle2 className="w-8 h-8 text-[#EFFF4F] mx-auto opacity-60" />
-              <p className="text-white font-bold text-sm">No posts found</p>
-              <p>Try searching for a different keyword or switch categories.</p>
+          {isLoadingFeed ? (
+            <div className="border border-[#3E3E43] bg-[#202023] p-12 text-center text-[#A0A5B5] font-mono text-xs space-y-3">
+              <Loader2 className="w-8 h-8 text-[#EFFF4F] animate-spin mx-auto opacity-70" />
+              <p className="text-white font-bold text-sm">Loading community posts...</p>
+            </div>
+          ) : filteredPosts.length === 0 ? (
+            <div className="border border-[#3E3E43] bg-[#202023] p-12 text-center text-[#A0A5B5] font-mono text-xs space-y-4">
+              <Sparkles className="w-8 h-8 text-[#EFFF4F] mx-auto opacity-80" />
+              <p className="text-white font-bold text-base">
+                No posts in the feed yet. Be the first to cook!
+              </p>
+              <p className="text-[#A0A5B5] max-w-sm mx-auto text-xs">
+                Share your latest SDET automation win, ask a question, or post a code architecture snippet.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="px-5 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-all shadow-lemon-sm inline-flex items-center gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Create the First Post</span>
+                </button>
+              </div>
             </div>
           ) : (
             filteredPosts.map((post) => (

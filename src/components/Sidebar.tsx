@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
   Flame,
   X,
 } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -26,6 +27,54 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [streak, setStreak] = useState<number>(0);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadUserStreak() {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !supabaseAnonKey) return;
+
+        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user?.id) {
+          const res = await fetch(`/api/student-profile?userId=${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (isMounted) {
+              setStreak(data.profile?.current_streak ?? data.current_streak ?? 0);
+            }
+          }
+        } else if (isMounted) {
+          setStreak(0);
+        }
+      } catch (err) {
+        console.warn("Could not load streak in Sidebar:", err);
+      }
+    }
+
+    loadUserStreak();
+
+    const handleProfileUpdate = (e: any) => {
+      if (e.detail && isMounted) {
+        if (typeof e.detail.current_streak === "number") {
+          setStreak(e.detail.current_streak);
+        }
+      }
+    };
+
+    window.addEventListener("student-profile-updated", handleProfileUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("student-profile-updated", handleProfileUpdate);
+    };
+  }, []);
 
   const navItems = [
     {
@@ -180,14 +229,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               </span>
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold text-white font-sans">
-                  1 Day Streak
+                  {streak} {streak === 1 ? "Day" : "Days"} Streak
                 </span>
                 <span className="text-[10px] text-[#A0A5B5] font-sans">
-                  Principal Test Architect
+                  {streak > 0 ? "Active Learning Streak" : "Start Your Streak Today"}
                 </span>
               </div>
             </div>
-            <span className="w-2 h-2 rounded-full bg-[#EFFF4F] animate-pulse" />
+            <span className={`w-2 h-2 rounded-full ${streak > 0 ? "bg-[#EFFF4F] animate-pulse" : "bg-[#5A5F70]"}`} />
           </div>
 
           {/* Sign Out Button */}

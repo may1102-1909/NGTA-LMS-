@@ -96,9 +96,19 @@ export async function GET(request: Request) {
       where: { user_id: userId },
     });
 
+    const safeProfile = profile
+      ? {
+          ...profile,
+          xp_points: profile.xp_points ?? 0,
+          current_streak: profile.current_streak ?? 0,
+        }
+      : null;
+
     return NextResponse.json({
       hasProfile: Boolean(profile),
-      profile,
+      profile: safeProfile,
+      xp_points: safeProfile?.xp_points ?? 0,
+      current_streak: safeProfile?.current_streak ?? 0,
       role: normalizedRole,
       isStudent: normalizedRole === "STUDENT",
     });

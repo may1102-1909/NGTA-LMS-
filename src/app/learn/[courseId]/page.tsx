@@ -66,6 +66,17 @@ export default function LearnPlayerPage() {
         if (res.ok) {
           const data = await res.json();
           if (data.isEnrolled) {
+            // Also fetch student points dynamically
+            try {
+              const profRes = await fetch(`/api/student-profile?userId=${user.id}`);
+              if (profRes.ok) {
+                const profData = await profRes.json();
+                if (isMounted) {
+                  setUserPoints(profData.profile?.xp_points ?? profData.xp_points ?? 0);
+                }
+              }
+            } catch {}
+
             if (isMounted) {
               setIsEnrolled(true);
               setIsVerifyingEnrollment(false);
@@ -99,7 +110,7 @@ export default function LearnPlayerPage() {
   const [activeLessonId, setActiveLessonId] = useState<string>(allLessons[0]?.id || "les-1");
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
   const [playbackTime, setPlaybackTime] = useState<number>(0);
-  const [userPoints, setUserPoints] = useState<number>(420);
+  const [userPoints, setUserPoints] = useState<number>(0);
   const [pointsToast, setPointsToast] = useState<string | null>(null);
 
   const activeLesson = allLessons.find((l) => l.id === activeLessonId) || allLessons[0];
