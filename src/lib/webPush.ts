@@ -4,9 +4,7 @@ export const VAPID_PUBLIC_KEY =
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
   "BNGrgQ1Mc3mKEoT1ImaeOMkJQXiR1cpLlGBOGK4mA0XkbF3RW-YXDN1TuJY05VKIfKQRf_60QwzUaGcJAagCrh4";
 
-export const VAPID_PRIVATE_KEY =
-  process.env.VAPID_PRIVATE_KEY ||
-  "YmfqDrHR9NDtTPOm867dz93zV917DdWuUWCzQ4FzeBI";
+export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || "";
 
 export const VAPID_SUBJECT =
   process.env.VAPID_SUBJECT || "mailto:admin@ngtalms.com";
