@@ -26,13 +26,9 @@ import {
 } from "lucide-react";
 import { INITIAL_CHALLENGE_TASKS, ChallengeTask } from "@/lib/gamification";
 import ChallengeCalendar from "@/components/gamification/ChallengeCalendar";
-import MotivationalFuelCard from "@/components/gamification/MotivationalFuelCard";
 
 /* Subtle Web Audio synthesizer for tactile feedback */
-function playAudioBlip(
-  type: "click" | "check" | "success" | "celebrate" | "inspire",
-  soundEnabled = true
-) {
+function playAudioBlip(type: "click" | "check" | "success" | "celebrate", soundEnabled = true) {
   if (!soundEnabled || typeof window === "undefined") return;
   try {
     const AudioContextClass =
@@ -75,20 +71,6 @@ function playAudioBlip(
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.4);
         osc.start(ctx.currentTime + i * 0.07);
         osc.stop(ctx.currentTime + i * 0.07 + 0.4);
-      });
-    } else if (type === "inspire") {
-      // Warm uplifting Celesta chord
-      [698.46, 880, 1046.5, 1318.51].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.06, ctx.currentTime + i * 0.06);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.5);
-        osc.start(ctx.currentTime + i * 0.06);
-        osc.stop(ctx.currentTime + i * 0.06 + 0.5);
       });
     }
   } catch {
@@ -350,55 +332,29 @@ export default function ChallengePage() {
 
       {/* Completion Toast Banner if just completed */}
       {justCelebrated && (
-        <div className="p-5 bg-gradient-to-r from-emerald-950/70 via-[#232F26] to-[#1B271F] border-2 border-emerald-400 rounded-xl text-emerald-300 font-mono text-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-[0_0_35px_rgba(16,185,129,0.35)] animate-fadeIn">
-          <div className="flex items-start gap-3">
-            <span className="flex h-3.5 w-3.5 relative mt-1 shrink-0">
+        <div className="p-4 bg-emerald-500/15 border-2 border-emerald-400 rounded-xl text-emerald-300 font-mono text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-[0_0_25px_rgba(16,185,129,0.3)] animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-3 w-3 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400" />
             </span>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-white uppercase text-sm tracking-tight flex items-center gap-1.5">
-                  <span>🪙 DAY {selectedDay} COIN FLIP COMPLETED!</span>
-                </span>
-                <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded text-[10px] font-bold">
-                  +{currentTask.pointsReward} PTS ACCREDITED
-                </span>
-                <span className="px-2 py-0.5 bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded text-[10px] font-bold flex items-center gap-1">
-                  <Flame className="w-3 h-3 fill-current text-orange-400" />
-                  <span>{streakCount} DAYS 🔥 STREAK EXTENDED</span>
-                </span>
-              </div>
-
-              {/* Motivational Quote Callout */}
-              <div className="bg-[#18231C] p-3 rounded-lg border border-emerald-500/30">
-                <p className="text-white text-xs sm:text-[13px] italic font-sans font-medium leading-relaxed">
-                  "Discipline is choosing what you want most over what you want right now. Today you conquered the code; tomorrow at dawn, we test the limits. Protect your streak — champions never break the chain."
-                </p>
-                <div className="text-[10px] text-amber-300 mt-1 font-mono flex items-center justify-between">
-                  <span>— Rahul Kamat, Lead SDET Architect</span>
-                  <span className="text-emerald-400">Day 13 Unlocks Tomorrow • Be Ready</span>
-                </div>
-              </div>
+            <div>
+              <span className="font-bold text-white uppercase">
+                DAY {selectedDay} ACCREDITED & COMPLETED!
+              </span>
+              <span className="text-[#A0A5B5] ml-2 font-sans text-[11px]">
+                Checkmark animation stamped on the calendar. +{currentTask.pointsReward} PTS earned!
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
-            <button
-              onClick={() => handleCompleteDay(selectedDay)}
-              className="px-3 py-1.5 bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 rounded text-[11px] font-bold transition-colors flex items-center gap-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Re-flip Coin</span>
-            </button>
-            <button
-              onClick={() => handleResetDay(selectedDay)}
-              className="px-3 py-1.5 bg-[#202023] hover:bg-[#28282B] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded text-[11px] font-bold transition-colors flex items-center gap-1"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>Reset</span>
-            </button>
-          </div>
+          <button
+            onClick={() => handleResetDay(selectedDay)}
+            className="px-3 py-1 bg-[#202023] hover:bg-[#28282B] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded text-[11px] font-bold transition-colors flex items-center gap-1 shrink-0"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Replay Date Animation</span>
+          </button>
         </div>
       )}
 
@@ -527,55 +483,31 @@ export default function ChallengePage() {
             </div>
 
             {currentTask.isCompleted ? (
-              <div className="space-y-4">
-                <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 space-y-3 font-mono text-xs rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 font-bold text-emerald-300">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      <span>Day {selectedDay} Marked as Completed!</span>
-                    </div>
-                    <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold rounded">
-                      🪙 COIN FLIPPED
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#A0A5B5] font-sans">
-                    The 3D coin flip animation was executed on the calendar. +{currentTask.pointsReward} PTS accredited.
-                  </p>
-
-                  <div className="pt-1 flex items-center gap-2">
-                    <button
-                      onClick={() => handleCompleteDay(selectedDay)}
-                      className="w-full py-2 bg-gradient-to-r from-amber-400/20 to-yellow-400/20 hover:from-amber-400/30 hover:to-yellow-400/30 text-amber-300 border border-amber-400/40 font-bold rounded flex items-center justify-center gap-1.5 transition-colors"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Re-flip 3D Coin</span>
-                    </button>
-                    <button
-                      onClick={() => handleResetDay(selectedDay)}
-                      className="p-2 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white rounded"
-                      title="Reset to incomplete"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 space-y-3 font-mono text-xs rounded-lg">
+                <div className="flex items-center gap-2 font-bold text-emerald-300">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Day {selectedDay} Marked as Completed!</span>
                 </div>
+                <p className="text-[11px] text-[#A0A5B5] font-sans">
+                  The respective date on the calendar has been verified and stamped. +{currentTask.pointsReward} PTS accredited.
+                </p>
 
-                {/* Compact Motivation & Tomorrow Commitment Card */}
-                <MotivationalFuelCard
-                  compact={true}
-                  nextDayNumber={selectedDay + 1 <= 30 ? selectedDay + 1 : 30}
-                  nextTaskTitle={
-                    tasks.find((t) => t.dayNumber === selectedDay + 1)?.title ||
-                    "JavaScript Executor: DOM manipulation & forced clicks"
-                  }
-                  nextPointsReward={
-                    tasks.find((t) => t.dayNumber === selectedDay + 1)?.pointsReward || 20
-                  }
-                  streakDays={streakCount}
-                  timeLeft={timeLeft}
-                  soundEnabled={soundEnabled}
-                  onPlaySound={(type) => playAudioBlip(type as "click" | "check" | "celebrate", soundEnabled)}
-                />
+                <div className="pt-2 flex items-center gap-2">
+                  <button
+                    onClick={() => handleCompleteDay(selectedDay)}
+                    className="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold rounded flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Re-trigger Date Animation</span>
+                  </button>
+                  <button
+                    onClick={() => handleResetDay(selectedDay)}
+                    className="p-2 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white rounded"
+                    title="Reset to incomplete"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs">
@@ -620,19 +552,6 @@ export default function ChallengePage() {
           </div>
         </div>
       </div>
-
-      {/* ======================================================== */}
-      {/* DAILY MOTIVATIONAL FUEL & TOMORROW'S PROVING GROUND      */}
-      {/* ======================================================== */}
-      <MotivationalFuelCard
-        nextDayNumber={13}
-        nextTaskTitle="JavaScript Executor: DOM manipulation & forced clicks"
-        nextPointsReward={20}
-        streakDays={streakCount}
-        timeLeft={timeLeft}
-        soundEnabled={soundEnabled}
-        onPlaySound={(type) => playAudioBlip(type as "click" | "check" | "celebrate", soundEnabled)}
-      />
 
       {/* Bottom Telemetry & Milestone Badges */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
