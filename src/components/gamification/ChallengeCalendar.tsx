@@ -37,18 +37,35 @@ function playCalendarSound(type: "click" | "complete", soundEnabled = true) {
       osc.start();
       osc.stop(ctx.currentTime + 0.05);
     } else if (type === "complete") {
-      // Celebratory bell triad arpeggio (C5 -> E5 -> G5 -> C6)
-      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+      // 1. Rapid 3D coin spin oscillations as the coin flips in the air
+      [0.05, 0.18, 0.32, 0.48, 0.65, 0.82].forEach((offset, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.09, ctx.currentTime + i * 0.07);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.4);
-        osc.start(ctx.currentTime + i * 0.07);
-        osc.stop(ctx.currentTime + i * 0.07 + 0.4);
+        const f = 920 + idx * 220;
+        osc.frequency.setValueAtTime(f, ctx.currentTime + offset);
+        osc.frequency.exponentialRampToValueAtTime(f + 320, ctx.currentTime + offset + 0.05);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime + offset);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.05);
+        osc.start(ctx.currentTime + offset);
+        osc.stop(ctx.currentTime + offset + 0.05);
+      });
+
+      // 2. Bright, heavy gold coin landing chime (at ~1.0s)
+      const landTime = ctx.currentTime + 0.95;
+      [1046.5, 1318.51, 1567.98, 2093].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(freq, landTime + i * 0.035);
+        gain.gain.setValueAtTime(0.1, landTime + i * 0.035);
+        gain.gain.exponentialRampToValueAtTime(0.001, landTime + i * 0.035 + 0.45);
+        osc.start(landTime + i * 0.035);
+        osc.stop(landTime + i * 0.035 + 0.45);
       });
     }
   } catch {
@@ -196,9 +213,9 @@ export default function ChallengeCalendar({
                 onSelectDay(task.dayNumber);
                 playCalendarSound("click", soundEnabled);
               }}
-              className={`relative rounded-xl p-3 cursor-pointer transition-all duration-200 select-none overflow-hidden flex flex-col justify-between items-center text-center min-h-[92px] sm:min-h-[105px] border ${
+              className={`relative rounded-xl p-3 cursor-pointer transition-all duration-300 select-none overflow-hidden flex flex-col justify-between items-center text-center min-h-[92px] sm:min-h-[105px] border ${
                 isAnimating
-                  ? "animate-date-complete z-20 border-emerald-400 bg-emerald-950/70"
+                  ? "animate-coin-flip z-30 border-amber-400 bg-gradient-to-br from-[#332A15] via-[#1E2E22] to-[#14261B] ring-4 ring-amber-400/80 shadow-[0_0_45px_rgba(245,158,11,0.7)]"
                   : isSelected
                   ? "border-[#EFFF4F] bg-[#38383D] ring-2 ring-[#EFFF4F]/50 shadow-lemon-sm scale-[1.04] z-10"
                   : task.isCompleted
@@ -208,17 +225,18 @@ export default function ChallengeCalendar({
                   : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-75 hover:opacity-100"
               }`}
             >
-              {/* Subtle Ambient Ripple on Animation */}
+              {/* Golden Sheen Sweep across the coin surface */}
               {isAnimating && (
-                <div className="absolute inset-0 bg-emerald-400/30 rounded-xl animate-ripple pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none animate-coin-shine z-20" />
               )}
 
-              {/* Floating Points Burst on Completion */}
+              {/* Floating Coin Token & Points Burst */}
               {isAnimating && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30 animate-float-points whitespace-nowrap">
-                  <span className="px-2.5 py-1 bg-emerald-400 text-[#18181B] font-black text-xs rounded-full shadow-lg border border-white flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 fill-current" />
-                    +{task.pointsReward} PTS! ✔
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 animate-coin-burst whitespace-nowrap">
+                  <span className="px-3 py-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black text-xs rounded-full shadow-[0_4px_18px_rgba(245,158,11,0.8)] border-2 border-white flex items-center gap-1.5">
+                    <span className="text-sm">🪙</span>
+                    <span>+{task.pointsReward} PTS!</span>
+                    <Sparkles className="w-3.5 h-3.5 fill-current text-white" />
                   </span>
                 </div>
               )}
@@ -230,7 +248,9 @@ export default function ChallengeCalendar({
                 </span>
                 <span
                   className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold ${
-                    task.isCompleted
+                    isAnimating
+                      ? "text-amber-300 bg-amber-400/20 font-black"
+                      : task.isCompleted
                       ? "text-emerald-400 bg-emerald-500/10"
                       : isToday
                       ? "text-amber-400 bg-amber-500/15"
@@ -245,7 +265,9 @@ export default function ChallengeCalendar({
               <div className="my-auto py-1 flex flex-col items-center justify-center gap-1">
                 <span
                   className={`font-black text-xl sm:text-2xl tracking-tight leading-none ${
-                    task.isCompleted
+                    isAnimating
+                      ? "text-yellow-300 drop-shadow-[0_0_12px_rgba(250,204,21,0.85)]"
+                      : task.isCompleted
                       ? "text-emerald-300"
                       : isToday
                       ? "text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
@@ -259,7 +281,11 @@ export default function ChallengeCalendar({
 
                 {/* Status Indicator Icon */}
                 <div className="flex items-center justify-center mt-0.5">
-                  {task.isCompleted ? (
+                  {isAnimating ? (
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 text-[#18181B] font-black shadow-md border-2 border-white text-xs">
+                      🪙
+                    </span>
+                  ) : task.isCompleted ? (
                     <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50">
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
@@ -281,7 +307,9 @@ export default function ChallengeCalendar({
               <div className="w-full pt-1.5 border-t border-[#3E3E43]/50 flex items-center justify-between text-[10px]">
                 <span
                   className={`font-mono text-[9px] ${
-                    task.isCompleted
+                    isAnimating
+                      ? "text-amber-300 font-bold"
+                      : task.isCompleted
                       ? "text-emerald-400 font-bold"
                       : isToday
                       ? "text-amber-400 font-bold"
@@ -291,14 +319,12 @@ export default function ChallengeCalendar({
                   +{task.pointsReward}P
                 </span>
 
-                {task.isCompleted ? (
-                  <span
-                    className={`font-black text-[9px] px-1.5 py-0.2 rounded border uppercase tracking-wider ${
-                      isAnimating
-                        ? "animate-stamp bg-emerald-400 text-[#18181B] border-emerald-400"
-                        : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                    }`}
-                  >
+                {isAnimating ? (
+                  <span className="animate-stamp bg-gradient-to-r from-amber-400 to-yellow-300 text-[#18181B] font-black text-[9px] px-1.5 py-0.2 rounded border border-white uppercase tracking-wider">
+                    FLIPPED!
+                  </span>
+                ) : task.isCompleted ? (
+                  <span className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-black text-[9px] px-1.5 py-0.2 rounded border uppercase tracking-wider">
                     ✔
                   </span>
                 ) : isToday ? (

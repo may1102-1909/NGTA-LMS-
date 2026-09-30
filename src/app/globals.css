@@ -178,4 +178,81 @@
   .animate-ripple {
     animation: rippleEffect 0.9s ease-out forwards;
   }
+
+  /* 3D Coin Flipping Animation */
+  @keyframes coinFlip3D {
+    0% {
+      transform: perspective(1000px) rotateY(0deg) translateY(0) scale(1);
+      box-shadow: 0 0 0 rgba(239, 255, 79, 0);
+    }
+    20% {
+      transform: perspective(1000px) rotateY(270deg) translateY(-22px) scale(1.12);
+      box-shadow: 0 10px 30px rgba(239, 255, 79, 0.5), 0 0 40px rgba(16, 185, 129, 0.6);
+    }
+    45% {
+      transform: perspective(1000px) rotateY(540deg) translateY(-32px) scale(1.18);
+      box-shadow: 0 15px 45px rgba(239, 255, 79, 0.85), 0 0 60px rgba(16, 185, 129, 0.8);
+    }
+    70% {
+      transform: perspective(1000px) rotateY(810deg) translateY(-14px) scale(1.08);
+      box-shadow: 0 10px 30px rgba(239, 255, 79, 0.5), 0 0 35px rgba(16, 185, 129, 0.5);
+    }
+    88% {
+      transform: perspective(1000px) rotateY(1080deg) translateY(-3px) scale(1.03);
+    }
+    100% {
+      transform: perspective(1000px) rotateY(1080deg) translateY(0) scale(1);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), 0 0 15px rgba(239, 255, 79, 0.3);
+    }
+  }
+
+  @keyframes coinShineSweep {
+    0% {
+      transform: translateX(-120%) rotate(25deg);
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.85;
+    }
+    70% {
+      opacity: 0.85;
+    }
+    100% {
+      transform: translateX(220%) rotate(25deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes coinBurstFloat {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+    }
+    25% {
+      opacity: 1;
+      transform: translate(-50%, calc(-50% - 20px)) scale(1.25);
+    }
+    75% {
+      opacity: 1;
+      transform: translate(-50%, calc(-50% - 45px)) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% - 65px)) scale(0.85);
+    }
+  }
+
+  .animate-coin-flip {
+    animation: coinFlip3D 1.35s cubic-bezier(0.2, 0.8, 0.25, 1.25) forwards;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+  }
+
+  .animate-coin-shine {
+    animation: coinShineSweep 1.2s ease-in-out forwards;
+  }
+
+  .animate-coin-burst {
+    animation: coinBurstFloat 1.8s ease-out forwards;
+  }
 }
