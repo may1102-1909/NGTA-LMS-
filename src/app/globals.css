@@ -255,4 +255,53 @@
   .animate-coin-burst {
     animation: coinBurstFloat 1.8s ease-out forwards;
   }
+
+  /* Giant Warrior Trophy Victory Animation (Covers entire calendar on Day 30) */
+  @keyframes warriorPopIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.88) translateY(35px);
+      filter: brightness(0.6) blur(6px);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.02) translateY(-6px);
+      filter: brightness(1.2) blur(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: brightness(1);
+    }
+  }
+
+  @keyframes trophyGlowPulse {
+    0%, 100% {
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.45), 0 0 70px rgba(239, 255, 79, 0.25), inset 0 0 40px rgba(245, 158, 11, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 65px rgba(245, 158, 11, 0.8), 0 0 110px rgba(239, 255, 79, 0.5), inset 0 0 60px rgba(245, 158, 11, 0.6);
+    }
+  }
+
+  @keyframes trophySunburstRotate {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .animate-warrior-pop {
+    animation: warriorPopIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-trophy-pulse {
+    animation: trophyGlowPulse 2.8s ease-in-out infinite;
+  }
+
+  .animate-sunburst-rotate {
+    animation: trophySunburstRotate 24s linear infinite;
+  }
 }

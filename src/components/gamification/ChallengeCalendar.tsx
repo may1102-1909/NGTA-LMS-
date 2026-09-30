@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Calendar as CalendarIcon,
   CheckCircle2,
@@ -13,6 +14,11 @@ import {
   Filter,
   Check,
   Gift,
+  RotateCcw,
+  X,
+  ExternalLink,
+  Award,
+  ShieldCheck,
 } from "lucide-react";
 import { ChallengeTask } from "@/lib/gamification";
 
@@ -74,6 +80,52 @@ function playCalendarSound(type: "click" | "complete", soundEnabled = true) {
   }
 }
 
+/* Grand Orchestral Fanfare for Day 30 Capstone Warrior Victory */
+function playGrandVictoryFanfare(soundEnabled = true) {
+  if (!soundEnabled || typeof window === "undefined") return;
+  try {
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+
+    // 1. Triumphant trumpet fanfare arpeggio
+    const notes = [233.08, 349.23, 466.16, 587.33, 698.46, 932.33];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = i > 3 ? "triangle" : "sawtooth";
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const time = ctx.currentTime + i * 0.11;
+      osc.frequency.setValueAtTime(freq, time);
+      gain.gain.setValueAtTime(0.1, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.55);
+      osc.start(time);
+      osc.stop(time + 0.55);
+    });
+
+    // 2. Powerful sustained victory chord at 0.65s
+    const grandChord = [466.16, 587.33, 698.46, 932.33, 1174.66];
+    grandChord.forEach((freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const time = ctx.currentTime + 0.65;
+      osc.frequency.setValueAtTime(freq, time);
+      gain.gain.setValueAtTime(0.12, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 1.8);
+      osc.start(time);
+      osc.stop(time + 1.8);
+    });
+  } catch {
+    // Ignore audio errors
+  }
+}
+
 interface ChallengeCalendarProps {
   tasks: ChallengeTask[];
   selectedDay: number;
@@ -81,6 +133,8 @@ interface ChallengeCalendarProps {
   animatingDay: number | null;
   todayDayNumber?: number;
   soundEnabled?: boolean;
+  showDay30Victory?: boolean;
+  onToggleDay30Victory?: (show: boolean) => void;
 }
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -98,15 +152,40 @@ export default function ChallengeCalendar({
   animatingDay,
   todayDayNumber = 12,
   soundEnabled = true,
+  showDay30Victory = false,
+  onToggleDay30Victory,
 }: ChallengeCalendarProps) {
   const [phaseFilter, setPhaseFilter] = useState<"ALL" | "P1" | "P2" | "P3" | "P4">("ALL");
+  const [showWarriorMural, setShowWarriorMural] = useState(false);
+
+  const isDay30Completed = tasks.find((t) => t.dayNumber === 30)?.isCompleted;
 
   // Play audio on animation trigger
   useEffect(() => {
     if (animatingDay !== null) {
-      playCalendarSound("complete", soundEnabled);
+      if (animatingDay === 30) {
+        setShowWarriorMural(true);
+        playGrandVictoryFanfare(soundEnabled);
+      } else {
+        playCalendarSound("complete", soundEnabled);
+      }
     }
   }, [animatingDay, soundEnabled]);
+
+  // Sync external showDay30Victory prop
+  useEffect(() => {
+    if (showDay30Victory) {
+      setShowWarriorMural(true);
+      playGrandVictoryFanfare(soundEnabled);
+    }
+  }, [showDay30Victory, soundEnabled]);
+
+  const handleToggleMural = (show: boolean) => {
+    setShowWarriorMural(show);
+    if (onToggleDay30Victory) onToggleDay30Victory(show);
+    if (show) playGrandVictoryFanfare(soundEnabled);
+    else playCalendarSound("click", soundEnabled);
+  };
 
   // Filter tasks based on phase
   const filteredTasks = tasks.filter((t) => {
@@ -120,7 +199,7 @@ export default function ChallengeCalendar({
   const completedCount = tasks.filter((t) => t.isCompleted).length;
 
   return (
-    <div className="border border-[#3E3E43] bg-[#2E2E32] rounded-xl p-5 sm:p-6 shadow-card space-y-5 font-mono text-xs">
+    <div className="relative border border-[#3E3E43] bg-[#2E2E32] rounded-xl p-5 sm:p-6 shadow-card space-y-5 font-mono text-xs overflow-hidden min-h-[520px]">
       {/* Calendar Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#3E3E43] pb-4">
         <div>
@@ -139,8 +218,19 @@ export default function ChallengeCalendar({
           </h2>
         </div>
 
-        {/* Phase Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-[#202023] p-1 rounded-lg border border-[#3E3E43]">
+        {/* Phase Filter Tabs & Warrior Stage Button */}
+        <div className="flex flex-wrap items-center gap-2">
+          {isDay30Completed && !showWarriorMural && (
+            <button
+              onClick={() => handleToggleMural(true)}
+              className="px-3 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-[#18181B] font-black rounded-lg text-xs flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:scale-105 transition-all"
+            >
+              <Trophy className="w-3.5 h-3.5 fill-current" />
+              <span>View Grand Trophy Ceremony</span>
+            </button>
+          )}
+
+          <div className="flex flex-wrap items-center gap-1.5 bg-[#202023] p-1 rounded-lg border border-[#3E3E43]">
           {(
             [
               { key: "ALL", label: "All 30d" },
@@ -167,6 +257,7 @@ export default function ChallengeCalendar({
           ))}
         </div>
       </div>
+    </div>
 
       {/* Legend & Stats Banner */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#202023] px-3.5 py-2.5 rounded-lg border border-[#3E3E43] text-[11px]">
@@ -365,6 +456,119 @@ export default function ChallengeCalendar({
           );
         })}
       </div>
+
+      {/* ======================================================== */}
+      {/* GIANT WARRIOR TROPHY CARTOON ANIMATION STAGE (COVERS WHOLE CALENDAR) */}
+      {/* ======================================================== */}
+      {showWarriorMural && (
+        <div className="absolute inset-0 z-40 bg-[#07070B] flex flex-col justify-between p-4 sm:p-7 animate-warrior-pop border-4 border-amber-400/90 ring-8 ring-amber-400/30 rounded-xl overflow-hidden shadow-[0_0_90px_rgba(245,158,11,0.7)] select-none">
+          {/* Background Vibrant Cartoon Animation Artwork */}
+          <img
+            src="/cartoon-warrior-trophy.jpg"
+            alt="Warrior Accepting the Big Trophy Cartoon Animation"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-75 filter contrast-110 saturate-125 hover:scale-105 transition-transform duration-1000"
+          />
+
+          {/* Gradient Vignette Overlays for high contrast typography */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07070B] via-[#07070B]/45 to-[#07070B]/75 pointer-events-none" />
+
+          {/* Golden Rotating Sunburst God-Rays */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1050px] h-[1050px] opacity-25 pointer-events-none bg-[conic-gradient(from_0deg,transparent_0deg_15deg,rgba(245,158,11,0.9)_15deg_30deg,transparent_30deg_45deg,rgba(239,255,79,0.9)_45deg_60deg,transparent_60deg_75deg,rgba(245,158,11,0.9)_75deg_90deg,transparent_90deg_105deg,rgba(239,255,79,0.9)_105deg_120deg,transparent_120deg_135deg,rgba(245,158,11,0.9)_135deg_150deg,transparent_150deg_165deg,rgba(239,255,79,0.9)_165deg_180deg,transparent_180deg_195deg,rgba(245,158,11,0.9)_195deg_210deg,transparent_210deg_225deg,rgba(239,255,79,0.9)_225deg_240deg,transparent_240deg_255deg,rgba(245,158,11,0.9)_255deg_270deg,transparent_270deg_285deg,rgba(239,255,79,0.9)_285deg_300deg,transparent_300deg_315deg,rgba(245,158,11,0.9)_315deg_330deg,transparent_330deg_345deg,rgba(239,255,79,0.9)_345deg_360deg)] animate-sunburst-rotate" />
+
+          {/* Central Radial Golden Spotlight */}
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-400/30 blur-[130px] rounded-full pointer-events-none animate-trophy-pulse" />
+
+          {/* Floating Colorful Cartoon Confetti Flakes */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <span className="absolute top-4 left-1/4 text-2xl animate-bounce">🎉</span>
+            <span className="absolute top-12 right-1/4 text-xl animate-pulse">⭐</span>
+            <span className="absolute top-1/3 left-10 text-3xl animate-bounce">✨</span>
+            <span className="absolute top-1/2 right-12 text-2xl animate-spin">🌟</span>
+            <span className="absolute bottom-24 left-1/3 text-2xl animate-pulse">🎊</span>
+            <span className="absolute bottom-20 right-1/3 text-3xl animate-bounce">🏆</span>
+          </div>
+
+          {/* Top Bar Controls */}
+          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black text-xs uppercase tracking-wider rounded-lg shadow-md flex items-center gap-1.5 border border-white/50">
+                <Trophy className="w-4 h-4 fill-current text-[#18181B]" />
+                <span>30-DAY SDET GAUNTLET CONQUERED!</span>
+              </span>
+              <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-mono text-xs font-bold rounded-lg flex items-center gap-1 backdrop-blur-sm">
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span>ALL 30 SPRINTS ACCREDITED</span>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => playGrandVictoryFanfare(soundEnabled)}
+                className="px-3 py-1.5 bg-[#1F1F24]/90 hover:bg-[#28282E] text-amber-300 border border-amber-400/50 rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
+                title="Replay cartoon victory fanfare"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Replay Fanfare</span>
+              </button>
+              <button
+                onClick={() => handleToggleMural(false)}
+                className="px-3 py-1.5 bg-[#1F1F24]/90 hover:bg-[#28282E] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm"
+                title="Inspect 30-Day Grid"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>View Calendar Grid</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Hero Centerpiece: Giant Cartoon Warrior Lifting Big Trophy */}
+          <div className="relative z-10 text-center my-auto py-3 space-y-3 max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1 bg-gradient-to-r from-amber-400/30 via-yellow-400/20 to-amber-500/30 border border-amber-400/70 rounded-full text-amber-300 font-mono text-xs font-bold shadow-[0_0_25px_rgba(245,158,11,0.5)] animate-pulse backdrop-blur-sm">
+              <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+              <span>CARTOON GRAND CEREMONY: WARRIOR LIFTS THE GIANT TROPHY!</span>
+              <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+            </div>
+
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight drop-shadow-[0_4px_30px_rgba(0,0,0,1)] flex items-center justify-center gap-3">
+              <span>WARRIOR ACCEPTS THE GRAND TROPHY</span>
+              <Trophy className="w-9 h-9 sm:w-14 sm:h-14 text-amber-400 drop-shadow-[0_0_25px_rgba(245,158,11,1)] shrink-0 animate-bounce" />
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#F3F4F6] max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,1)] font-sans font-medium">
+              From Day 1 Java setup to Day 30 distributed Docker Grid clusters and CI/CD matrix pipelines. You conquered the entire 30-Day SDET gauntlet and earned the ultimate champion accreditation!
+            </p>
+          </div>
+
+          {/* Bottom Achievement Telemetry & Certificate CTA */}
+          <div className="relative z-10 pt-3 border-t border-[#3E3E43]/80 flex flex-col md:flex-row items-center justify-between gap-4 bg-[#141419]/85 backdrop-blur-md p-4 rounded-xl border border-amber-400/50">
+            {/* 3 Milestone Badges */}
+            <div className="grid grid-cols-3 gap-3 w-full md:w-auto text-center font-mono">
+              <div className="p-2 bg-[#202026] border border-amber-400/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">SUPREME RANK</div>
+                <div className="text-xs sm:text-sm font-black text-amber-300">SDET LEAD</div>
+              </div>
+              <div className="p-2 bg-[#202026] border border-emerald-500/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">FINAL BOUNTY</div>
+                <div className="text-xs sm:text-sm font-black text-emerald-400">+100 PTS 🏆</div>
+              </div>
+              <div className="p-2 bg-[#202026] border border-orange-400/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">PERFECT STREAK</div>
+                <div className="text-xs sm:text-sm font-black text-orange-400">30 DAYS 🔥</div>
+              </div>
+            </div>
+
+            {/* Certificate Link CTA */}
+            <Link
+              href="/certificates"
+              className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-[#EFFF4F] via-amber-400 to-[#EFFF4F] hover:brightness-110 text-[#18181B] font-black uppercase text-xs rounded-lg flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(239,255,79,0.5)] transition-all shrink-0 hover:scale-105"
+            >
+              <Award className="w-4 h-4" />
+              <span>CLAIM VERIFIABLE CAPSTONE CERTIFICATE</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

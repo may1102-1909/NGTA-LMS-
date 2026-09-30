@@ -93,6 +93,7 @@ export default function ChallengePage() {
   const [animatingDay, setAnimatingDay] = useState<number | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [showDay30Victory, setShowDay30Victory] = useState(false);
 
   // Dynamic user stats
   const [streakCount, setStreakCount] = useState(7);
@@ -172,6 +173,11 @@ export default function ChallengePage() {
       setTotalPoints((prev) => prev + reward);
     }
 
+    // Trigger Giant Warrior Trophy Mural for Day 30 Capstone
+    if (dayNumber === 30) {
+      setShowDay30Victory(true);
+    }
+
     setSubmitted(true);
     setJustCelebrated(true);
 
@@ -190,6 +196,9 @@ export default function ChallengePage() {
     if (dayNumber === 12) {
       setStreakCount(7);
       setTotalPoints(420);
+    }
+    if (dayNumber === 30) {
+      setShowDay30Victory(false);
     }
     setCheckedCriteria({ 0: true, 1: true, 2: false, 3: false });
     setSubmitted(false);
@@ -244,6 +253,21 @@ export default function ChallengePage() {
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-[#EFFF4F]" /> : <VolumeX className="w-4 h-4" />}
             <span className="text-[10px] hidden sm:inline">{soundEnabled ? "AUDIO ON" : "MUTED"}</span>
+          </button>
+
+          {/* Quick Trigger for Day 30 Giant Trophy Animation */}
+          <button
+            onClick={() => {
+              setSelectedDay(30);
+              handleCompleteDay(30);
+              setShowDay30Victory(true);
+            }}
+            className="px-3 py-2 border-2 border-amber-400 bg-gradient-to-r from-amber-400/20 via-yellow-400/15 to-amber-500/20 text-amber-300 hover:text-white hover:bg-amber-400/30 font-bold uppercase transition-all rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.35)] flex items-center gap-1.5"
+            title="Demonstrate the giant warrior cartoon trophy animation covering the whole calendar"
+          >
+            <Trophy className="w-3.5 h-3.5 text-amber-400 fill-current" />
+            <span className="hidden sm:inline">Test Day 30 Cartoon Trophy</span>
+            <span className="sm:hidden">Day 30 Trophy</span>
           </button>
 
           <Link
@@ -329,6 +353,8 @@ export default function ChallengePage() {
         animatingDay={animatingDay}
         todayDayNumber={12}
         soundEnabled={soundEnabled}
+        showDay30Victory={showDay30Victory}
+        onToggleDay30Victory={setShowDay30Victory}
       />
 
       {/* Completion Toast Banner if just completed */}
@@ -381,7 +407,18 @@ export default function ChallengePage() {
           </div>
 
           <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-            {selectedDay === 15 ? (
+            {selectedDay === 30 ? (
+              <button
+                onClick={() => {
+                  handleCompleteDay(30);
+                  setShowDay30Victory(true);
+                }}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:scale-105 transition-all"
+              >
+                <Trophy className="w-4 h-4 fill-current shrink-0 text-[#18181B]" />
+                <span>DAY 30 CAPSTONE: LAUNCH GIANT TROPHY CEREMONY 🏆</span>
+              </button>
+            ) : selectedDay === 15 ? (
               <span className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400/25 via-yellow-400/20 to-amber-500/25 border-2 border-amber-400 text-amber-300 font-bold text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.35)]">
                 <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
                 <Gift className="w-4 h-4 text-yellow-300 animate-bounce shrink-0" />
@@ -501,21 +538,33 @@ export default function ChallengePage() {
                   The respective date on the calendar has been verified and stamped. +{currentTask.pointsReward} PTS accredited.
                 </p>
 
-                <div className="pt-2 flex items-center gap-2">
-                  <button
-                    onClick={() => handleCompleteDay(selectedDay)}
-                    className="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold rounded flex items-center justify-center gap-1.5 transition-colors"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Re-trigger Date Animation</span>
-                  </button>
-                  <button
-                    onClick={() => handleResetDay(selectedDay)}
-                    className="p-2 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white rounded"
-                    title="Reset to incomplete"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                  </button>
+                <div className="pt-2 flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleCompleteDay(selectedDay)}
+                      className="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold rounded flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Re-trigger Date Animation</span>
+                    </button>
+                    <button
+                      onClick={() => handleResetDay(selectedDay)}
+                      className="p-2 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white rounded"
+                      title="Reset to incomplete"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {selectedDay === 30 && (
+                    <button
+                      onClick={() => setShowDay30Victory(true)}
+                      className="w-full py-2.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black rounded flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:brightness-110 transition-all text-xs uppercase"
+                    >
+                      <Trophy className="w-4 h-4 fill-current text-[#18181B]" />
+                      <span>View Giant Warrior Trophy Stage (Whole Calendar)</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ) : (
