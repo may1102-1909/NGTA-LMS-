@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Course } from "@/types";
 import { Star, ArrowUpRight, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
+import RazorpayCheckoutButton from "@/components/RazorpayCheckoutButton";
 
 interface CourseCardProps {
   course: Course;
@@ -232,23 +233,14 @@ export default function CourseCard({
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleEnrollNow}
-              disabled={isProcessing}
-              className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm disabled:opacity-50 cursor-pointer"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>PROCESSING...</span>
-                </>
-              ) : (
-                <>
-                  <span>ENROLL NOW - ₹{course.discountPriceINR.toLocaleString()}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </>
-              )}
-            </button>
+            <RazorpayCheckoutButton
+              courseId={course.id}
+              courseTitle={course.title}
+              amountINR={course.discountPriceINR}
+              onSuccess={() => {
+                setIsEnrolled(true);
+              }}
+            />
             <Link
               href={`/courses/${course.slug}`}
               className="px-3 py-2.5 border border-[#3E3E43] text-[#A0A5B5] font-mono text-xs uppercase font-bold hover:border-[#EFFF4F] hover:text-[#EFFF4F] transition-colors flex items-center gap-1"

@@ -110,10 +110,39 @@ export async function POST(request: Request) {
       courseId = "course-1",
       amount = 1999,
       transactionId,
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
       userId,
       userEmail,
       userName,
     } = body;
+
+    // Optional cryptographic verification for Razorpay payments
+    if (
+      razorpay_payment_id &&
+      razorpay_order_id &&
+      razorpay_signature &&
+      process.env.RAZORPAY_KEY_SECRET
+    ) {
+      try {
+        const crypto = await import("crypto");
+        const expectedSignature = crypto
+          .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+          .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+          .digest("hex");
+
+        if (expectedSignature !== razorpay_signature) {
+          console.error("[Razorpay Security] Signature mismatch detected!");
+          return NextResponse.json(
+            { error: "Payment verification failed: Invalid transaction signature." },
+            { status: 400 }
+          );
+        }
+      } catch (cryptoErr) {
+        console.warn("Could not verify Razorpay signature crypto:", cryptoErr);
+      }
+    }
 
     let targetUserId = userId;
     if (!targetUserId) {
@@ -178,6 +207,7 @@ export async function POST(request: Request) {
     }
 
     const txnId =
+      razorpay_payment_id ||
       transactionId ||
       `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 

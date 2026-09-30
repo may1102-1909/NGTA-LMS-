@@ -24,6 +24,7 @@ import {
 import ChallengeStepLog from "@/components/gamification/ChallengeStepLog";
 import CredentialCard from "@/components/gamification/CredentialCard";
 import { INITIAL_CREDENTIALS } from "@/lib/gamification";
+import RazorpayCheckoutButton from "@/components/RazorpayCheckoutButton";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -231,13 +232,14 @@ export default function CourseDetailPage() {
                   </Link>
                 </div>
               ) : (
-                <button
-                  onClick={() => setIsCheckoutOpen(true)}
-                  className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2"
-                >
-                  <span>ENROLL VIA UPI / CARDS</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                <RazorpayCheckoutButton
+                  courseId={course.id}
+                  courseTitle={course.title}
+                  amountINR={course.discountPriceINR}
+                  className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
+                  buttonText="ENROLL VIA UPI / CARDS"
+                  onSuccess={() => setIsEnrolled(true)}
+                />
               )}
 
               <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
@@ -537,20 +539,20 @@ export default function CourseDetailPage() {
                 PAYMENT CONFIRMED! REDIRECTING TO LEARNER PLAYER...
               </div>
             ) : (
-              <button
-                disabled={isProcessing}
-                onClick={handleSimulatePayment}
-                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isProcessing ? (
-                  <span>AUTHENTICATING PAYMENT GATEWAY...</span>
-                ) : (
-                  <>
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>PAY ₹{course.discountPriceINR.toLocaleString()} & START LEARNING</span>
-                  </>
-                )}
-              </button>
+              <RazorpayCheckoutButton
+                courseId={course.id}
+                courseTitle={course.title}
+                amountINR={course.discountPriceINR}
+                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
+                buttonText={`PAY ₹${course.discountPriceINR.toLocaleString()} & START LEARNING`}
+                onSuccess={() => {
+                  setPaymentSuccess(true);
+                  setIsEnrolled(true);
+                  setTimeout(() => {
+                    setIsCheckoutOpen(false);
+                  }, 1500);
+                }}
+              />
             )}
 
             <div className="font-mono text-[10px] text-center text-[#5A5F70]">
