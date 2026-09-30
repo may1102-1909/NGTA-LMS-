@@ -147,78 +147,16 @@ async function ensureInitialSeedPosts() {
     const count = await prisma.community_posts.count();
     if (count > 0) return;
 
-    // Seed post 1: Pawpaw
-    await prisma.community_posts.create({
-      data: {
-        id: SEED_POST_1_ID,
-        user_id: SEED_PAWPAW_ID,
-        content: "Clarity > Complexity",
-        image_url: null,
-        comments: {
-          create: [
-            {
-              user_id: SEED_INSTRUCTOR_ID,
-              content: "Simplicity is the ultimate sophistication. Clean token system here!",
-            },
-            {
-              user_id: SEED_SARAH_ID,
-              content: "Love the high contrast dark mode aesthetics.",
-            },
-          ],
-        },
-        likes: {
-          create: [
-            { user_id: SEED_PAWPAW_ID },
-            { user_id: SEED_SARAH_ID },
-          ],
-        },
-      },
-    });
+    const fallbackProfile = await prisma.profiles.findFirst();
+    if (!fallbackProfile) return;
 
-    // Seed post 2: Kanaan
-    await prisma.community_posts.create({
-      data: {
-        id: SEED_POST_2_ID,
-        user_id: SEED_KANAAN_ID,
-        content: "Divine Timing...",
-        image_url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80",
-        comments: {
-          create: [
-            {
-              user_id: SEED_DEVON_ID,
-              content: "Consistency beats intensity every single day. Keep crushing it!",
-            },
-          ],
-        },
-        likes: {
-          create: [
-            { user_id: SEED_KANAAN_ID },
-            { user_id: SEED_DEVON_ID },
-          ],
-        },
-      },
-    });
-
-    // Seed post 3: Rahul Kamat
+    // Seed initial post with existing profile to satisfy foreign key constraint
     await prisma.community_posts.create({
       data: {
         id: SEED_POST_3_ID,
-        user_id: SEED_INSTRUCTOR_ID,
+        user_id: fallbackProfile.id,
         content: "Live Automation Workshop starts this weekend! Check the architecture diagram below.",
         image_url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-        comments: {
-          create: [
-            {
-              user_id: SEED_TANMAY_ID,
-              content: "Will the recording be available in the LMS portal after the live stream?",
-            },
-          ],
-        },
-        likes: {
-          create: [
-            { user_id: SEED_INSTRUCTOR_ID },
-          ],
-        },
       },
     });
   } catch (seedErr) {
