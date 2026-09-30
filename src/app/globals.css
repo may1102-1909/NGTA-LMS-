@@ -91,4 +91,91 @@
     font-weight: 600;
     color: var(--text-muted);
   }
+
+  /* Challenge Calendar Date Completion Animations */
+  @keyframes dateCompletePop {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+    }
+    30% {
+      transform: scale(1.08) translateY(-4px);
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.8), 0 0 60px rgba(239, 255, 79, 0.4);
+    }
+    55% {
+      transform: scale(0.98) translateY(1px);
+    }
+    75% {
+      transform: scale(1.03) translateY(-1px);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+    }
+    100% {
+      transform: scale(1) translateY(0);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+    }
+  }
+
+  @keyframes stampDrop {
+    0% {
+      opacity: 0;
+      transform: scale(2.8) rotate(-25deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(0.85) rotate(-5deg);
+    }
+    70% {
+      transform: scale(1.1) rotate(-8deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(-6deg);
+    }
+  }
+
+  @keyframes floatUpPoints {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.7);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(-5px) scale(1.15);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(-30px) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-45px) scale(0.9);
+    }
+  }
+
+  @keyframes rippleEffect {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+
+  .animate-date-complete {
+    animation: dateCompletePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .animate-stamp {
+    animation: stampDrop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1.2) forwards;
+  }
+
+  .animate-float-points {
+    animation: floatUpPoints 1.6s ease-out forwards;
+  }
+
+  .animate-ripple {
+    animation: rippleEffect 0.9s ease-out forwards;
+  }
 }
