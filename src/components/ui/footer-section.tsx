@@ -132,8 +132,8 @@ function Footerdemo() {
             <a href="/terms" className="text-white transition-colors hover:text-[#EFFF4F]">
               Terms of Service
             </a>
-            <a href="/community" className="text-white transition-colors hover:text-[#EFFF4F]">
-              Cookie Settings
+            <a href="/cookies" className="text-white transition-colors hover:text-[#EFFF4F]">
+              Cookie Policy
             </a>
           </nav>
         </div>
