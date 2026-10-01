@@ -91,7 +91,7 @@ const ROLES: RoleConfig[] = [
   },
 ];
 
-interface RoleSelectionModalProps {
+export interface RoleSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultRole?: RoleOption;
@@ -156,28 +156,23 @@ export default function RoleSelectionModal({
   const currentRole = ROLES.find((r) => r.id === selectedRole) || ROLES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-black/80 animate-in fade-in duration-200">
-      {/* Outer Ambient Radial Glow Backdrop Layer */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
-        <div className="w-[700px] h-[500px] bg-lime-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
-      </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-2xl bg-black/85 animate-in fade-in duration-200">
+      {/* Subtle Inner Glow Backdrop */}
+      <div className="absolute w-[500px] h-[500px] bg-[#EFFF4F]/10 rounded-full blur-[130px] pointer-events-none -z-10" />
 
-      {/* Modal Container */}
-      <div className="relative bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full text-white overflow-hidden max-h-[92vh] flex flex-col">
-        {/* Subtle Ambient Inner Highlight */}
-        <div className="absolute -top-32 -right-32 w-80 h-80 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-white/10 pb-5 relative z-10 shrink-0">
+      {/* Main Glassmorphic Container */}
+      <div className="relative bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full text-white overflow-hidden max-h-[92vh] flex flex-col space-y-6">
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-white/10 pb-5 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-lime-400/10 text-lime-400 border border-lime-400/20 mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-lime-400" />
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-[#EFFF4F]/10 text-[#EFFF4F] border border-[#EFFF4F]/20 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#EFFF4F]" />
               <span>NextGen Testing Academy • RBAC Access</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-              <span>Select Your Role</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Select Your Role
             </h2>
-            <p className="text-zinc-400 text-sm font-normal mt-1.5">
+            <p className="text-zinc-400 text-sm font-normal mt-1">
               Choose your profile designation before authenticating with Google.
             </p>
           </div>
@@ -185,7 +180,7 @@ export default function RoleSelectionModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all cursor-pointer"
+            className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10 cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -194,13 +189,13 @@ export default function RoleSelectionModal({
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="p-3 my-2 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono rounded-xl shrink-0">
+          <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono rounded-xl shrink-0">
             {errorMsg}
           </div>
         )}
 
-        {/* Roles Grid (Scrollable with breathing room) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-1 flex-1 py-4 my-1">
+        {/* Interactive Role Selection Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto pr-1 flex-1 py-1 max-h-[58vh]">
           {ROLES.map((role) => {
             const isSelected = selectedRole === role.id;
             const Icon = role.icon;
@@ -211,57 +206,72 @@ export default function RoleSelectionModal({
                 type="button"
                 onClick={() => setSelectedRole(role.id)}
                 disabled={loading}
-                className={`relative p-5 rounded-2xl text-left transition-all duration-200 ease-out hover:-translate-y-0.5 group flex flex-col justify-between cursor-pointer focus:outline-none ${
+                className={`relative p-5 rounded-2xl text-left transition-all duration-200 ease-out flex flex-col justify-between cursor-pointer focus:outline-none group ${
                   isSelected
-                    ? "bg-lime-400/10 border-2 border-lime-400 shadow-[0_0_25px_rgba(163,230,53,0.15)]"
-                    : "bg-[#121318]/60 hover:bg-[#181920]/80 border border-white/5 hover:border-white/20"
+                    ? "bg-[#EFFF4F]/10 border-2 border-[#EFFF4F] shadow-[0_0_25px_rgba(239,255,79,0.15)] -translate-y-0.5"
+                    : "bg-[#121318]/60 hover:bg-[#181920]/80 border border-white/5 hover:border-white/20 hover:-translate-y-0.5"
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
+                    {/* Icon Container */}
                     <div
-                      className={`p-3 rounded-xl transition-all ${
+                      className={`p-3 rounded-xl transition-colors ${
                         isSelected
-                          ? "bg-lime-400 text-black font-bold shadow-sm"
-                          : "bg-white/5 text-zinc-400 group-hover:text-zinc-200"
+                          ? "bg-[#EFFF4F] text-black font-bold shadow-sm"
+                          : "bg-white/5 text-zinc-400 group-hover:text-white"
                       }`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-zinc-500 bg-white/5 px-2 py-0.5 rounded border border-white/5">
+                      <span
+                        className={`text-[11px] font-mono uppercase font-bold tracking-wider ${
+                          isSelected ? "text-[#EFFF4F]" : "text-zinc-500"
+                        }`}
+                      >
                         {role.badge}
                       </span>
                       {isSelected && (
-                        <div className="w-5 h-5 rounded-full bg-lime-400 text-black flex items-center justify-center shadow-md animate-in zoom-in-75 duration-150">
+                        <div className="w-5 h-5 rounded-full bg-[#EFFF4F] text-black flex items-center justify-center shadow-md">
                           <Check className="w-3 h-3 stroke-[3]" />
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-base text-white tracking-wide">
+                  <h3 className="font-bold text-base text-white tracking-tight">
                     {role.label}
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
                     {role.description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between font-mono text-xs text-zinc-500 group-hover:text-lime-400 transition-colors">
-                  <span>Redirects to:</span>
-                  <span className="font-semibold text-zinc-400 group-hover:text-lime-400">{role.targetDashboard}</span>
+                {/* Redirect Path Monospace Hint */}
+                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+                  <span className="font-mono text-zinc-500">Redirects to:</span>
+                  <span
+                    className={`font-mono text-xs transition-colors ${
+                      isSelected
+                        ? "text-[#EFFF4F] font-bold"
+                        : "text-zinc-500 group-hover:text-[#EFFF4F]"
+                    }`}
+                  >
+                    {role.targetDashboard}
+                  </span>
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Footer Action Bar */}
+        {/* Action Bar & Buttons */}
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-          <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-400">
-            <span className="h-2 w-2 rounded-full bg-lime-400 animate-pulse" />
+          {/* Selection State Indicator */}
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+            <span className="h-2 w-2 rounded-full bg-[#EFFF4F] animate-pulse" />
             <span>
               Selected: <strong className="text-white uppercase font-bold">{currentRole.label}</strong>
             </span>
@@ -272,7 +282,7 @@ export default function RoleSelectionModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-white/10 rounded-xl px-5 py-2.5 text-xs font-mono font-medium transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
+              className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-white/10 rounded-xl px-5 py-2.5 text-xs font-mono font-bold uppercase transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
             >
               Cancel
             </button>
@@ -281,7 +291,7 @@ export default function RoleSelectionModal({
               type="button"
               onClick={handleProceedGoogle}
               disabled={loading}
-              className="flex-1 sm:flex-initial bg-lime-400 hover:bg-lime-300 text-black font-bold px-6 py-2.5 rounded-xl transition-all shadow-[0_0_20px_rgba(163,230,53,0.3)] hover:shadow-[0_0_30px_rgba(163,230,53,0.5)] flex items-center justify-center gap-2 text-xs font-mono tracking-wide cursor-pointer disabled:opacity-50"
+              className="flex-1 sm:flex-initial bg-[#EFFF4F] hover:bg-[#EFFF4F]/90 text-black font-bold px-6 py-2.5 rounded-xl transition-all shadow-[0_0_20px_rgba(239,255,79,0.3)] hover:shadow-[0_0_30px_rgba(239,255,79,0.5)] flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
@@ -290,7 +300,6 @@ export default function RoleSelectionModal({
                 </>
               ) : (
                 <>
-                  {/* Google Color Icon */}
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -310,7 +319,7 @@ export default function RoleSelectionModal({
                     />
                   </svg>
                   <span>Continue with Google</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                 </>
               )}
             </button>
@@ -320,3 +329,5 @@ export default function RoleSelectionModal({
     </div>
   );
 }
+
+export { RoleSelectionModal as RoleSelectModal };
