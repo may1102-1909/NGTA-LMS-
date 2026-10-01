@@ -288,19 +288,19 @@ export default function CertificatesPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10 font-sans selection:bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] selection:text-[#0E0C17]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10 font-sans selection:bg-[#EFFF4F] selection:text-[#28282B]">
       {/* ======================================================== */}
       {/* TOP HEADER & CONTROL BAR                                */}
       {/* ======================================================== */}
-      <div className="border-b border-[#26213B] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 no-print">
+      <div className="border-b border-[#3E3E43] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 no-print">
         <div className="space-y-1.5">
-          <div className="font-mono text-xs text-[#64748B] uppercase tracking-widest flex items-center gap-2">
+          <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest flex items-center gap-2">
             <span className="px-2.5 py-0.5 bg-amber-400/15 border border-amber-400/30 text-amber-300 font-bold text-[10px] flex items-center gap-1">
               <ScrollText className="w-3 h-3 text-amber-400" />
               ROYAL CHANCELLERY ACCREDITATION REGISTRY
             </span>
             <span>•</span>
-            <span className="text-[#94A3B8]">EST. ANNO DOMINI 2024</span>
+            <span className="text-[#A0A5B5]">EST. ANNO DOMINI 2024</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight flex items-center gap-3">
@@ -308,7 +308,7 @@ export default function CertificatesPage() {
             <Award className="w-8 h-8 text-amber-400 shrink-0" />
           </h1>
 
-          <p className="text-sm text-[#94A3B8] max-w-3xl leading-relaxed">
+          <p className="text-sm text-[#A0A5B5] max-w-3xl leading-relaxed">
             Styled as an authentic 17th-century European Letters Patent. Unrolled parchment scroll with authentic wooden roller rods, royal crimson wax seal, and cryptographic SHA-256 verification.
           </p>
         </div>
@@ -321,7 +321,7 @@ export default function CertificatesPage() {
             className={`px-4 py-2.5 font-black uppercase rounded-lg transition-all flex items-center gap-1.5 ${
               isCourseCompleted
                 ? "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:brightness-110 text-[#18181B] shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:scale-105 cursor-pointer"
-                : "bg-[#2A2A2E] text-[#6B7280] border border-[#26213B] cursor-not-allowed opacity-60"
+                : "bg-[#2A2A2E] text-[#6B7280] border border-[#3E3E43] cursor-not-allowed opacity-60"
             }`}
             title={isCourseCompleted ? "Print or Save High-Resolution PDF" : "Complete course to unlock certificate"}
           >
@@ -334,8 +334,8 @@ export default function CertificatesPage() {
             disabled={!isCourseCompleted}
             className={`px-3.5 py-2.5 border rounded-lg transition-colors flex items-center gap-1.5 ${
               isCourseCompleted
-                ? "border-[#26213B] bg-[#2E2E32] hover:bg-[#38383D] text-[#94A3B8] hover:text-[#C084FC] cursor-pointer"
-                : "border-[#26213B] bg-[#242427] text-[#64748B] cursor-not-allowed opacity-60"
+                ? "border-[#3E3E43] bg-[#2E2E32] hover:bg-[#38383D] text-[#A0A5B5] hover:text-[#EFFF4F] cursor-pointer"
+                : "border-[#3E3E43] bg-[#242427] text-[#5A5F70] cursor-not-allowed opacity-60"
             }`}
             title={isCourseCompleted ? "Copy Public Verification Link" : "Complete course to unlock link"}
           >
@@ -356,7 +356,7 @@ export default function CertificatesPage() {
       {/* ======================================================== */}
       {/* INTERACTIVE CUSTOMIZER BAR: TRACKS, NAME & COMPLETION    */}
       {/* ======================================================== */}
-      <div className="bg-[#161326] border border-amber-400/30 rounded-xl p-4 sm:p-5 shadow-card space-y-4 no-print">
+      <div className="bg-[#242428] border border-amber-400/30 rounded-xl p-4 sm:p-5 shadow-card space-y-4 no-print">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           {/* Recipient Name Customizer */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
@@ -384,18 +384,18 @@ export default function CertificatesPage() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-[#18181A] border border-[#26213B] text-[#C084FC] font-mono text-xs font-bold rounded">
+                <span className="px-3 py-1 bg-[#18181A] border border-[#3E3E43] text-[#EFFF4F] font-mono text-xs font-bold rounded">
                   {recipientName}
                 </span>
                 <button
                   onClick={() => setIsEditingName(true)}
-                  className="p-1.5 text-[#94A3B8] hover:text-white border border-[#26213B] bg-[#2E2E32] rounded hover:border-amber-400 transition-colors"
+                  className="p-1.5 text-[#A0A5B5] hover:text-white border border-[#3E3E43] bg-[#2E2E32] rounded hover:border-amber-400 transition-colors"
                   title="Edit Recipient Name on Certificate"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                 </button>
                 {/* Quick Presets */}
-                <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-[#64748B]">
+                <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-[#5A5F70]">
                   <span>Presets:</span>
                   <button
                     onClick={() => setRecipientName("Tanmay Sharma")}
@@ -424,7 +424,7 @@ export default function CertificatesPage() {
 
           {/* Course Track Selector & Access Status */}
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-            <span className="text-xs text-[#94A3B8] font-bold uppercase mr-1 flex items-center gap-1">
+            <span className="text-xs text-[#A0A5B5] font-bold uppercase mr-1 flex items-center gap-1">
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
               <span>COURSE SCROLL:</span>
             </span>
@@ -445,7 +445,7 @@ export default function CertificatesPage() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
                     selectedTrackId === track.id
                       ? "bg-gradient-to-r from-amber-400/25 to-yellow-400/20 text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
-                      : "bg-[#18181A] text-[#94A3B8] border-[#26213B] hover:text-white hover:border-[#64748B]"
+                      : "bg-[#18181A] text-[#A0A5B5] border-[#3E3E43] hover:text-white hover:border-[#5A5F70]"
                   }`}
                 >
                   <span>{track.icon}</span>
@@ -533,7 +533,7 @@ export default function CertificatesPage() {
               <div className="p-4 bg-[#1F1710] border border-amber-900/60 rounded-lg space-y-3 text-left font-mono text-xs">
                 <div className="flex justify-between items-center text-amber-300 font-bold">
                   <span className="truncate max-w-[280px]">{activeCourse.courseTitle}</span>
-                  <span className="text-[#C084FC]">{activeCourse.progressLabel}</span>
+                  <span className="text-[#EFFF4F]">{activeCourse.progressLabel}</span>
                 </div>
 
                 <div className="w-full bg-[#0D0906] h-2 rounded-full overflow-hidden border border-amber-900/50">
@@ -796,8 +796,8 @@ export default function CertificatesPage() {
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
         {/* Left Column: Cryptographic Authenticity Telemetry */}
-        <div className="lg:col-span-7 bg-[#161326] border border-[#26213B] rounded-xl p-6 shadow-card space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between border-b border-[#26213B] pb-3">
+        <div className="lg:col-span-7 bg-[#242428] border border-[#3E3E43] rounded-xl p-6 shadow-card space-y-4 font-mono text-xs">
+          <div className="flex items-center justify-between border-b border-[#3E3E43] pb-3">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
               <h3 className="font-bold text-white uppercase text-sm">
@@ -817,32 +817,32 @@ export default function CertificatesPage() {
 
           <div className="grid grid-cols-2 gap-4 text-[11px]">
             <div>
-              <span className="text-[#64748B] block uppercase text-[10px]">Registry Identifier</span>
+              <span className="text-[#5A5F70] block uppercase text-[10px]">Registry Identifier</span>
               <span className="text-white font-bold">{activeCourse.serialNumber}</span>
             </div>
             <div>
-              <span className="text-[#64748B] block uppercase text-[10px]">Academic Evaluation Grade</span>
-              <span className="text-[#C084FC] font-bold">
+              <span className="text-[#5A5F70] block uppercase text-[10px]">Academic Evaluation Grade</span>
+              <span className="text-[#EFFF4F] font-bold">
                 {isCourseCompleted ? activeCourse.grade : "IN PROGRESS"}
               </span>
             </div>
             <div>
-              <span className="text-[#64748B] block uppercase text-[10px]">Conferred Date</span>
+              <span className="text-[#5A5F70] block uppercase text-[10px]">Conferred Date</span>
               <span className="text-white font-bold">
                 {isCourseCompleted ? activeCourse.conferredDate : "PENDING SYLLABUS CLEARANCE"}
               </span>
             </div>
             <div>
-              <span className="text-[#64748B] block uppercase text-[10px]">Issuing Guild Authority</span>
+              <span className="text-[#5A5F70] block uppercase text-[10px]">Issuing Guild Authority</span>
               <span className="text-amber-300 font-bold">NextGen Testing Academy (NGTA)</span>
             </div>
           </div>
 
           <div className="pt-2">
-            <span className="text-[#64748B] block uppercase text-[10px] mb-1">
+            <span className="text-[#5A5F70] block uppercase text-[10px] mb-1">
               Full SHA-256 Cryptographic Hash
             </span>
-            <div className="p-2.5 bg-[#18181A] border border-[#26213B] rounded text-[10px] text-[#94A3B8] break-all select-all font-mono">
+            <div className="p-2.5 bg-[#18181A] border border-[#3E3E43] rounded text-[10px] text-[#A0A5B5] break-all select-all font-mono">
               {activeCourse.sha256Hash}
             </div>
           </div>
@@ -850,7 +850,7 @@ export default function CertificatesPage() {
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <Link
               href={`/verify?certId=${activeCourse.serialNumber}`}
-              className="px-4 py-2 bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white font-bold uppercase rounded hover:opacity-95 transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] font-bold uppercase rounded hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Query Public Ledger Verification</span>
@@ -861,8 +861,8 @@ export default function CertificatesPage() {
               disabled={!isCourseCompleted}
               className={`px-4 py-2 border rounded font-bold uppercase transition-colors flex items-center gap-1.5 ${
                 isCourseCompleted
-                  ? "bg-[#120F1D] text-white hover:text-[#C084FC] border-[#26213B] cursor-pointer"
-                  : "bg-[#242427] text-[#64748B] border-[#26213B] cursor-not-allowed opacity-60"
+                  ? "bg-[#333336] text-white hover:text-[#EFFF4F] border-[#3E3E43] cursor-pointer"
+                  : "bg-[#242427] text-[#5A5F70] border-[#3E3E43] cursor-not-allowed opacity-60"
               }`}
             >
               <Download className="w-3.5 h-3.5" />
@@ -872,32 +872,32 @@ export default function CertificatesPage() {
         </div>
 
         {/* Right Column: LinkedIn Accreditation & Sharing */}
-        <div className="lg:col-span-5 bg-[#161326] border border-[#26213B] rounded-xl p-6 shadow-card space-y-4 font-mono text-xs flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-[#242428] border border-[#3E3E43] rounded-xl p-6 shadow-card space-y-4 font-mono text-xs flex flex-col justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-white font-bold text-sm uppercase">
               <Share2 className="w-4 h-4 text-amber-400" />
               <span>SHARE TO PROFESSIONAL PROFILE</span>
             </div>
-            <p className="text-[11px] text-[#94A3B8] font-sans leading-relaxed">
+            <p className="text-[11px] text-[#A0A5B5] font-sans leading-relaxed">
               Add this official 1600s credential to your LinkedIn profile. Employers and hiring leaders can verify your SDET competencies with one click.
             </p>
           </div>
 
-          <div className="p-3 bg-[#18181A] border border-[#26213B] rounded-lg space-y-1.5 text-[11px]">
+          <div className="p-3 bg-[#18181A] border border-[#3E3E43] rounded-lg space-y-1.5 text-[11px]">
             <div className="flex justify-between">
-              <span className="text-[#64748B]">Certification Name:</span>
+              <span className="text-[#5A5F70]">Certification Name:</span>
               <span className="text-white font-bold truncate max-w-[200px]">{activeCourse.courseTitle}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#64748B]">Issuing Organization:</span>
+              <span className="text-[#5A5F70]">Issuing Organization:</span>
               <span className="text-white font-bold">NextGen Testing Academy</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#64748B]">Credential ID:</span>
+              <span className="text-[#5A5F70]">Credential ID:</span>
               <span className="text-amber-300 font-bold">{activeCourse.serialNumber}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#64748B]">Status:</span>
+              <span className="text-[#5A5F70]">Status:</span>
               <span className={isCourseCompleted ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
                 {isCourseCompleted ? "✔ UNLOCKED & CONFERRED" : "🔒 SEALED UNTIL COURSE COMPLETION"}
               </span>
@@ -927,7 +927,7 @@ export default function CertificatesPage() {
             className={`w-full py-2.5 font-bold uppercase rounded flex items-center justify-center gap-2 transition-colors shadow-sm text-center ${
               isCourseCompleted
                 ? "bg-[#0A66C2] hover:bg-[#004182] text-white cursor-pointer"
-                : "bg-[#242427] text-[#64748B] cursor-not-allowed opacity-60"
+                : "bg-[#242427] text-[#5A5F70] cursor-not-allowed opacity-60"
             }`}
           >
             <Share2 className="w-3.5 h-3.5" />
@@ -939,10 +939,10 @@ export default function CertificatesPage() {
       {/* ======================================================== */}
       {/* OTHER VERIFIED CREDENTIALS & SKILL BADGES                */}
       {/* ======================================================== */}
-      <div className="space-y-5 no-print pt-6 border-t border-[#26213B]">
+      <div className="space-y-5 no-print pt-6 border-t border-[#3E3E43]">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <div className="font-mono text-[10px] text-[#64748B] uppercase tracking-widest">
+            <div className="font-mono text-[10px] text-[#5A5F70] uppercase tracking-widest">
               FULL PORTFOLIO
             </div>
             <h3 className="text-xl font-black text-white uppercase tracking-tight">
@@ -950,27 +950,27 @@ export default function CertificatesPage() {
             </h3>
           </div>
 
-          <div className="flex border border-[#26213B] bg-[#120F1D] font-mono text-xs font-bold rounded overflow-hidden">
+          <div className="flex border border-[#3E3E43] bg-[#333336] font-mono text-xs font-bold rounded overflow-hidden">
             <button
               onClick={() => setFilter("ALL")}
               className={`px-3 py-1.5 uppercase transition-colors ${
-                filter === "ALL" ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white" : "text-[#94A3B8] hover:bg-[#26213B]"
+                filter === "ALL" ? "bg-[#EFFF4F] text-[#28282B]" : "text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               ALL ({INITIAL_CREDENTIALS.length})
             </button>
             <button
               onClick={() => setFilter("CERTIFICATE")}
-              className={`px-3 py-1.5 uppercase border-l border-[#26213B] transition-colors ${
-                filter === "CERTIFICATE" ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white" : "text-[#94A3B8] hover:bg-[#26213B]"
+              className={`px-3 py-1.5 uppercase border-l border-[#3E3E43] transition-colors ${
+                filter === "CERTIFICATE" ? "bg-[#EFFF4F] text-[#28282B]" : "text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               CERTIFICATES
             </button>
             <button
               onClick={() => setFilter("BADGE")}
-              className={`px-3 py-1.5 uppercase border-l border-[#26213B] transition-colors ${
-                filter === "BADGE" ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white" : "text-[#94A3B8] hover:bg-[#26213B]"
+              className={`px-3 py-1.5 uppercase border-l border-[#3E3E43] transition-colors ${
+                filter === "BADGE" ? "bg-[#EFFF4F] text-[#28282B]" : "text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               BADGES
@@ -985,14 +985,14 @@ export default function CertificatesPage() {
               <div className="flex items-center justify-between text-xs font-mono pt-1">
                 <Link
                   href={`/verify?certId=${cred.verificationId || "NGTA-CERT-2026-8910"}`}
-                  className="text-[#C084FC] hover:underline flex items-center gap-1 font-bold text-[11px]"
+                  className="text-[#EFFF4F] hover:underline flex items-center gap-1 font-bold text-[11px]"
                 >
                   <span>Verify</span>
                   <ExternalLink className="w-3 h-3" />
                 </Link>
                 <button
                   onClick={handlePrint}
-                  className="text-[#94A3B8] hover:text-white flex items-center gap-1 text-[11px]"
+                  className="text-[#A0A5B5] hover:text-white flex items-center gap-1 text-[11px]"
                 >
                   <Download className="w-3 h-3" />
                   <span>PDF</span>

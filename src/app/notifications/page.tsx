@@ -161,27 +161,27 @@ export default function NotificationsPage() {
   const getIcon = (type: NotificationItem["type"]) => {
     switch (type) {
       case "STREAK":
-        return <Flame className="w-4 h-4 text-[#F59E0B]" />;
+        return <Flame className="w-4 h-4 text-orange-400" />;
       case "LIVE":
-        return <Calendar className="w-4 h-4 text-[#06B6D4]" />;
+        return <Calendar className="w-4 h-4 text-cyan-400" />;
       case "CERTIFICATE":
         return <Award className="w-4 h-4 text-emerald-400" />;
       case "COURSE":
-        return <BookOpen className="w-4 h-4 text-[#C084FC]" />;
+        return <BookOpen className="w-4 h-4 text-[#EFFF4F]" />;
       default:
-        return <Bell className="w-4 h-4 text-[#94A3B8]" />;
+        return <Bell className="w-4 h-4 text-[#A0A5B5]" />;
     }
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Header */}
-      <div className="border-b border-[#26213B] pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <div className="border-b border-[#3E3E43] pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <div className="font-mono text-xs text-[#64748B] uppercase tracking-widest mb-1 flex items-center gap-2">
+          <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1 flex items-center gap-2">
             <span>NOTIFICATION CENTER</span>
             {unreadCount > 0 && (
-              <span className="px-2 py-0.5 bg-[#8B5CF6] text-white font-bold text-[10px] rounded-full shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+              <span className="px-2 py-0.5 bg-[#EFFF4F] text-[#28282B] font-bold text-[10px] rounded-full">
                 {unreadCount} NEW
               </span>
             )}
@@ -194,7 +194,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="px-3.5 py-1.5 border border-[#26213B] bg-[#120F1D] text-[#94A3B8] hover:text-[#C084FC] hover:border-[#8B5CF6]/40 font-mono text-xs font-bold uppercase transition-colors flex items-center gap-1.5 rounded"
+            className="px-3.5 py-1.5 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-[#EFFF4F] hover:border-[#EFFF4F]/40 font-mono text-xs font-bold uppercase transition-colors flex items-center gap-1.5"
           >
             <Check className="w-3.5 h-3.5" />
             <span>Mark all as read</span>
@@ -203,13 +203,13 @@ export default function NotificationsPage() {
       </div>
 
       {/* Web Push Notification Settings Banner */}
-      <div className="p-4 sm:p-5 bg-[#120F1D] border border-[#26213B] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg">
+      <div className="p-4 sm:p-5 bg-[#202023] border border-[#3E3E43] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 font-mono text-xs font-bold text-white uppercase">
-            <Bell className="w-4 h-4 text-[#C084FC]" />
+            <Bell className="w-4 h-4 text-[#EFFF4F]" />
             <span>Browser Push Alerts</span>
           </div>
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-[#A0A5B5]">
             Receive real-time notifications for live bootcamps, instructor replies, and daily streak milestones directly on your device.
           </p>
         </div>
@@ -217,43 +217,43 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex border border-[#26213B] bg-[#120F1D] font-mono text-xs font-bold w-fit rounded overflow-hidden">
+      <div className="flex border border-[#3E3E43] bg-[#333336] font-mono text-xs font-bold w-fit">
         <button
           onClick={() => setFilter("ALL")}
           className={`px-4 py-2 uppercase transition-colors ${
             filter === "ALL"
-              ? "bg-[#8B5CF6] text-white shadow-rune-purple"
-              : "text-[#94A3B8] hover:bg-[#1C172E] hover:text-white"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           ALL ({notifications.length})
         </button>
         <button
           onClick={() => setFilter("UNREAD")}
-          className={`px-4 py-2 uppercase border-l border-[#26213B] transition-colors ${
+          className={`px-4 py-2 uppercase border-l border-[#3E3E43] transition-colors ${
             filter === "UNREAD"
-              ? "bg-[#8B5CF6] text-white shadow-rune-purple"
-              : "text-[#94A3B8] hover:bg-[#1C172E] hover:text-white"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           UNREAD ({unreadCount})
         </button>
         <button
           onClick={() => setFilter("COURSE")}
-          className={`px-4 py-2 uppercase border-l border-[#26213B] transition-colors ${
+          className={`px-4 py-2 uppercase border-l border-[#3E3E43] transition-colors ${
             filter === "COURSE"
-              ? "bg-[#8B5CF6] text-white shadow-rune-purple"
-              : "text-[#94A3B8] hover:bg-[#1C172E] hover:text-white"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           COURSES & STREAKS
         </button>
         <button
           onClick={() => setFilter("LIVE")}
-          className={`px-4 py-2 uppercase border-l border-[#26213B] transition-colors ${
+          className={`px-4 py-2 uppercase border-l border-[#3E3E43] transition-colors ${
             filter === "LIVE"
-              ? "bg-[#8B5CF6] text-white shadow-rune-purple"
-              : "text-[#94A3B8] hover:bg-[#1C172E] hover:text-white"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           LIVE SESSIONS
@@ -263,8 +263,8 @@ export default function NotificationsPage() {
       {/* Notifications List */}
       <div className="space-y-3">
         {filteredNotifications.length === 0 ? (
-          <div className="border border-[#26213B] bg-[#120F1D] p-12 text-center text-[#94A3B8] font-mono text-xs space-y-2 rounded-lg">
-            <CheckCircle2 className="w-8 h-8 text-[#C084FC] mx-auto opacity-60" />
+          <div className="border border-[#3E3E43] bg-[#333336] p-12 text-center text-[#A0A5B5] font-mono text-xs space-y-2">
+            <CheckCircle2 className="w-8 h-8 text-[#EFFF4F] mx-auto opacity-60" />
             <p className="text-white font-bold text-sm">All caught up!</p>
             <p>You have no notifications matching this filter.</p>
           </div>
@@ -272,14 +272,14 @@ export default function NotificationsPage() {
           filteredNotifications.map((notif) => (
             <div
               key={notif.id}
-              className={`border p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors rounded-lg ${
+              className={`border p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors ${
                 notif.read
-                  ? "border-[#26213B] bg-[#0E0C17]"
-                  : "border-[#8B5CF6]/40 bg-[#120F1D] shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                  ? "border-[#3E3E43] bg-[#28282B]"
+                  : "border-[#EFFF4F]/40 bg-[#333336]/90 shadow-lemon-sm"
               }`}
             >
               <div className="flex items-start gap-3.5 flex-1">
-                <div className="p-2 border border-[#26213B] bg-[#0E0C17] rounded mt-0.5">
+                <div className="p-2 border border-[#3E3E43] bg-[#202023] rounded mt-0.5">
                   {getIcon(notif.type)}
                 </div>
                 <div className="space-y-1">
@@ -288,23 +288,23 @@ export default function NotificationsPage() {
                       {notif.title}
                     </h3>
                     {!notif.read && (
-                      <span className="w-2 h-2 rounded-full bg-[#8B5CF6] shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                      <span className="w-2 h-2 rounded-full bg-[#EFFF4F]" />
                     )}
                   </div>
-                  <p className="text-xs text-[#94A3B8] font-sans leading-relaxed">
+                  <p className="text-xs text-[#A0A5B5] font-sans leading-relaxed">
                     {notif.message}
                   </p>
-                  <span className="text-[10px] font-mono text-[#64748B] block">
+                  <span className="text-[10px] font-mono text-[#5A5F70] block">
                     {notif.timestamp}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-[#26213B]">
+              <div className="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-[#3E3E43]">
                 {notif.linkHref && notif.linkText && (
                   <Link
                     href={resolveNotificationLink(notif.linkHref)}
-                    className="px-3.5 py-1.5 bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white font-mono text-xs uppercase font-bold hover:opacity-95 transition-colors flex items-center gap-1 shadow-rune-purple rounded"
+                    className="px-3.5 py-1.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 shadow-lemon-sm"
                   >
                     <span>{notif.linkText}</span>
                     <ArrowRight className="w-3 h-3" />
@@ -315,7 +315,7 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => markAsRead(notif.id)}
                     title="Mark as read"
-                    className="p-1.5 text-[#64748B] hover:text-white transition-colors"
+                    className="p-1.5 text-[#5A5F70] hover:text-white transition-colors"
                   >
                     <Check className="w-4 h-4" />
                   </button>
@@ -324,7 +324,7 @@ export default function NotificationsPage() {
                 <button
                   onClick={() => removeNotification(notif.id)}
                   title="Delete notification"
-                  className="p-1.5 text-[#64748B] hover:text-red-400 transition-colors"
+                  className="p-1.5 text-[#5A5F70] hover:text-red-400 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

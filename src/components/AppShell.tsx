@@ -23,14 +23,14 @@ export default function AppShell({ children }: AppShellProps) {
   // If on dedicated full-screen video player classroom route (Image 2)
   if (pathname.startsWith("/learn/")) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#08070D] text-[#F8FAFC]">
+      <div className="min-h-screen flex flex-col bg-[#28282B] text-white">
         <main className="flex-1 flex flex-col">{children}</main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-[#08070D] text-[#F8FAFC] font-sans">
+    <div className="min-h-screen flex bg-[#28282B] text-white font-sans">
       {/* Left Vertical Navigation Sidebar (Image 1) */}
       <Sidebar
         isOpen={sidebarOpen}

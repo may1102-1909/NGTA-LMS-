@@ -41,7 +41,7 @@ const ROLES: RoleConfig[] = [
     badge: "Student Portal",
     description: "Access enrolled courses, live lab workshops, 30-day challenge & community.",
     icon: GraduationCap,
-    accentColor: "#8B5CF6",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/learner",
   },
   {
@@ -50,7 +50,7 @@ const ROLES: RoleConfig[] = [
     badge: "Creator Studio",
     description: "TagMango-style creator suite: live classes, curriculum editor & cohort grading.",
     icon: Award,
-    accentColor: "#A855F7",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/instructor",
   },
   {
@@ -59,7 +59,7 @@ const ROLES: RoleConfig[] = [
     badge: "Curriculum Ops",
     description: "Manage video lessons, syllabus sequencing, media assets & publishing queues.",
     icon: Layers,
-    accentColor: "#06B6D4",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/content",
   },
   {
@@ -68,7 +68,7 @@ const ROLES: RoleConfig[] = [
     badge: "Helpdesk & CRM",
     description: "Troubleshoot student access, verify orders, and resolve learner support tickets.",
     icon: Headphones,
-    accentColor: "#10B981",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/support",
   },
   {
@@ -77,7 +77,7 @@ const ROLES: RoleConfig[] = [
     badge: "Operations Hub",
     description: "Oversee platform analytics, user rosters, revenue reports & financial auditing.",
     icon: ShieldCheck,
-    accentColor: "#F59E0B",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/admin",
   },
   {
@@ -86,7 +86,7 @@ const ROLES: RoleConfig[] = [
     badge: "Root Governance",
     description: "Master system control: 7-role RBAC governance, payment gateways & security.",
     icon: Key,
-    accentColor: "#EF4444",
+    accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/super-admin",
   },
 ];
@@ -157,22 +157,21 @@ export default function RoleSelectionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-black/85 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-[#0E0C17]/95 backdrop-blur-2xl border border-[#26213B] rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-white overflow-hidden max-h-[92vh] flex flex-col">
-        {/* Subtle Matte Ambient Glow */}
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#8B5CF6]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#06B6D4]/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative w-full max-w-xl bg-[#202023] border border-[#3E3E43] rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-white overflow-hidden max-h-[92vh] flex flex-col">
+        {/* Subtle Matte Ambient Lemon Glow */}
+        <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#EFFF4F]/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-[#26213B] pb-4 relative z-10 shrink-0">
+        <div className="flex items-start justify-between border-b border-[#3E3E43] pb-4 relative z-10 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#8B5CF6]/15 border border-[#8B5CF6]/40 text-[#C084FC] text-[10px] font-mono font-bold uppercase tracking-wider mb-2 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
-              <Sparkles className="w-3 h-3 text-[#A855F7]" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+              <Sparkles className="w-3 h-3 text-[#EFFF4F]" />
               <span>NextGen Testing Academy • RBAC Access</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white flex items-center gap-2">
               <span>Select Your Role</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#94A3B8] mt-1">
+            <p className="text-xs sm:text-sm text-[#A0A5B5] mt-1">
               Choose your profile designation before authenticating with Google.
             </p>
           </div>
@@ -180,7 +179,7 @@ export default function RoleSelectionModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-1.5 text-[#64748B] hover:text-white rounded-lg hover:bg-[#161326] transition-colors"
+            className="p-1.5 text-[#5A5F70] hover:text-white rounded-lg hover:bg-[#333336] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -207,8 +206,8 @@ export default function RoleSelectionModal({
                 disabled={loading}
                 className={`relative p-4 rounded-xl border text-left transition-all group flex flex-col justify-between cursor-pointer focus:outline-none ${
                   isSelected
-                    ? "border-[#8B5CF6] bg-[#8B5CF6]/15 ring-2 ring-[#8B5CF6]/50 shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                    : "border-[#26213B] bg-[#120F1D] hover:border-[#8B5CF6]/40 hover:bg-[#161326]"
+                    ? "border-[#EFFF4F] bg-[#EFFF4F]/10 ring-2 ring-[#EFFF4F]/50 shadow-lemon-sm"
+                    : "border-[#3E3E43] bg-[#28282B] hover:border-[#EFFF4F]/40 hover:bg-[#333336]"
                 }`}
               >
                 <div>
@@ -216,19 +215,19 @@ export default function RoleSelectionModal({
                     <div
                       className={`w-9 h-9 rounded-lg flex items-center justify-center border ${
                         isSelected
-                          ? "bg-[#8B5CF6]/20 border-[#8B5CF6] text-white shadow-sm"
-                          : "bg-[#161326] border-[#26213B] text-[#94A3B8] group-hover:text-white"
+                          ? "bg-[#EFFF4F] border-[#EFFF4F] text-[#28282B] shadow-sm"
+                          : "bg-[#333336] border-[#3E3E43] text-[#A0A5B5] group-hover:text-white"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-mono uppercase font-bold text-[#64748B]">
+                      <span className="text-[10px] font-mono uppercase font-bold text-[#5A5F70]">
                         {role.badge}
                       </span>
                       {isSelected && (
-                        <div className="w-4 h-4 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center shadow-md">
+                        <div className="w-4 h-4 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center shadow-md">
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
                       )}
@@ -238,14 +237,14 @@ export default function RoleSelectionModal({
                   <h3 className="font-bold text-sm text-white uppercase tracking-wide">
                     {role.label}
                   </h3>
-                  <p className="text-[11px] text-[#94A3B8] mt-1 leading-snug line-clamp-2">
+                  <p className="text-[11px] text-[#A0A5B5] mt-1 leading-snug line-clamp-2">
                     {role.description}
                   </p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-[#26213B]/60 flex items-center justify-between text-[10px] font-mono text-[#64748B]">
+                <div className="mt-3 pt-2 border-t border-[#3E3E43]/60 flex items-center justify-between text-[10px] font-mono text-[#5A5F70]">
                   <span>Redirects to:</span>
-                  <span className="text-[#C084FC] font-semibold">{role.targetDashboard}</span>
+                  <span className="text-[#EFFF4F] font-semibold">{role.targetDashboard}</span>
                 </div>
               </button>
             );
@@ -253,8 +252,8 @@ export default function RoleSelectionModal({
         </div>
 
         {/* Footer Action */}
-        <div className="border-t border-[#26213B] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <div className="text-[11px] font-mono text-[#94A3B8]">
+        <div className="border-t border-[#3E3E43] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <div className="text-[11px] font-mono text-[#A0A5B5]">
             Selected: <strong className="text-white uppercase">{currentRole.label}</strong>
           </div>
 
@@ -263,7 +262,7 @@ export default function RoleSelectionModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2.5 border border-[#26213B] bg-[#161326] hover:bg-[#1C172E] text-white text-xs font-mono font-bold uppercase rounded-xl transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
+              className="px-4 py-2.5 border border-[#3E3E43] bg-[#28282B] hover:bg-[#333336] text-white text-xs font-mono font-bold uppercase rounded-xl transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
             >
               Cancel
             </button>
@@ -272,11 +271,11 @@ export default function RoleSelectionModal({
               type="button"
               onClick={handleProceedGoogle}
               disabled={loading}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#06B6D4] text-white hover:brightness-110 text-xs font-mono font-bold uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] disabled:opacity-50 cursor-pointer"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase tracking-wider rounded-xl transition-all shadow-lemon-sm disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <Loader2 className="w-4 h-4 animate-spin text-[#28282B]" />
                   <span>Connecting to Google...</span>
                 </>
               ) : (

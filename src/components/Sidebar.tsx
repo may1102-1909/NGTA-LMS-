@@ -147,27 +147,27 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
       {/* Sidebar Panel */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#0C0A14] border-r border-[#26213B] flex flex-col justify-between transition-transform duration-300 ease-in-out font-mono lg:static lg:translate-x-0 shrink-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#202023] border-r border-[#3E3E43] flex flex-col justify-between transition-transform duration-300 ease-in-out font-mono lg:static lg:translate-x-0 shrink-0 ${
           isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         }`}
       >
         {/* Top Header / Brand */}
         <div>
-          <div className="h-16 px-5 border-b border-[#26213B] flex items-center justify-between bg-[#120F1D]">
+          <div className="h-16 px-5 border-b border-[#3E3E43] flex items-center justify-between bg-[#242428]">
             <Link
               href="/dashboard"
               onClick={onClose}
               className="flex items-center gap-3 group"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#8B5CF6]/15 border border-[#8B5CF6]/40 flex items-center justify-center text-[#A855F7] group-hover:scale-105 transition-transform shadow-[0_0_12px_rgba(139,92,246,0.3)]">
+              <div className="w-9 h-9 rounded-lg bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 flex items-center justify-center text-[#EFFF4F] group-hover:scale-105 transition-transform shadow-lemon-sm">
                 <GraduationCap className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-black text-white tracking-wider uppercase group-hover:text-[#A855F7] transition-colors leading-tight">
-                  NGTA REALM
+                <span className="text-sm font-black text-white tracking-wider uppercase group-hover:text-[#EFFF4F] transition-colors leading-tight">
+                  NGTA STUDENT
                 </span>
-                <span className="text-[10px] text-[#94A3B8] tracking-tight font-sans">
-                  Academy Citadel
+                <span className="text-[10px] text-[#A0A5B5] tracking-tight font-sans">
+                  Classroom Hub
                 </span>
               </div>
             </Link>
@@ -175,7 +175,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             {/* Mobile close button */}
             <button
               onClick={onClose}
-              className="p-1.5 text-[#94A3B8] hover:text-white lg:hidden"
+              className="p-1.5 text-[#A0A5B5] hover:text-white lg:hidden"
               aria-label="Close Sidebar"
             >
               <X className="w-5 h-5" />
@@ -191,25 +191,25 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   key={item.label}
                   href={item.href}
                   onClick={onClose}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all group ${
+                  className={`flex items-center justify-between px-3 py-2.5 rounded transition-all group ${
                     item.active
-                      ? "bg-[#8B5CF6]/15 text-[#C084FC] font-bold border-l-2 border-[#8B5CF6] shadow-[0_0_15px_rgba(139,92,246,0.18)]"
-                      : "text-[#94A3B8] hover:text-white hover:bg-[#161326] border-l-2 border-transparent"
+                      ? "bg-[#333527]/70 text-[#EFFF4F] font-bold border-l-2 border-[#EFFF4F] shadow-sm"
+                      : "text-[#A0A5B5] hover:text-white hover:bg-[#28282B] border-l-2 border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-4 h-4 transition-colors ${
                         item.active
-                          ? "text-[#8B5CF6]"
-                          : "text-[#64748B] group-hover:text-[#A855F7]"
+                          ? "text-[#EFFF4F]"
+                          : "text-[#7A8090] group-hover:text-[#EFFF4F]"
                       }`}
                     />
                     <span className="font-sans text-[13px]">{item.label}</span>
                   </div>
 
                   {item.badge && (
-                    <span className="w-5 h-5 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] text-white flex items-center justify-center font-bold text-[11px] shrink-0 shadow-[0_0_8px_rgba(139,92,246,0.5)]">
+                    <span className="w-5 h-5 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center font-bold text-[11px] shrink-0 shadow-lemon-sm">
                       {item.badge}
                     </span>
                   )}
@@ -220,32 +220,32 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </div>
 
         {/* Bottom Section: Streak Badge & Sign Out */}
-        <div className="p-3 border-t border-[#26213B] bg-[#120F1D] space-y-2">
+        <div className="p-3 border-t border-[#3E3E43] bg-[#242428] space-y-2">
           {/* User Streak Pill Card */}
-          <div className="p-3 rounded-lg border border-[#26213B] bg-[#161326] flex items-center justify-between shadow-sm">
+          <div className="p-3 rounded border border-[#3E3E43] bg-[#28282B] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/15 text-amber-400">
-                <Flame className="w-3.5 h-3.5 fill-amber-400" />
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-500/15 text-orange-400">
+                <Flame className="w-3.5 h-3.5 fill-orange-400" />
               </span>
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold text-white font-sans">
                   {streak} {streak === 1 ? "Day" : "Days"} Streak
                 </span>
-                <span className="text-[10px] text-[#94A3B8] font-sans">
+                <span className="text-[10px] text-[#A0A5B5] font-sans">
                   {streak > 0 ? "Active Learning Streak" : "Start Your Streak Today"}
                 </span>
               </div>
             </div>
-            <span className={`w-2 h-2 rounded-full ${streak > 0 ? "bg-[#F59E0B] shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse" : "bg-[#3A2E59]"}`} />
+            <span className={`w-2 h-2 rounded-full ${streak > 0 ? "bg-[#EFFF4F] animate-pulse" : "bg-[#5A5F70]"}`} />
           </div>
 
           {/* Sign Out Button */}
           <Link
             href="/"
             onClick={onClose}
-            className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#94A3B8] hover:text-white hover:bg-[#161326] rounded-lg transition-colors w-full"
+            className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#A0A5B5] hover:text-white hover:bg-[#28282B] rounded transition-colors w-full"
           >
-            <LogOut className="w-4 h-4 text-[#64748B]" />
+            <LogOut className="w-4 h-4 text-[#5A5F70]" />
             <span className="font-sans text-[13px]">Sign Out</span>
           </Link>
         </div>

@@ -74,12 +74,12 @@ export default function LeaderboardTable({
 
   return (
     <div
-      className={`border border-[#26213B] bg-[#120F1D] p-5 sm:p-6 shadow-card space-y-4 font-mono rounded-xl ${className}`}
+      className={`border border-[#3E3E43] bg-[#333336] p-5 sm:p-6 shadow-card space-y-4 font-mono ${className}`}
     >
       {/* Widget Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#26213B] pb-3">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#3E3E43] pb-3">
         <div>
-          <div className="text-[10px] text-[#64748B] uppercase tracking-widest">
+          <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
             COHORT LEADERBOARD
           </div>
           <h3 className="text-xl font-black text-white uppercase tracking-tight">
@@ -89,11 +89,11 @@ export default function LeaderboardTable({
 
         {/* Cohort Filter */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[#64748B] uppercase">COHORT:</span>
+          <span className="text-[10px] text-[#5A5F70] uppercase">COHORT:</span>
           <select
             value={cohortFilter}
             onChange={(e) => setCohortFilter(e.target.value)}
-            className="border border-[#26213B] bg-[#161326] text-xs px-2.5 py-1 font-bold text-white focus:outline-none uppercase rounded-md"
+            className="border border-[#3E3E43] bg-[#28282B] text-xs px-2.5 py-1 font-bold text-white focus:outline-none uppercase"
           >
             <option value="ALL">ALL COHORTS</option>
             <option value="Selenium">SELENIUM (COHORT 26)</option>
@@ -103,33 +103,33 @@ export default function LeaderboardTable({
       </div>
 
       {/* Tabs */}
-      <div className="flex border border-[#26213B] bg-[#0E0C17] text-xs font-bold rounded-lg overflow-hidden">
+      <div className="flex border border-[#3E3E43] bg-[#28282B] text-xs font-bold">
         <button
           onClick={() => setActiveTab("WEEK")}
-          className={`flex-1 py-2 px-3 uppercase text-center transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center transition-colors ${
             activeTab === "WEEK"
-              ? "bg-[#8B5CF6] text-white shadow-[0_0_12px_rgba(139,92,246,0.4)]"
-              : "text-[#94A3B8] hover:bg-[#161326]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           THIS WEEK
         </button>
         <button
           onClick={() => setActiveTab("MONTH")}
-          className={`flex-1 py-2 px-3 uppercase text-center border-l border-[#26213B] transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#3E3E43] transition-colors ${
             activeTab === "MONTH"
-              ? "bg-[#8B5CF6] text-white shadow-[0_0_12px_rgba(139,92,246,0.4)]"
-              : "text-[#94A3B8] hover:bg-[#161326]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           THIS MONTH
         </button>
         <button
           onClick={() => setActiveTab("ALL_TIME")}
-          className={`flex-1 py-2 px-3 uppercase text-center border-l border-[#26213B] transition-colors ${
+          className={`flex-1 py-1.5 px-3 uppercase text-center border-l border-[#3E3E43] transition-colors ${
             activeTab === "ALL_TIME"
-              ? "bg-[#8B5CF6] text-white shadow-[0_0_12px_rgba(139,92,246,0.4)]"
-              : "text-[#94A3B8] hover:bg-[#161326]"
+              ? "bg-[#EFFF4F] text-[#28282B]"
+              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
           }`}
         >
           ALL-TIME
@@ -137,45 +137,45 @@ export default function LeaderboardTable({
       </div>
 
       {/* Leaderboard Table with Avatars */}
-      <div className="border border-[#26213B] overflow-x-auto bg-[#0E0C17] rounded-lg">
+      <div className="border border-[#3E3E43] overflow-x-auto bg-[#28282B]">
         <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
-            <tr className="bg-[#120F1D] text-[#94A3B8] text-[11px] uppercase tracking-wider border-b border-[#26213B]">
+            <tr className="bg-[#28282B] text-[#A0A5B5] text-[11px] uppercase tracking-wider border-b border-[#3E3E43]">
               <th
                 onClick={() => handleSort("rank")}
-                className="py-2.5 px-3 cursor-pointer select-none hover:text-[#A855F7] transition-colors w-16"
+                className="py-2.5 px-3 cursor-pointer select-none hover:text-[#EFFF4F] transition-colors w-16"
               >
                 <div className="flex items-center gap-1">
                   <span>RANK</span>
-                  <ArrowUpDown className="w-3 h-3 text-[#64748B]" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
               <th className="py-2.5 px-3">LEARNER</th>
               <th className="py-2.5 px-3 hidden md:table-cell">COHORT</th>
               <th
                 onClick={() => handleSort("points")}
-                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#A855F7] transition-colors"
+                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>PTS</span>
-                  <ArrowUpDown className="w-3 h-3 text-[#64748B]" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
               <th
                 onClick={() => handleSort("streakDays")}
-                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#A855F7] transition-colors"
+                className="py-2.5 px-3 text-right cursor-pointer select-none hover:text-[#EFFF4F] transition-colors"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>STREAK</span>
-                  <ArrowUpDown className="w-3 h-3 text-[#64748B]" />
+                  <ArrowUpDown className="w-3 h-3 text-[#5A5F70]" />
                 </div>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#26213B]">
+          <tbody className="divide-y divide-[#3E3E43]">
             {filteredAndSortedEntries.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-[#64748B] text-xs font-mono">
+                <td colSpan={5} className="py-8 text-center text-[#5A5F70] text-xs font-mono">
                   {loading
                     ? "Loading engineering rankings..."
                     : "No students on the leaderboard yet. Start learning to claim rank #1!"}
@@ -188,26 +188,26 @@ export default function LeaderboardTable({
               const isThird = entry.rank === 3;
 
               const rankDisplayClass = isFirst
-                ? "text-[#F59E0B] font-black"
+                ? "text-[#EFFF4F] font-black"
                 : isSecond
                 ? "text-slate-300 font-bold"
                 : isThird
                 ? "text-amber-500 font-bold"
-                : "text-[#94A3B8]";
+                : "text-[#A0A5B5]";
 
               const avatarBorderClass = isFirst
-                ? "border-2 border-[#F59E0B] shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+                ? "border-2 border-[#EFFF4F] shadow-[0_0_8px_rgba(239,255,79,0.3)]"
                 : isSecond
-                ? "border-2 border-slate-300/60 shadow-[0_0_8px_rgba(203,213,225,0.3)]"
+                ? "border-2 border-slate-300/60"
                 : isThird
-                ? "border-2 border-amber-600/60"
-                : "border border-[#26213B]";
+                ? "border-2 border-amber-500/60"
+                : "border border-[#3E3E43]";
 
               return (
                 <tr
                   key={entry.id}
-                  className={`hover:bg-[#161326] transition-colors ${
-                    entry.isCurrentUser ? "bg-[#8B5CF6]/10 border-l-2 border-l-[#8B5CF6]" : ""
+                  className={`hover:bg-[#333336] transition-colors ${
+                    entry.isCurrentUser ? "bg-[#EFFF4F]/5 border-l-2 border-l-[#EFFF4F]" : ""
                   }`}
                 >
                   {/* Rank */}
@@ -221,7 +221,7 @@ export default function LeaderboardTable({
                   <td className="py-3 px-3">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`relative w-9 h-9 rounded-full overflow-hidden shrink-0 ${avatarBorderClass} bg-[#08070D]`}
+                        className={`relative w-9 h-9 rounded-full overflow-hidden shrink-0 ${avatarBorderClass}`}
                       >
                         <Image
                           src={entry.avatarUrl || "/avatars-3d/learner-1.jpg"}
@@ -235,15 +235,15 @@ export default function LeaderboardTable({
                         <div className="font-sans font-bold text-white text-xs flex items-center gap-2">
                           <span className="truncate">{entry.name}</span>
                           {entry.isCurrentUser && (
-                            <span className="text-[9px] px-1.5 py-0.2 bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] text-white font-bold uppercase tracking-wider rounded">
+                            <span className="text-[9px] px-1.5 py-0.2 bg-[#EFFF4F] text-[#28282B] font-bold uppercase tracking-wider">
                               YOU
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-[#94A3B8] flex items-center gap-1.5">
+                        <div className="text-[11px] text-[#A0A5B5] flex items-center gap-1.5">
                           <span>{entry.handle}</span>
                           <span>•</span>
-                          <span className="text-[10px] text-[#64748B] font-bold uppercase">
+                          <span className="text-[10px] text-[#5A5F70] font-bold uppercase">
                             {entry.rankCode}
                           </span>
                         </div>
@@ -252,7 +252,7 @@ export default function LeaderboardTable({
                   </td>
 
                   {/* Cohort */}
-                  <td className="py-3 px-3 hidden md:table-cell text-[11px] text-[#94A3B8]">
+                  <td className="py-3 px-3 hidden md:table-cell text-[11px] text-[#A0A5B5]">
                     {entry.cohort}
                   </td>
 
@@ -260,7 +260,7 @@ export default function LeaderboardTable({
                   <td className="py-3 px-3 text-right">
                     <span
                       className={`font-mono font-bold ${
-                        isFirst ? "text-[#F59E0B]" : "text-white"
+                        isFirst ? "text-[#EFFF4F]" : "text-white"
                       }`}
                     >
                       {entry.points.toLocaleString()} PTS
@@ -269,7 +269,7 @@ export default function LeaderboardTable({
 
                   {/* Streak */}
                   <td className="py-3 px-3 text-right">
-                    <span className="font-mono font-bold text-amber-400">
+                    <span className="font-mono font-bold text-orange-400">
                       {entry.streakDays}d
                     </span>
                   </td>

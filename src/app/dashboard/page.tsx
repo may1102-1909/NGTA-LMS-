@@ -67,8 +67,8 @@ export default function DashboardRouterPage() {
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
-      <Loader2 className="w-8 h-8 animate-spin text-[#8B5CF6]" />
-      <span className="font-mono text-xs text-[#94A3B8] uppercase tracking-wider">
+      <Loader2 className="w-8 h-8 animate-spin text-[#EFFF4F]" />
+      <span className="font-mono text-xs text-[#A0A5B5] uppercase tracking-wider">
         Directing to your authorized workspace...
       </span>
     </div>

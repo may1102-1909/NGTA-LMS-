@@ -51,10 +51,10 @@ export default function StreakGrid({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span
-            className={`inline-block w-2 h-2 rounded-full ${
+            className={`inline-block w-2 h-2 ${
               isActuallyActive
-                ? "bg-[#F59E0B] shadow-[0_0_8px_rgba(245,158,11,0.8)]"
-                : "bg-[#3A2E59]"
+                ? "bg-[#EFFF4F] shadow-[0_0_6px_rgba(239,255,79,0.8)]"
+                : "bg-[#5A5F70]"
             }`}
           />
           <span className="font-bold text-white uppercase tracking-tight">
@@ -63,23 +63,23 @@ export default function StreakGrid({
         </div>
 
         {!compact && (
-          <div className="flex items-center gap-1 text-[10px] text-[#64748B]">
+          <div className="flex items-center gap-1 text-[10px] text-[#5A5F70]">
             <button
               onClick={() => setViewMode("7D")}
-              className={`px-2 py-0.5 border rounded ${
+              className={`px-1.5 py-0.5 border ${
                 viewMode === "7D"
-                  ? "border-[#8B5CF6] bg-[#8B5CF6] text-white font-bold shadow-[0_0_8px_rgba(139,92,246,0.5)]"
-                  : "border-[#26213B] bg-[#161326] text-[#94A3B8] hover:bg-[#1E1933]"
+                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                  : "border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               7D
             </button>
             <button
               onClick={() => setViewMode("30D")}
-              className={`px-2 py-0.5 border rounded ${
+              className={`px-1.5 py-0.5 border ${
                 viewMode === "30D"
-                  ? "border-[#8B5CF6] bg-[#8B5CF6] text-white font-bold shadow-[0_0_8px_rgba(139,92,246,0.5)]"
-                  : "border-[#26213B] bg-[#161326] text-[#94A3B8] hover:bg-[#1E1933]"
+                  ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
+                  : "border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:bg-[#3E3E43]"
               }`}
             >
               30D
@@ -91,24 +91,24 @@ export default function StreakGrid({
       {/* GitHub-contribution-graph style grid */}
       <div className="space-y-1.5">
         <div
-          className={`grid gap-1.5 p-2.5 bg-[#0E0C17] border border-[#26213B] rounded-lg ${
+          className={`grid gap-1.5 p-2 bg-[#28282B] border border-[#3E3E43] ${
             viewMode === "7D"
               ? "grid-cols-7"
               : "grid-cols-10 sm:grid-cols-15"
           }`}
         >
           {displayData.map((day, idx) => {
-            let blockStyle = "bg-[#161326] border border-[#26213B] rounded-sm";
+            let blockStyle = "bg-[#3E3E43] border border-[#3E3E43]";
 
             if (day.active) {
               if (day.isToday && streakActive) {
                 blockStyle =
-                  "bg-[#8B5CF6] border border-[#A855F7] shadow-[0_0_10px_rgba(139,92,246,0.8)] rounded-sm";
+                  "bg-[#EFFF4F] border border-[#EFFF4F] shadow-[0_0_8px_rgba(239,255,79,0.7)]";
               } else {
-                blockStyle = "bg-[#8B5CF6]/60 border border-[#8B5CF6]/40 rounded-sm";
+                blockStyle = "bg-[#EFFF4F]/60 border border-[#EFFF4F]/40";
               }
             } else if (day.isToday) {
-              blockStyle = "bg-[#3A2E59] border border-[#3A2E59] rounded-sm";
+              blockStyle = "bg-[#5A5F70] border border-[#5A5F70]";
             }
 
             return (
@@ -123,7 +123,7 @@ export default function StreakGrid({
                   }`}
                 />
                 {viewMode === "7D" && (
-                  <span className="text-[9px] text-[#64748B] font-mono mt-1 select-none">
+                  <span className="text-[9px] text-[#5A5F70] font-mono mt-1 select-none">
                     {day.dayLabel}
                   </span>
                 )}
@@ -133,13 +133,13 @@ export default function StreakGrid({
         </div>
 
         {/* Legend / Metrics */}
-        <div className="flex justify-between items-center text-[10px] text-[#64748B] tabular-nums">
+        <div className="flex justify-between items-center text-[10px] text-[#5A5F70] tabular-nums">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 bg-[#161326] border border-[#26213B] inline-block rounded-xs" />
+            <span className="w-2 h-2 bg-[#3E3E43] border border-[#3E3E43] inline-block" />
             <span>IDLE</span>
-            <span className="w-2 h-2 bg-[#8B5CF6]/60 inline-block ml-1 rounded-xs" />
+            <span className="w-2 h-2 bg-[#EFFF4F]/60 inline-block ml-1" />
             <span>ACTIVE</span>
-            <span className="w-2 h-2 bg-[#8B5CF6] shadow-[0_0_6px_rgba(139,92,246,0.8)] inline-block ml-1 rounded-xs" />
+            <span className="w-2 h-2 bg-[#EFFF4F] shadow-[0_0_4px_rgba(239,255,79,0.8)] inline-block ml-1" />
             <span>TODAY</span>
           </div>
           <div>
