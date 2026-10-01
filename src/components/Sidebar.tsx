@@ -17,6 +17,7 @@ import {
   LogOut,
   Flame,
   X,
+  Crown,
 } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
 
@@ -88,6 +89,12 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       href: "/courses",
       icon: BookOpen,
       active: pathname === "/courses" || pathname.startsWith("/courses/"),
+    },
+    {
+      label: "Memberships",
+      href: "/memberships",
+      icon: Crown,
+      active: pathname === "/memberships" || pathname.startsWith("/memberships/") || pathname.startsWith("/dashboard/memberships"),
     },
     {
       label: "Notifications",
