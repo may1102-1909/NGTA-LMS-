@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Award,
@@ -15,20 +15,18 @@ import {
   Check,
   RotateCcw,
   BookOpen,
-  Calendar,
   User,
-  Search,
-  Lock,
   ScrollText,
   Flame,
-  QrCode,
   Edit3,
+  Lock,
+  Unlock,
 } from "lucide-react";
 import { INITIAL_CREDENTIALS } from "@/lib/gamification";
 import CredentialCard from "@/components/gamification/CredentialCard";
 
 /* Web Audio Synthesizer for 1600s Parchment Unfurl & Molten Wax Seal Stamp */
-function playAntiqueSound(type: "stamp" | "unfurl" | "click") {
+function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
   if (typeof window === "undefined") return;
   try {
     const AudioContextClass =
@@ -38,7 +36,7 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click") {
     const ctx = new AudioContextClass();
 
     if (type === "stamp") {
-      // 1. Deep low-frequency molten wax press thud (130Hz -> 40Hz)
+      // 1. Deep low-frequency molten wax press thud (140Hz -> 42Hz)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
@@ -63,6 +61,20 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click") {
       chimeGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
       chime.start(ctx.currentTime + 0.04);
       chime.stop(ctx.currentTime + 0.45);
+    } else if (type === "unlock") {
+      // Triumphant chord when breaking seal and unfurling
+      [349.23, 440, 523.25, 698.46].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
+        gain.gain.setValueAtTime(0.09, ctx.currentTime + i * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.5);
+        osc.start(ctx.currentTime + i * 0.07);
+        osc.stop(ctx.currentTime + i * 0.07 + 0.5);
+      });
     } else if (type === "unfurl") {
       // Gentle wood roller and parchment paper slide oscillations
       [196, 261.63, 329.63, 392].forEach((freq, i) => {
@@ -106,6 +118,10 @@ interface CourseCertificateConfig {
   conferredDate: string;
   grade: string;
   competencies: string[];
+  defaultCompleted: boolean;
+  progressPercent: number;
+  progressLabel: string;
+  courseLink: string;
 }
 
 const CERTIFICATE_TRACKS: Record<string, CourseCertificateConfig> = {
@@ -120,6 +136,10 @@ const CERTIFICATE_TRACKS: Record<string, CourseCertificateConfig> = {
     sha256Hash: "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
     conferredDate: "October 01, 2026",
     grade: "SUMMA CUM LAUDE (SCORE: 100% • 30/30 DAYS ACCREDITED)",
+    defaultCompleted: false, // Incomplete by default (Day 12 active)
+    progressPercent: 37,
+    progressLabel: "11 / 30 Days (37% Completed)",
+    courseLink: "/challenge",
     competencies: [
       "I. Java Architecture & OOP Framework Design",
       "II. Selenium 4 WebDriver Engine & Synchronizers",
@@ -142,6 +162,10 @@ const CERTIFICATE_TRACKS: Record<string, CourseCertificateConfig> = {
     sha256Hash: "e4d909c290d0fb1ca068ffaddf22cbd0add8291077284addd200126d90698124",
     conferredDate: "March 17, 2026",
     grade: "FIRST CLASS DISTINCTION (SCORE: 100%)",
+    defaultCompleted: true, // Completed course
+    progressPercent: 100,
+    progressLabel: "100% Completed (All 14 Modules Cleared)",
+    courseLink: "/courses/selenium-java-ai",
     competencies: [
       "I. Core Java OOP, Streams & Collections Engine",
       "II. Selenium 4 Locators & Multi-Window Contexts",
@@ -164,8 +188,12 @@ const CERTIFICATE_TRACKS: Record<string, CourseCertificateConfig> = {
     sha256Hash: "c18f03b41aa892ef0612bb14781290bb0a77284addd200126d90699940129bc3",
     conferredDate: "January 24, 2026",
     grade: "HIGH HONORS (SCORE: 98%)",
+    defaultCompleted: false, // Incomplete by default
+    progressPercent: 65,
+    progressLabel: "8 / 12 Modules (65% Completed)",
+    courseLink: "/courses/api-automation",
     competencies: [
-      "I. HTTP Specification & Status Code Verifications",
+      "I. HTTP Protocol Specification & Status Verifications",
       "II. RestAssured Fluent Given/When/Then DSL",
       "III. Jackson POJO Serialization & Deserialization",
       "IV. JSON Schema Validation & Contract Integrity",
@@ -187,11 +215,37 @@ export default function CertificatesPage() {
   const [selectedTrackId, setSelectedTrackId] = useState<string>("gauntlet-30d");
   const activeCourse = CERTIFICATE_TRACKS[selectedTrackId] || CERTIFICATE_TRACKS["gauntlet-30d"];
 
+  // Course Completion Access Control State
+  // Requirement: User can ONLY access the certificate once the respective course is completed.
+  const [courseCompletionMap, setCourseCompletionMap] = useState<Record<string, boolean>>({
+    "gauntlet-30d": false, // Incomplete by default (11/30 days completed in challenge)
+    "selenium-java-ai": true, // Completed course
+    "rest-assured-api": false, // Incomplete
+  });
+
+  const isCourseCompleted = !!courseCompletionMap[selectedTrackId];
+
   // Animation & UI states
   const [isRolled, setIsRolled] = useState(false);
   const [sealClicked, setSealClicked] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [filter, setFilter] = useState<"ALL" | "CERTIFICATE" | "BADGE">("ALL");
+
+  // Toggle completion simulation
+  const handleToggleCourseCompletion = () => {
+    const newState = !isCourseCompleted;
+    setCourseCompletionMap((prev) => ({
+      ...prev,
+      [selectedTrackId]: newState,
+    }));
+    if (newState) {
+      playAntiqueSound("unlock");
+      setIsRolled(true);
+      setTimeout(() => setIsRolled(false), 300);
+    } else {
+      playAntiqueSound("click");
+    }
+  };
 
   // Re-roll and unfurl the scroll
   const handleReRoll = () => {
@@ -211,6 +265,7 @@ export default function CertificatesPage() {
 
   // Copy Verification Link
   const handleCopyLink = () => {
+    if (!isCourseCompleted) return;
     const url = `${typeof window !== "undefined" ? window.location.origin : ""}/verify?certId=${activeCourse.serialNumber}`;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
@@ -220,6 +275,7 @@ export default function CertificatesPage() {
 
   // Print Certificate (Uses custom print stylesheet)
   const handlePrint = () => {
+    if (!isCourseCompleted) return;
     playAntiqueSound("click");
     if (typeof window !== "undefined") {
       window.print();
@@ -253,7 +309,7 @@ export default function CertificatesPage() {
           </h1>
 
           <p className="text-sm text-[#A0A5B5] max-w-3xl leading-relaxed">
-            Styled in the grand tradition of 17th-century European Letters Patent. Unrolled parchment scroll with authentic wooden roller rods, royal crimson wax seal, and cryptographic SHA-256 validation.
+            Styled as an authentic 17th-century European Letters Patent. Unrolled parchment scroll with authentic wooden roller rods, royal crimson wax seal, and cryptographic SHA-256 verification.
           </p>
         </div>
 
@@ -261,8 +317,13 @@ export default function CertificatesPage() {
         <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs shrink-0">
           <button
             onClick={handlePrint}
-            className="px-4 py-2.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:brightness-110 text-[#18181B] font-black uppercase rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.35)] flex items-center gap-1.5 transition-all hover:scale-105"
-            title="Print or Save High-Resolution PDF"
+            disabled={!isCourseCompleted}
+            className={`px-4 py-2.5 font-black uppercase rounded-lg transition-all flex items-center gap-1.5 ${
+              isCourseCompleted
+                ? "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:brightness-110 text-[#18181B] shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:scale-105 cursor-pointer"
+                : "bg-[#2A2A2E] text-[#6B7280] border border-[#3E3E43] cursor-not-allowed opacity-60"
+            }`}
+            title={isCourseCompleted ? "Print or Save High-Resolution PDF" : "Complete course to unlock certificate"}
           >
             <Printer className="w-4 h-4" />
             <span>Print / Save PDF</span>
@@ -270,8 +331,13 @@ export default function CertificatesPage() {
 
           <button
             onClick={handleCopyLink}
-            className="px-3.5 py-2.5 border border-[#3E3E43] bg-[#2E2E32] hover:bg-[#38383D] text-[#A0A5B5] hover:text-[#EFFF4F] rounded-lg transition-colors flex items-center gap-1.5"
-            title="Copy Public Verification Link"
+            disabled={!isCourseCompleted}
+            className={`px-3.5 py-2.5 border rounded-lg transition-colors flex items-center gap-1.5 ${
+              isCourseCompleted
+                ? "border-[#3E3E43] bg-[#2E2E32] hover:bg-[#38383D] text-[#A0A5B5] hover:text-[#EFFF4F] cursor-pointer"
+                : "border-[#3E3E43] bg-[#242427] text-[#5A5F70] cursor-not-allowed opacity-60"
+            }`}
+            title={isCourseCompleted ? "Copy Public Verification Link" : "Complete course to unlock link"}
           >
             {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             <span>{copiedLink ? "COPIED LINK!" : "SHARE LINK"}</span>
@@ -282,13 +348,13 @@ export default function CertificatesPage() {
             className="px-3.5 py-2.5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 rounded-lg transition-colors flex items-center gap-1.5 font-bold"
           >
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>VERIFY REGISTRY</span>
+            <span>PUBLIC REGISTRY</span>
           </Link>
         </div>
       </div>
 
       {/* ======================================================== */}
-      {/* INTERACTIVE CUSTOMIZER BAR: NAME & COURSE TRACK          */}
+      {/* INTERACTIVE CUSTOMIZER BAR: TRACKS, NAME & COMPLETION    */}
       {/* ======================================================== */}
       <div className="bg-[#242428] border border-amber-400/30 rounded-xl p-4 sm:p-5 shadow-card space-y-4 no-print">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -318,7 +384,7 @@ export default function CertificatesPage() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-[#18181B] border border-[#3E3E43] text-[#EFFF4F] font-mono text-xs font-bold rounded">
+                <span className="px-3 py-1 bg-[#18181A] border border-[#3E3E43] text-[#EFFF4F] font-mono text-xs font-bold rounded">
                   {recipientName}
                 </span>
                 <button
@@ -356,261 +422,373 @@ export default function CertificatesPage() {
             )}
           </div>
 
-          {/* Course Track Selector */}
+          {/* Course Track Selector & Access Status */}
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <span className="text-xs text-[#A0A5B5] font-bold uppercase mr-1 flex items-center gap-1">
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-              <span>SELECT GUILD SCROLL:</span>
+              <span>COURSE SCROLL:</span>
             </span>
 
             {[
               { id: "gauntlet-30d", label: "30-Day SDET Gauntlet", icon: "🏆" },
               { id: "selenium-java-ai", label: "Selenium Java + AI", icon: "💻" },
               { id: "rest-assured-api", label: "RestAssured API", icon: "🚀" },
-            ].map((track) => (
-              <button
-                key={track.id}
-                onClick={() => {
-                  setSelectedTrackId(track.id);
-                  handleReRoll();
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
-                  selectedTrackId === track.id
-                    ? "bg-gradient-to-r from-amber-400/25 to-yellow-400/20 text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
-                    : "bg-[#18181A] text-[#A0A5B5] border-[#3E3E43] hover:text-white hover:border-[#5A5F70]"
-                }`}
-              >
-                <span>{track.icon}</span>
-                <span>{track.label}</span>
-              </button>
-            ))}
+            ].map((track) => {
+              const isDone = !!courseCompletionMap[track.id];
+              return (
+                <button
+                  key={track.id}
+                  onClick={() => {
+                    setSelectedTrackId(track.id);
+                    handleReRoll();
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                    selectedTrackId === track.id
+                      ? "bg-gradient-to-r from-amber-400/25 to-yellow-400/20 text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                      : "bg-[#18181A] text-[#A0A5B5] border-[#3E3E43] hover:text-white hover:border-[#5A5F70]"
+                  }`}
+                >
+                  <span>{track.icon}</span>
+                  <span>{track.label}</span>
+                  <span
+                    className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-bold ${
+                      isDone
+                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                        : "bg-red-500/15 text-red-300 border border-red-500/30"
+                    }`}
+                  >
+                    {isDone ? "UNLOCKED" : "LOCKED"}
+                  </span>
+                </button>
+              );
+            })}
 
+            {/* Test Simulation Toggle Button for Reviewers */}
             <button
-              onClick={handleReRoll}
-              className="p-1.5 border border-[#3E3E43] bg-[#2E2E32] text-[#A0A5B5] hover:text-white rounded-lg transition-colors ml-1"
-              title="Re-roll and Unfurl Parchment"
+              onClick={handleToggleCourseCompletion}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ml-1 ${
+                isCourseCompleted
+                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 hover:bg-emerald-500/30"
+                  : "bg-amber-400/20 text-amber-300 border-amber-400/50 hover:bg-amber-400/30"
+              }`}
+              title="Toggle course completion status to test locked vs unlocked state"
             >
-              <RotateCcw className="w-4 h-4" />
+              {isCourseCompleted ? (
+                <>
+                  <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Unlocked (Click to Lock)</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Locked (Click to Unlock)</span>
+                </>
+              )}
             </button>
           </div>
         </div>
       </div>
 
       {/* ======================================================== */}
-      {/* 1600s OLD LETTER ROLL CERTIFICATE CONTAINER             */}
+      {/* CERTIFICATE DISPLAY: LOCKED STATE VS UNLOCKED SCROLL      */}
       {/* ======================================================== */}
       <div className="relative w-full flex justify-center py-2 sm:py-6 overflow-hidden">
         {/* Subtle Candlelight Ambiance Spotlight in Background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[750px] bg-amber-600/10 blur-[140px] rounded-full pointer-events-none animate-candlelight" />
 
-        {/* Physical 1600s Parchment Letter Scroll Container */}
-        <div
-          id="parchment-scroll-container"
-          className={`relative w-full max-w-[1080px] min-h-[720px] transition-all duration-700 select-none ${
-            isRolled ? "scale-y-0 opacity-0" : "animate-scroll-unroll"
-          }`}
-          style={{ filter: "drop-shadow(0 25px 50px rgba(0,0,0,0.85))" }}
-        >
-          {/* Authentic 1600s Unfurled Parchment Roll Background */}
-          <img
-            src="/parchment-scroll-1600s.jpg"
-            alt="1600s Antique Parchment Letter Roll Certificate"
-            className="absolute inset-0 w-full h-full object-fill pointer-events-none rounded-sm"
-          />
+        {!isCourseCompleted ? (
+          /* ======================================================== */
+          /* LOCKED / NON-ACCESSIBLE STATE (SEALED ROLLED SCROLL)     */
+          /* ======================================================== */
+          <div className="relative w-full max-w-[1020px] aspect-[4/3] rounded-2xl overflow-hidden border-2 border-amber-900/60 shadow-[0_25px_50px_rgba(0,0,0,0.9)] flex flex-col items-center justify-center p-6 sm:p-12 text-center select-none">
+            {/* Background: Authentic tightly rolled scroll tied with crimson velvet ribbon */}
+            <img
+              src="/parchment-scroll-sealed.jpg"
+              alt="Sealed Antique Scroll Tied with Velvet Ribbon"
+              className="absolute inset-0 w-full h-full object-cover filter contrast-105 brightness-95"
+            />
 
-          {/* Vintage Aged Parchment Tone Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#2A1808]/15 via-transparent to-[#2A1808]/25 pointer-events-none" />
+            {/* Dark Vignette Overlay for Crisp Contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0704]/90 via-[#0A0704]/60 to-[#0A0704]/80 pointer-events-none" />
 
-          {/* ======================================================== */}
-          {/* SCROLL INNER CONTENT (ROYAL CALLIGRAPHY & CHANCELLERY)    */}
-          {/* ======================================================== */}
-          <div className="relative z-10 px-8 sm:px-20 md:px-28 py-10 sm:py-16 flex flex-col justify-between min-h-[720px] text-[#241306]">
-            {/* Top Proclamation Header */}
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-3 text-[#5A3816] text-xs font-serif tracking-[0.25em] uppercase font-bold">
-                <span>✦</span>
-                <span>CHANCELLERIA ACADEMIAE NEXTGENENSIS</span>
-                <span>✦</span>
-              </div>
-
-              <div className="flex items-center justify-center gap-2 text-[10px] tracking-[0.3em] font-serif text-[#6D451C] uppercase font-semibold">
-                <span>ANNO DOMINI MMXXVI • REGAL REGISTER OF SDET CRAFTSMEN</span>
+            {/* Locked Plaque Container */}
+            <div className="relative z-10 max-w-xl mx-auto space-y-4 bg-[#140F0A]/92 backdrop-blur-md p-6 sm:p-8 rounded-xl border border-amber-600/40 shadow-[0_0_50px_rgba(0,0,0,0.9)]">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-amber-950/80 border border-amber-600/60 rounded-full text-amber-300 font-mono text-xs font-bold uppercase tracking-wider">
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>SCROLL SEALED & NON-ACCESSIBLE</span>
               </div>
 
               <h2
-                className="text-2xl sm:text-4xl md:text-5xl font-black text-[#2B1405] tracking-tight uppercase mt-1 drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+                className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight"
                 style={{ fontFamily: "'Cinzel', Georgia, serif" }}
               >
-                Letters Patent of Mastery
+                Certificate Locked
               </h2>
 
-              <p
-                className="text-xs sm:text-sm text-[#4E2E10] italic max-w-xl mx-auto leading-relaxed pt-1"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                &ldquo;To All and Singular unto whom these Present Letters shall come, Greeting in the Craft of Software Architecture.&rdquo;
+              <p className="text-xs sm:text-sm text-[#D1C7BD] leading-relaxed font-sans">
+                This royal letter scroll remains tied and wax-sealed under the authority of NextGen Testing Academy. You can only access and unfurl this certificate once the respective course is certified 100% completed.
               </p>
-            </div>
 
-            {/* Recipient Proclamation & User Details */}
-            <div className="text-center space-y-2.5 my-3 sm:my-4">
-              <div
-                className="text-[11px] sm:text-xs text-[#5C3717] tracking-[0.2em] uppercase font-bold"
-                style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-              >
-                BE IT KNOWN ACROSS THE REALM THAT
-              </div>
-
-              {/* Recipient Full Name */}
-              <div className="relative inline-block my-1">
-                <div
-                  className="text-3xl sm:text-5xl md:text-6xl font-black text-[#1A0B02] tracking-tight py-1 px-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
-                  style={{
-                    fontFamily: "'Cinzel Decorative', 'Cinzel', Georgia, serif",
-                    textShadow: "1px 1px 0px rgba(255,255,255,0.4)",
-                  }}
-                >
-                  {recipientName}
+              {/* Course Progress Breakdown */}
+              <div className="p-4 bg-[#1F1710] border border-amber-900/60 rounded-lg space-y-3 text-left font-mono text-xs">
+                <div className="flex justify-between items-center text-amber-300 font-bold">
+                  <span className="truncate max-w-[280px]">{activeCourse.courseTitle}</span>
+                  <span className="text-[#EFFF4F]">{activeCourse.progressLabel}</span>
                 </div>
 
-                {/* Hand-Drawn Double Quill Flourish Divider */}
-                <div className="flex items-center justify-center gap-2 text-[#7B4F23] mt-1">
-                  <span className="h-[1.5px] w-16 sm:w-28 bg-gradient-to-r from-transparent via-[#7B4F23] to-[#4A2E12]" />
-                  <span className="text-xs">✦</span>
-                  <span className="h-[1.5px] w-16 sm:w-28 bg-gradient-to-l from-transparent via-[#7B4F23] to-[#4A2E12]" />
-                </div>
-              </div>
-
-              {/* Student Register & Cohort Metadata */}
-              <div
-                className="text-[10px] sm:text-[11px] text-[#5A3816] font-mono tracking-wider"
-                style={{ textShadow: "0 1px 0 rgba(255,255,255,0.5)" }}
-              >
-                <span>CANDIDATE CODE: </span>
-                <span className="font-bold text-[#2A1507]">{studentId}</span>
-                <span> • COHORT OF SDET SCHOLARS</span>
-              </div>
-
-              {/* Formal Attestation Paragraph */}
-              <p
-                className="text-xs sm:text-sm md:text-base text-[#3A1E08] max-w-2xl mx-auto leading-relaxed pt-1"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                {activeCourse.description}
-              </p>
-            </div>
-
-            {/* Course Title & Distinction Banner */}
-            <div className="text-center space-y-2 py-2">
-              <div
-                className="text-[10px] sm:text-xs text-[#754619] tracking-[0.25em] font-bold uppercase"
-                style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-              >
-                CONFERRED FOR EXTRAORDINARY MERIT IN
-              </div>
-
-              <div
-                className="text-lg sm:text-2xl md:text-3xl font-black text-[#210D03] tracking-tight uppercase drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]"
-                style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-              >
-                {activeCourse.courseTitle}
-              </div>
-
-              <div
-                className="text-xs sm:text-sm text-[#5C3819] italic font-serif"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                {activeCourse.latinTitle}
-              </div>
-
-              {/* Guild Competencies Grid (8 Core Arts) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 max-w-2xl mx-auto text-left text-[10px] sm:text-[11px] text-[#4A280D] font-mono pt-2 border-t border-[#8B5A2B]/30 pb-2">
-                {activeCourse.competencies.map((comp, idx) => (
-                  <div key={idx} className="flex items-center gap-1.5 truncate">
-                    <span className="text-[#8B5A2B] text-xs">⚜</span>
-                    <span className="font-medium text-[#2E1606]">{comp}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom Row: Signatures, 1600s Wax Seal & Verification */}
-            <div className="pt-4 border-t-2 border-[#6D421A]/40 flex flex-col sm:flex-row items-center justify-between gap-6 relative">
-              {/* Left Signature: Rahul Kamat */}
-              <div className="text-center sm:text-left space-y-1 min-w-[190px]">
-                <div
-                  className="text-3xl sm:text-4xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]"
-                  style={{ fontFamily: "'Alex Brush', cursive" }}
-                >
-                  Rahul Kamat
-                </div>
-                <div className="h-[1px] w-40 bg-[#5C3819]/60 mx-auto sm:mx-0" />
-                <div
-                  className="text-[10px] sm:text-[11px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif"
-                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-                >
-                  Rahul Kamat
-                </div>
-                <div className="text-[9px] text-[#5A3816] font-mono">
-                  Founder & Grand Master SDET, NGTA
-                </div>
-              </div>
-
-              {/* Centerpiece: Authentic 1600s Royal Crimson Wax Seal */}
-              <div
-                onClick={handleSealClick}
-                className={`relative cursor-pointer transition-transform duration-200 select-none ${
-                  sealClicked ? "scale-90" : "hover:scale-105"
-                }`}
-                title="Royal Crimson Wax Seal of the NextGen Testing Academy (Click to Stamp)"
-              >
-                <div className="relative w-24 sm:w-28 h-24 sm:h-28 flex items-center justify-center animate-wax-seal rounded-full">
-                  <img
-                    src="/antique-wax-seal.jpg"
-                    alt="Royal Crimson Wax Seal 1600s"
-                    className="w-full h-full object-contain rounded-full shadow-[0_12px_30px_rgba(0,0,0,0.85)]"
+                <div className="w-full bg-[#0D0906] h-2 rounded-full overflow-hidden border border-amber-900/50">
+                  <div
+                    className="bg-gradient-to-r from-amber-600 to-yellow-400 h-full rounded-full transition-all"
+                    style={{ width: `${activeCourse.progressPercent}%` }}
                   />
                 </div>
+
+                <div className="space-y-1 text-[11px] text-[#A09385]">
+                  <div className="flex items-center gap-1.5 text-emerald-400">
+                    <span>✔</span>
+                    <span>Week 1: Core Automation & Driver Harness (Accredited)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-emerald-400">
+                    <span>✔</span>
+                    <span>Week 2: TestNG Framework Architecture (Accredited)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-amber-400 font-bold">
+                    <span>⌛</span>
+                    <span>Week 3: Docker Grid & Clustered Runs (In Progress)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[#6B5E52]">
+                    <span>🔒</span>
+                    <span>Week 4: CI/CD Pipeline & Final Capstone (Locked)</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Right Signature: Academic Dean */}
-              <div className="text-center sm:text-right space-y-1 min-w-[190px]">
-                <div
-                  className="text-3xl sm:text-4xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]"
-                  style={{ fontFamily: "'Alex Brush', cursive" }}
+              {/* CTA Actions */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href={activeCourse.courseLink}
+                  className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-[#18181B] font-black uppercase text-xs rounded-lg flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all hover:scale-105"
                 >
-                  Dr. Eric Vance
-                </div>
-                <div className="h-[1px] w-40 bg-[#5C3819]/60 mx-auto sm:ml-auto" />
-                <div
-                  className="text-[10px] sm:text-[11px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif"
-                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-                >
-                  Dr. Eric Vance
-                </div>
-                <div className="text-[9px] text-[#5A3816] font-mono">
-                  Grand Chancellor & Chief Architect
-                </div>
-              </div>
-            </div>
+                  {activeCourse.id === "gauntlet-30d" ? (
+                    <Flame className="w-4 h-4 fill-current text-[#18181B]" />
+                  ) : (
+                    <BookOpen className="w-4 h-4" />
+                  )}
+                  <span>
+                    {activeCourse.id === "gauntlet-30d"
+                      ? "Resume 30-Day Gauntlet (Day 12 Active)"
+                      : "Go to Course & Complete Modules"}
+                  </span>
+                </Link>
 
-            {/* Footer Footnote: Serial, SHA-256 Hash & Date */}
-            <div className="pt-3 border-t border-[#8B5A2B]/25 flex flex-col sm:flex-row items-center justify-between text-[9px] text-[#5A3816] font-mono gap-2 text-center sm:text-left">
-              <div>
-                <span>SEAL SERIAL: </span>
-                <span className="font-bold text-[#2A1507]">{activeCourse.serialNumber}</span>
-              </div>
-              <div className="truncate max-w-xs sm:max-w-md">
-                <span>DIGITAL CIPHER: </span>
-                <span className="font-bold text-[#2A1507]">{activeCourse.sha256Hash.substring(0, 32)}...</span>
-              </div>
-              <div>
-                <span>CONFERRED: </span>
-                <span className="font-bold text-[#2A1507]">{activeCourse.conferredDate}</span>
+                <button
+                  type="button"
+                  onClick={handleToggleCourseCompletion}
+                  className="w-full sm:w-auto px-4 py-3 bg-[#2A1F16] hover:bg-[#382B1F] text-amber-300 border border-amber-600/50 rounded-lg text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 hover:scale-105"
+                  title="Simulate course completion to test unlocking the certificate scroll"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                  <span>⚡ Simulate Completion & Unlock</span>
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          /* ======================================================== */
+          /* UNLOCKED 1600s OLD LETTER ROLL CERTIFICATE               */
+          /* Text is strictly fitted on the flat page between rollers */
+          /* ======================================================== */
+          <div
+            id="parchment-scroll-container"
+            className={`relative w-full max-w-[1020px] aspect-[4/3] transition-all duration-700 select-none overflow-hidden ${
+              isRolled ? "scale-y-0 opacity-0" : "animate-scroll-unroll"
+            }`}
+            style={{ filter: "drop-shadow(0 25px 50px rgba(0,0,0,0.85))" }}
+          >
+            {/* Authentic 1600s Unfurled Parchment Roll Background */}
+            <img
+              src="/parchment-scroll-1600s.jpg"
+              alt="1600s Antique Parchment Letter Roll Certificate"
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+            />
+
+            {/* Vintage Aged Parchment Tone Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#2A1808]/15 via-transparent to-[#2A1808]/20 pointer-events-none" />
+
+            {/* ======================================================== */}
+            {/* FLAT PARCHMENT PAGE AREA                                 */}
+            {/* STRICTLY CONFINED TO 20%-80% (NEVER ON ROLLED CYLINDERS) */}
+            {/* ======================================================== */}
+            <div className="absolute left-[20%] right-[20%] top-[8%] bottom-[8%] flex flex-col justify-between text-[#241306] overflow-hidden px-2 sm:px-4 py-1 sm:py-2">
+              {/* Top Proclamation Header */}
+              <div className="text-center space-y-1">
+                <div className="flex items-center justify-center gap-2 text-[#5A3816] text-[9px] sm:text-[11px] font-serif tracking-[0.2em] uppercase font-bold">
+                  <span>✦</span>
+                  <span>CHANCELLERIA ACADEMIAE NEXTGENENSIS</span>
+                  <span>✦</span>
+                </div>
+
+                <h2
+                  className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-black text-[#2B1405] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] leading-tight"
+                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                >
+                  Letters Patent of Mastery
+                </h2>
+
+                <p
+                  className="text-[10px] sm:text-xs text-[#4E2E10] italic max-w-md mx-auto leading-tight"
+                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                >
+                  &ldquo;To All and Singular unto whom these Present Letters shall come, Greeting.&rdquo;
+                </p>
+              </div>
+
+              {/* Recipient Proclamation & User Details */}
+              <div className="text-center space-y-1.5 my-auto py-1">
+                <div
+                  className="text-[9px] sm:text-[10px] text-[#5C3717] tracking-[0.2em] uppercase font-bold"
+                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                >
+                  BE IT KNOWN ACROSS THE REALM THAT
+                </div>
+
+                {/* Recipient Full Name (Strictly fitted within flat page) */}
+                <div className="relative inline-block max-w-full">
+                  <div
+                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-[#1A0B02] tracking-tight px-2 break-words"
+                    style={{
+                      fontFamily: "'Cinzel Decorative', 'Cinzel', Georgia, serif",
+                      textShadow: "1px 1px 0px rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    {recipientName}
+                  </div>
+
+                  {/* Hand-Drawn Double Quill Flourish Divider */}
+                  <div className="flex items-center justify-center gap-1.5 text-[#7B4F23] mt-0.5">
+                    <span className="h-[1.5px] w-12 sm:w-20 bg-gradient-to-r from-transparent via-[#7B4F23] to-[#4A2E12]" />
+                    <span className="text-[10px]">✦</span>
+                    <span className="h-[1.5px] w-12 sm:w-20 bg-gradient-to-l from-transparent via-[#7B4F23] to-[#4A2E12]" />
+                  </div>
+                </div>
+
+                {/* Candidate Code & Attestation */}
+                <div className="text-[9px] sm:text-[10px] text-[#5A3816] font-mono tracking-wider">
+                  <span>CANDIDATE: </span>
+                  <span className="font-bold text-[#2A1507]">{studentId}</span>
+                  <span> • COHORT OF SDET SCHOLARS</span>
+                </div>
+
+                <p
+                  className="text-[9px] sm:text-[11px] md:text-xs text-[#3A1E08] max-w-lg mx-auto leading-tight sm:leading-relaxed"
+                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                >
+                  {activeCourse.description}
+                </p>
+              </div>
+
+              {/* Course Title & Distinction Banner (Strictly fitted within flat page) */}
+              <div className="text-center space-y-1 py-1">
+                <div
+                  className="text-[8px] sm:text-[9px] text-[#754619] tracking-[0.2em] font-bold uppercase"
+                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                >
+                  CONFERRED FOR SUPREME PROFICIENCY IN
+                </div>
+
+                <div
+                  className="text-xs sm:text-sm md:text-base lg:text-lg font-black text-[#210D03] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] leading-tight px-1"
+                  style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                >
+                  {activeCourse.courseTitle}
+                </div>
+
+                <div
+                  className="text-[9px] sm:text-[10px] text-[#5C3819] italic font-serif"
+                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                >
+                  {activeCourse.latinTitle}
+                </div>
+
+                {/* Guild Competencies Grid (Fitted in flat page) */}
+                <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 max-w-lg mx-auto text-left text-[8px] sm:text-[9px] text-[#4A280D] font-mono pt-1 border-t border-[#8B5A2B]/25">
+                  {activeCourse.competencies.slice(0, 6).map((comp, idx) => (
+                    <div key={idx} className="flex items-center gap-1 truncate">
+                      <span className="text-[#8B5A2B] text-[9px]">⚜</span>
+                      <span className="font-medium text-[#2E1606] truncate">{comp}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Signatures, Wax Seal & Verification (Strictly fitted) */}
+              <div className="pt-2 border-t border-[#6D421A]/30 flex items-center justify-between gap-2 relative">
+                {/* Left Signature: Rahul Kamat */}
+                <div className="text-center sm:text-left space-y-0.5 w-[32%]">
+                  <div
+                    className="text-xl sm:text-2xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
+                    style={{ fontFamily: "'Alex Brush', cursive" }}
+                  >
+                    Rahul Kamat
+                  </div>
+                  <div className="h-[1px] w-24 sm:w-32 bg-[#5C3819]/60 mx-auto sm:mx-0" />
+                  <div
+                    className="text-[8px] sm:text-[9px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif"
+                    style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                  >
+                    Rahul Kamat
+                  </div>
+                  <div className="text-[7px] sm:text-[8px] text-[#5A3816] font-mono truncate">
+                    Founder & Grand Master, NGTA
+                  </div>
+                </div>
+
+                {/* Centerpiece: Authentic 1600s Royal Crimson Wax Seal */}
+                <div
+                  onClick={handleSealClick}
+                  className={`relative cursor-pointer transition-transform duration-200 select-none shrink-0 ${
+                    sealClicked ? "scale-90" : "hover:scale-105"
+                  }`}
+                  title="Royal Crimson Wax Seal (Click to Stamp)"
+                >
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center animate-wax-seal rounded-full">
+                    <img
+                      src="/antique-wax-seal.jpg"
+                      alt="Royal Crimson Wax Seal 1600s"
+                      className="w-full h-full object-contain rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.85)]"
+                    />
+                  </div>
+                </div>
+
+                {/* Right Signature: Academic Dean */}
+                <div className="text-center sm:text-right space-y-0.5 w-[32%]">
+                  <div
+                    className="text-xl sm:text-2xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
+                    style={{ fontFamily: "'Alex Brush', cursive" }}
+                  >
+                    Dr. Eric Vance
+                  </div>
+                  <div className="h-[1px] w-24 sm:w-32 bg-[#5C3819]/60 mx-auto sm:ml-auto" />
+                  <div
+                    className="text-[8px] sm:text-[9px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif"
+                    style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+                  >
+                    Dr. Eric Vance
+                  </div>
+                  <div className="text-[7px] sm:text-[8px] text-[#5A3816] font-mono truncate">
+                    Grand Chancellor & Architect
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Footnote: Serial & Date */}
+              <div className="pt-1 border-t border-[#8B5A2B]/20 flex items-center justify-between text-[8px] sm:text-[9px] text-[#5A3816] font-mono">
+                <span className="truncate">№ {activeCourse.serialNumber}</span>
+                <span>CONFERRED: {activeCourse.conferredDate}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ======================================================== */}
@@ -626,8 +804,14 @@ export default function CertificatesPage() {
                 CRYPTOGRAPHIC SCROLL AUTHENTICATION
               </h3>
             </div>
-            <span className="px-2.5 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[10px] rounded">
-              VERIFIED & IMMUTABLE
+            <span
+              className={`px-2.5 py-0.5 border font-bold text-[10px] rounded ${
+                isCourseCompleted
+                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                  : "bg-amber-500/15 border-amber-500/30 text-amber-300"
+              }`}
+            >
+              {isCourseCompleted ? "VERIFIED & ACCREDITED" : "AWAITING COURSE COMPLETION"}
             </span>
           </div>
 
@@ -638,11 +822,15 @@ export default function CertificatesPage() {
             </div>
             <div>
               <span className="text-[#5A5F70] block uppercase text-[10px]">Academic Evaluation Grade</span>
-              <span className="text-[#EFFF4F] font-bold">{activeCourse.grade}</span>
+              <span className="text-[#EFFF4F] font-bold">
+                {isCourseCompleted ? activeCourse.grade : "IN PROGRESS"}
+              </span>
             </div>
             <div>
               <span className="text-[#5A5F70] block uppercase text-[10px]">Conferred Date</span>
-              <span className="text-white font-bold">{activeCourse.conferredDate}</span>
+              <span className="text-white font-bold">
+                {isCourseCompleted ? activeCourse.conferredDate : "PENDING SYLLABUS CLEARANCE"}
+              </span>
             </div>
             <div>
               <span className="text-[#5A5F70] block uppercase text-[10px]">Issuing Guild Authority</span>
@@ -670,7 +858,12 @@ export default function CertificatesPage() {
 
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-[#333336] text-white hover:text-[#EFFF4F] border border-[#3E3E43] rounded font-bold uppercase transition-colors flex items-center gap-1.5"
+              disabled={!isCourseCompleted}
+              className={`px-4 py-2 border rounded font-bold uppercase transition-colors flex items-center gap-1.5 ${
+                isCourseCompleted
+                  ? "bg-[#333336] text-white hover:text-[#EFFF4F] border-[#3E3E43] cursor-pointer"
+                  : "bg-[#242427] text-[#5A5F70] border-[#3E3E43] cursor-not-allowed opacity-60"
+              }`}
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export High-Resolution PDF</span>
@@ -703,19 +896,39 @@ export default function CertificatesPage() {
               <span className="text-[#5A5F70]">Credential ID:</span>
               <span className="text-amber-300 font-bold">{activeCourse.serialNumber}</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-[#5A5F70]">Status:</span>
+              <span className={isCourseCompleted ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
+                {isCourseCompleted ? "✔ UNLOCKED & CONFERRED" : "🔒 SEALED UNTIL COURSE COMPLETION"}
+              </span>
+            </div>
           </div>
 
           <a
-            href={`https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(
-              activeCourse.courseTitle
-            )}&organizationName=NextGen+Testing+Academy&issueYear=2026&issueMonth=10&certUrl=${encodeURIComponent(
-              typeof window !== "undefined"
-                ? `${window.location.origin}/verify?certId=${activeCourse.serialNumber}`
-                : ""
-            )}`}
+            href={
+              isCourseCompleted
+                ? `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(
+                    activeCourse.courseTitle
+                  )}&organizationName=NextGen+Testing+Academy&issueYear=2026&issueMonth=10&certUrl=${encodeURIComponent(
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}/verify?certId=${activeCourse.serialNumber}`
+                      : ""
+                  )}`
+                : undefined
+            }
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-2.5 bg-[#0A66C2] hover:bg-[#004182] text-white font-bold uppercase rounded flex items-center justify-center gap-2 transition-colors shadow-sm text-center"
+            onClick={(e) => {
+              if (!isCourseCompleted) {
+                e.preventDefault();
+                alert("Please complete the course to unlock your shareable LinkedIn credential!");
+              }
+            }}
+            className={`w-full py-2.5 font-bold uppercase rounded flex items-center justify-center gap-2 transition-colors shadow-sm text-center ${
+              isCourseCompleted
+                ? "bg-[#0A66C2] hover:bg-[#004182] text-white cursor-pointer"
+                : "bg-[#242427] text-[#5A5F70] cursor-not-allowed opacity-60"
+            }`}
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>Add Credential to LinkedIn</span>
