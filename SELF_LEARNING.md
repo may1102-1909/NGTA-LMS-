@@ -113,31 +113,27 @@ Following the approval of the implementation plan, the technical architecture is
 | 2026-10-01 20:52 | `AUTONOMOUS` | Executed full type checking (`npx tsc --noEmit`) and full Next.js production build (`npm run build`). All 35 pages and routes generated successfully with 0 errors. Zero-mock policy and 7-role RBAC architecture fully verified. |
 | 2026-10-01 21:15 | `AUTONOMOUS` | Restored signature Matte Black (`#28282B`, `#333336`, `#3E3E43`) & Laser Lemon (`#EFFF4F`) design system across all 35 pages, dashboards, modals, and components as explicitly mandated by user. Type check and production build verified with 0 errors. |
 | 2026-10-01 22:05 | `AUTONOMOUS` | Implemented Core End-to-End Acceptance Scenarios (BRD Scenarios 44, 45, 46). Synced Supabase PostgreSQL with 5 new models (`course_progress`, `certificates`, `published_courses`, `live_classes`, `live_class_registrations`) and 3 enums via `npx prisma db push`. Built Razorpay order.paid webhook route (`/api/webhooks/razorpay`), dynamic course progress API (`/api/learn/progress`), automated quiz evaluation & unique verifiable certificate issuance (`/api/learn/quiz/submit`, `/certificates/[id]`, `/verify`), instructor course authoring studio (`/dashboard/instructor/courses/new`), admin course approval desk (`/dashboard/admin/approvals`), and live class broadcast & attendance system (`/dashboard/instructor/live`, `/live`). Production build verified (`✓ Generating static pages (44/44)`, 0 TypeScript errors). |
+| 2026-10-01 22:42 | `AUTONOMOUS` | Implemented Recurring Memberships, Membership Tiers, Instructor Payouts & Access Control (BRD Sections 18 & 19). Synced Supabase PostgreSQL with `memberships` and `user_memberships` models along with `MembershipTier` and `MembershipState` enums. Built public memberships storefront (`/memberships`) featuring matte-black glassmorphism cards and Razorpay subscriptions integration (`/api/memberships/subscribe`), webhook listener (`/api/webhooks/razorpay-subscription`), and exclusive management suite for `SUPER_ADMIN` and `INSTRUCTOR` (`/dashboard/memberships/manage`) with 403 access control enforcement. Production build passed (`✓ Generating static pages (46/46)`, 0 TypeScript errors). |
 
 ---
 
 ## 8. Current Implementation State
 
-- **Current State:** `COMPLETED` (Core End-to-End Acceptance Scenarios 44, 45, 46 Fully Automated & Live)
+- **Current State:** `COMPLETED` (Recurring Memberships, Creator Payouts & Role-Based Access Control Live)
 - **Completed Deliverables:**
-  - **Color Palette & Design System:** Strictly maintained Matte Black (`#28282B` base, `#333336` cards, `#3E3E43` borders) and Laser Lemon (`#EFFF4F` accent, `text-[#28282B]` on buttons, `shadow-lemon-sm` glow) across all existing and newly created routes.
-  - **Scenario 1 (Primary Learner Acceptance Journey - BRD Section 44):**
-    - Guest $\rightarrow$ Register/Login: Enforces matte-black glassmorphism persona onboarding (`StudentOnboardingModal.tsx`) exclusively for `LEARNER`.
-    - Browse $\rightarrow$ Razorpay Purchase: Webhook handler (`/api/webhooks/razorpay`) automatically processes `order.paid` and inserts records into `enrollments` and `payments` tables with zero manual DB edits.
-    - Dashboard Visualization: Enrolled courses display immediately on `/dashboard/learner` with completion percentages and active stats.
-    - Progress Tracking: Course player (`/learn/[courseId]`) synchronizes completed lessons via `/api/learn/progress` into Supabase `course_progress` table, recalculates module progress percentages dynamically, and awards 10 XP points.
-    - Assessment & Verifiable Certification: Passing the exam ($\ge 70\%$) automatically marks enrollment complete and issues an official unique verifiable credential (`/certificates/[id]`) with public registry verification endpoint (`/verify?certId=...`).
-  - **Scenario 2 (Instructor Course Publishing Journey - BRD Section 45):**
-    - Instructor authoring studio at `/dashboard/instructor/courses/new` with full Content Tree builder (Modules, Lessons, Media URLs, Resources), Assessment Quiz builder, and Certificate Rules.
-    - Course submission creates record in `published_courses` with status `PENDING_APPROVAL` (hidden from storefront).
-    - Administrator Approval Console at `/dashboard/admin/approvals` inspects content trees and approves courses $\rightarrow$ status changes to `PUBLISHED`.
-    - Public storefront (`/courses` and `/lms`) dynamically queries and lists newly approved `PUBLISHED` courses in real time.
-  - **Scenario 3 (Live Class Workflow - BRD Section 46):**
-    - Instructor live studio at `/dashboard/instructor/live` schedules sessions with title, date/time, stream URL, and cohort targeting.
-    - Learner live hub at `/live` enables enrolled students to click "Register for Live Class", saves to `live_class_registrations`, and queues Web Push notifications.
-    - Attendance tracking records `ATTENDED` status in Supabase when learner joins stream.
-    - Post-session recording attachment allows instructors to save archive URLs, instantly displaying them under course resources for registered learners.
-- **Build Status:** Verified production build (`npm run build`, `✓ Compiled successfully`, 44/44 static & dynamic pages generated, 0 TypeScript errors).
+  - **Color Palette & Design System:** Strictly maintained Matte Black (`#28282B` base, `#333336` cards, `#3E3E43` borders, `#0d0d0d`/90 glassmorphism) and Laser Lemon (`#EFFF4F` accent, `text-[#28282B]` on buttons, `shadow-lemon-sm` glow) across all views.
+  - **Stage 1 (Database Schema & Synchronization):** Added `memberships` and `user_memberships` models along with `MembershipTier` (`FREE`, `BASIC`, `PRO`, `PREMIUM`) and `MembershipState` (`ACTIVE`, `TRIAL`, `PAST_DUE`, `CANCELLED`, `EXPIRED`) enums. Synchronized with Supabase PostgreSQL via `npx prisma db push`.
+  - **Stage 2 (Access Control & Permissions Matrix):**
+    - Public / Learner Storefront at `/memberships` allowing Learners, Guests, and Staff to view all tiers and pricing with active Razorpay subscription buttons.
+    - Protected Management Suite at `/dashboard/memberships/manage` strictly restricted to `SUPER_ADMIN` and `INSTRUCTOR`. Attempting to access from unauthorized roles triggers a 403 redirect via `src/middleware.ts`.
+  - **Stage 3 (Subscription Checkout & Webhooks):**
+    - Subscription checkout API at `/api/memberships/subscribe` supporting monthly/annual cycles, creator payout split mapping via `instructor_id`, automatic grant of `included_course_ids` into `enrollments`, and free trial initiation.
+    - Webhook listener at `/api/webhooks/razorpay-subscription` handling `subscription.authenticated`, `subscription.charged`, `subscription.halted`, `subscription.pending`, and `subscription.cancelled`.
+  - **Stage 4 (UI Components & Glassmorphism Design):**
+    - Public Storefront (`src/app/memberships/page.tsx`) with matte-black glassmorphism cards for `FREE`, `BASIC`, `PRO`, and `PREMIUM` tiers, feature checklists, and active subscription indicator.
+    - Management Suite (`src/app/dashboard/memberships/manage/page.tsx`) with comprehensive form fields for tier selection, pricing, trial days, access matrix flags, and instructor payout routing.
+- **Build Status:** Verified production build (`npm run build`, `✓ Compiled successfully`, 46/46 static & dynamic pages generated, 0 TypeScript errors).
+
 
 
 

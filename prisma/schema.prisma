@@ -861,6 +861,66 @@ model live_class_registrations {
   @@schema("public")
 }
 
+enum MembershipTier {
+  FREE
+  BASIC
+  PRO
+  PREMIUM
+
+  @@schema("public")
+}
+
+enum MembershipState {
+  ACTIVE
+  TRIAL
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+
+  @@schema("public")
+}
+
+model memberships {
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String
+  description         String             @db.Text
+  tier                MembershipTier     @default(FREE)
+  monthly_price       Decimal            @db.Decimal(10, 2)
+  annual_price        Decimal            @db.Decimal(10, 2)
+  trial_period_days   Int                @default(0)
+  benefits            String[]
+  included_course_ids String[]
+  community_access    Boolean            @default(true)
+  live_session_access Boolean            @default(false)
+  downloads_access    Boolean            @default(false)
+  priority_support    Boolean            @default(false)
+  instructor_id       String?            @db.Uuid
+  created_at          DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime           @default(now()) @updatedAt @db.Timestamptz(6)
+
+  user_memberships    user_memberships[]
+
+  @@schema("public")
+}
+
+model user_memberships {
+  id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                  String          @db.Uuid
+  membership_id            String          @db.Uuid
+  state                    MembershipState @default(TRIAL)
+  razorpay_subscription_id String?         @unique
+  current_period_start     DateTime        @default(now()) @db.Timestamptz(6)
+  current_period_end       DateTime        @db.Timestamptz(6)
+  cancelled_at             DateTime?       @db.Timestamptz(6)
+  created_at               DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime        @default(now()) @updatedAt @db.Timestamptz(6)
+
+  membership               memberships     @relation(fields: [membership_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@schema("public")
+}
+
 enum aal_level {
   aal1
   aal2

@@ -84,7 +84,11 @@ export async function middleware(request: NextRequest) {
     }
 
     // 2. Strict Role-Based RBAC Permissions for each dashboard
-    if (pathname.startsWith("/dashboard/super-admin")) {
+    if (pathname.startsWith("/dashboard/memberships/manage")) {
+      if (currentRole !== "SUPER_ADMIN" && currentRole !== "INSTRUCTOR") {
+        return NextResponse.redirect(new URL("/memberships?error=403", request.url));
+      }
+    } else if (pathname.startsWith("/dashboard/super-admin")) {
       if (currentRole !== "SUPER_ADMIN") {
         const fallback = getDashboardForRole(currentRole);
         return NextResponse.redirect(new URL(fallback, request.url));
