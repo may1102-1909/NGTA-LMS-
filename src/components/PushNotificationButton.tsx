@@ -207,7 +207,7 @@ export default function PushNotificationButton({
 
   if (!isSupported) {
     return (
-      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-[#1f2d4d] bg-[#000000] text-[#8A96A8] font-mono text-xs ${className}`}>
+      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-[#3E3E43] bg-[#28282B] text-[#5A5F70] font-mono text-xs ${className}`}>
         <BellOff className="w-3.5 h-3.5 text-zinc-500" />
         <span>Push Notifications Unsupported</span>
       </div>
@@ -249,7 +249,7 @@ export default function PushNotificationButton({
             <button
               onClick={handleTestAlert}
               disabled={testing}
-              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#1f2d4d] bg-[#14213D] text-[#FCA311] hover:bg-[#1f2d4d] hover:border-[#FCA311]/50 transition-colors font-bold uppercase shadow-lemon-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#3E3E43] bg-[#333336] text-[#EFFF4F] hover:bg-[#3E3E43] hover:border-[#EFFF4F]/50 transition-colors font-bold uppercase shadow-lemon-sm"
               title="Send a sample test notification now"
             >
               {testing ? (
@@ -265,19 +265,19 @@ export default function PushNotificationButton({
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#FCA311] bg-[#FCA311] text-[#000000] hover:bg-[#FCA311]/90 transition-all font-bold uppercase shadow-lemon-sm hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-all font-bold uppercase shadow-lemon-sm hover:scale-[1.02] active:scale-[0.98]"
         >
           {loading ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#000000]" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#28282B]" />
           ) : (
-            <Bell className="w-3.5 h-3.5 text-[#000000]" />
+            <Bell className="w-3.5 h-3.5 text-[#28282B]" />
           )}
           <span>Enable Web Push Alerts</span>
         </button>
       )}
 
       {statusMessage && (
-        <span className="text-[11px] text-[#E5E5E5] animate-in fade-in flex items-center gap-1">
+        <span className="text-[11px] text-[#A0A5B5] animate-in fade-in flex items-center gap-1">
           {statusMessage.includes("success") || statusMessage.includes("sent") ? (
             <Check className="w-3 h-3 text-emerald-400" />
           ) : null}

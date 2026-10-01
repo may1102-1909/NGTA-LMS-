@@ -294,7 +294,7 @@ export default function CommunityFeed() {
     <div className="relative w-full max-w-2xl mx-auto pb-12 text-white font-sans">
       {/* Toast Notification */}
       {giftToast && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#FCA311] text-[#000000] font-mono text-xs font-bold px-4 py-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#EFFF4F] text-[#0A0A0C] font-mono text-xs font-bold px-4 py-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
           {giftToast}
         </div>
       )}
@@ -536,7 +536,7 @@ export default function CommunityFeed() {
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                     <span className="ml-2 text-white/70">{post.codeSnippet.filename}</span>
                   </div>
-                  <span className="uppercase text-[10px] text-[#FCA311]">
+                  <span className="uppercase text-[10px] text-[#EFFF4F]">
                     {post.codeSnippet.language}
                   </span>
                 </div>
@@ -601,7 +601,7 @@ export default function CommunityFeed() {
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => handleSendGift(post.title)}
-                  className="p-2 rounded-full bg-[#18181C] hover:bg-[#222228] text-white/60 hover:text-[#FCA311] transition-colors border border-white/5"
+                  className="p-2 rounded-full bg-[#18181C] hover:bg-[#222228] text-white/60 hover:text-[#EFFF4F] transition-colors border border-white/5"
                   title="Send gift / XP tip"
                   aria-label="Send gift"
                 >
@@ -612,7 +612,7 @@ export default function CommunityFeed() {
                   onClick={() => handleToggleBookmark(post.id)}
                   className={`p-2 rounded-full transition-colors border ${
                     post.isBookmarked
-                      ? "bg-[#FCA311]/10 border-[#FCA311]/30 text-[#FCA311]"
+                      ? "bg-[#EFFF4F]/10 border-[#EFFF4F]/30 text-[#EFFF4F]"
                       : "bg-[#18181C] border-white/5 text-white/60 hover:text-white hover:bg-[#222228]"
                   }`}
                   title="Bookmark post"
@@ -620,7 +620,7 @@ export default function CommunityFeed() {
                 >
                   <Bookmark
                     className={`w-4 h-4 ${
-                      post.isBookmarked ? "fill-[#FCA311]" : ""
+                      post.isBookmarked ? "fill-[#EFFF4F]" : ""
                     }`}
                   />
                 </button>
@@ -636,7 +636,7 @@ export default function CommunityFeed() {
           <div className="w-full max-w-lg bg-[#141418] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#FCA311]/20 text-[#FCA311] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-full bg-[#EFFF4F]/20 text-[#EFFF4F] flex items-center justify-center font-bold">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
@@ -654,7 +654,7 @@ export default function CommunityFeed() {
 
             <div className="space-y-3 font-mono text-xs">
               <div className="p-3 bg-[#1C1C22] rounded-xl text-white/70 border border-white/5">
-                <span className="text-[#FCA311] font-bold block mb-1">Suggested Prompts:</span>
+                <span className="text-[#EFFF4F] font-bold block mb-1">Suggested Prompts:</span>
                 <ul className="space-y-1 text-[11px]">
                   <li className="hover:text-white cursor-pointer">• How do I setup ThreadLocal WebDriver with TestNG?</li>
                   <li className="hover:text-white cursor-pointer">• What is the difference between Playwright auto-waiting & explicit wait?</li>
@@ -666,7 +666,7 @@ export default function CommunityFeed() {
                 <input
                   type="text"
                   placeholder="Ask any automation architecture question..."
-                  className="w-full px-4 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white placeholder:text-white/40 text-xs focus:outline-none focus:border-[#FCA311]"
+                  className="w-full px-4 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white placeholder:text-white/40 text-xs focus:outline-none focus:border-[#EFFF4F]"
                 />
               </div>
             </div>
@@ -683,7 +683,7 @@ export default function CommunityFeed() {
                   alert("AI Assistant searched 1,420 community threads!");
                   setIsAiModalOpen(false);
                 }}
-                className="px-4 py-2 rounded-lg bg-[#FCA311] text-[#000000] font-bold hover:bg-[#FCA311]/90 transition-colors shadow-lemon-sm"
+                className="px-4 py-2 rounded-lg bg-[#EFFF4F] text-[#0A0A0C] font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
               >
                 Search Knowledge Base
               </button>

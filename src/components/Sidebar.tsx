@@ -147,26 +147,26 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
       {/* Sidebar Panel */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#0d1527] border-r border-[#1f2d4d] flex flex-col justify-between transition-transform duration-300 ease-in-out font-mono lg:static lg:translate-x-0 shrink-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#202023] border-r border-[#3E3E43] flex flex-col justify-between transition-transform duration-300 ease-in-out font-mono lg:static lg:translate-x-0 shrink-0 ${
           isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         }`}
       >
         {/* Top Header / Brand */}
         <div>
-          <div className="h-16 px-5 border-b border-[#1f2d4d] flex items-center justify-between bg-[#14213D]">
+          <div className="h-16 px-5 border-b border-[#3E3E43] flex items-center justify-between bg-[#242428]">
             <Link
               href="/dashboard"
               onClick={onClose}
               className="flex items-center gap-3 group"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#FCA311]/10 border border-[#FCA311]/30 flex items-center justify-center text-[#FCA311] group-hover:scale-105 transition-transform shadow-lemon-sm">
+              <div className="w-9 h-9 rounded-lg bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 flex items-center justify-center text-[#EFFF4F] group-hover:scale-105 transition-transform shadow-lemon-sm">
                 <GraduationCap className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-black text-white tracking-wider uppercase group-hover:text-[#FCA311] transition-colors leading-tight">
+                <span className="text-sm font-black text-white tracking-wider uppercase group-hover:text-[#EFFF4F] transition-colors leading-tight">
                   NGTA STUDENT
                 </span>
-                <span className="text-[10px] text-[#E5E5E5] tracking-tight font-sans">
+                <span className="text-[10px] text-[#A0A5B5] tracking-tight font-sans">
                   Classroom Hub
                 </span>
               </div>
@@ -175,7 +175,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             {/* Mobile close button */}
             <button
               onClick={onClose}
-              className="p-1.5 text-[#E5E5E5] hover:text-white lg:hidden"
+              className="p-1.5 text-[#A0A5B5] hover:text-white lg:hidden"
               aria-label="Close Sidebar"
             >
               <X className="w-5 h-5" />
@@ -193,23 +193,23 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   onClick={onClose}
                   className={`flex items-center justify-between px-3 py-2.5 rounded transition-all group ${
                     item.active
-                      ? "bg-[#FCA311]/15 text-[#FCA311] font-bold border-l-2 border-[#FCA311] shadow-sm"
-                      : "text-[#E5E5E5] hover:text-white hover:bg-[#14213D]/70 border-l-2 border-transparent"
+                      ? "bg-[#333527]/70 text-[#EFFF4F] font-bold border-l-2 border-[#EFFF4F] shadow-sm"
+                      : "text-[#A0A5B5] hover:text-white hover:bg-[#28282B] border-l-2 border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-4 h-4 transition-colors ${
                         item.active
-                          ? "text-[#FCA311]"
-                          : "text-[#8A96A8] group-hover:text-[#FCA311]"
+                          ? "text-[#EFFF4F]"
+                          : "text-[#7A8090] group-hover:text-[#EFFF4F]"
                       }`}
                     />
                     <span className="font-sans text-[13px]">{item.label}</span>
                   </div>
 
                   {item.badge && (
-                    <span className="w-5 h-5 rounded-full bg-[#FCA311] text-[#000000] flex items-center justify-center font-bold text-[11px] shrink-0 shadow-lemon-sm">
+                    <span className="w-5 h-5 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center font-bold text-[11px] shrink-0 shadow-lemon-sm">
                       {item.badge}
                     </span>
                   )}
@@ -220,9 +220,9 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </div>
 
         {/* Bottom Section: Streak Badge & Sign Out */}
-        <div className="p-3 border-t border-[#1f2d4d] bg-[#14213D] space-y-2">
+        <div className="p-3 border-t border-[#3E3E43] bg-[#242428] space-y-2">
           {/* User Streak Pill Card */}
-          <div className="p-3 rounded border border-[#1f2d4d] bg-[#000000] flex items-center justify-between">
+          <div className="p-3 rounded border border-[#3E3E43] bg-[#28282B] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-500/15 text-orange-400">
                 <Flame className="w-3.5 h-3.5 fill-orange-400" />
@@ -231,21 +231,21 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 <span className="text-[11px] font-bold text-white font-sans">
                   {streak} {streak === 1 ? "Day" : "Days"} Streak
                 </span>
-                <span className="text-[10px] text-[#E5E5E5] font-sans">
+                <span className="text-[10px] text-[#A0A5B5] font-sans">
                   {streak > 0 ? "Active Learning Streak" : "Start Your Streak Today"}
                 </span>
               </div>
             </div>
-            <span className={`w-2 h-2 rounded-full ${streak > 0 ? "bg-[#FCA311] animate-pulse" : "bg-[#8A96A8]"}`} />
+            <span className={`w-2 h-2 rounded-full ${streak > 0 ? "bg-[#EFFF4F] animate-pulse" : "bg-[#5A5F70]"}`} />
           </div>
 
           {/* Sign Out Button */}
           <Link
             href="/"
             onClick={onClose}
-            className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#E5E5E5] hover:text-white hover:bg-[#000000] rounded transition-colors w-full"
+            className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#A0A5B5] hover:text-white hover:bg-[#28282B] rounded transition-colors w-full"
           >
-            <LogOut className="w-4 h-4 text-[#8A96A8]" />
+            <LogOut className="w-4 h-4 text-[#5A5F70]" />
             <span className="font-sans text-[13px]">Sign Out</span>
           </Link>
         </div>

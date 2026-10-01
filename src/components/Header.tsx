@@ -92,14 +92,14 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-[#000000]/95 backdrop-blur-md border-b border-[#1f2d4d] text-white">
+    <header className="sticky top-0 z-30 bg-[#28282B]/95 backdrop-blur-md border-b border-[#3E3E43] text-white">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left: Mobile Sidebar Trigger + Context Greeting */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={onToggleSidebar}
-              className="p-2 text-[#E5E5E5] hover:text-[#FCA311] hover:bg-[#14213D] rounded-md transition-colors lg:hidden"
+              className="p-2 text-[#A0A5B5] hover:text-[#EFFF4F] hover:bg-[#333336] rounded-md transition-colors lg:hidden"
               aria-label="Open Navigation Sidebar"
             >
               <Menu className="w-5 h-5" />
@@ -125,8 +125,8 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
             </div>
 
             {/* XP Badge */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FCA311]/10 border border-[#FCA311]/30 text-[#FCA311] rounded-full font-bold text-[11px] shadow-lemon-sm">
-              <Zap className="w-3.5 h-3.5 fill-[#FCA311]" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] rounded-full font-bold text-[11px] shadow-lemon-sm">
+              <Zap className="w-3.5 h-3.5 fill-[#EFFF4F]" />
               <span>{studentProfile?.xp_points ?? 0} XP</span>
             </div>
 
@@ -134,7 +134,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="relative p-2 text-[#E5E5E5] hover:text-white hover:bg-[#14213D] rounded-full transition-colors"
+                className="relative p-2 text-[#A0A5B5] hover:text-white hover:bg-[#333336] rounded-full transition-colors"
                 aria-label="View notifications"
               >
                 <Bell className="w-4 h-4" />
@@ -142,37 +142,37 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-[#14213D] border border-[#1f2d4d] shadow-2xl p-3 z-50 text-xs font-sans animate-in fade-in duration-150">
-                  <div className="font-bold text-white uppercase font-mono pb-2 border-b border-[#1f2d4d] flex justify-between items-center text-[11px]">
+                <div className="absolute right-0 mt-2 w-72 bg-[#202023] border border-[#3E3E43] shadow-2xl p-3 z-50 text-xs font-sans animate-in fade-in duration-150">
+                  <div className="font-bold text-white uppercase font-mono pb-2 border-b border-[#3E3E43] flex justify-between items-center text-[11px]">
                     <Link
                       href="/notifications"
                       onClick={() => setNotificationsOpen(false)}
-                      className="hover:text-[#FCA311] transition-colors"
+                      className="hover:text-[#EFFF4F] transition-colors"
                     >
                       Notifications
                     </Link>
                     <Link
                       href="/notifications"
                       onClick={() => setNotificationsOpen(false)}
-                      className="text-[10px] text-[#FCA311] hover:underline font-bold"
+                      className="text-[10px] text-[#EFFF4F] hover:underline"
                     >
                       View All
                     </Link>
                   </div>
-                  <div className="py-2 space-y-2 text-[#E5E5E5]">
-                    <div className="p-2 bg-[#000000] border border-[#1f2d4d] rounded text-[11px]">
+                  <div className="py-2 space-y-2 text-[#A0A5B5]">
+                    <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
                       <span className="font-bold text-white">Daily Streak Active:</span> Keep your streak going by finishing a lesson today.
                     </div>
-                    <div className="p-2 bg-[#000000] border border-[#1f2d4d] rounded text-[11px]">
+                    <div className="p-2 bg-[#28282B] border border-[#3E3E43] rounded text-[11px]">
                       <span className="font-bold text-white">Live SDET Bootcamp:</span> Starts this Saturday at 10:00 AM IST.
                     </div>
                   </div>
-                  <div className="pt-2 border-t border-[#1f2d4d] mt-2 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-[#8A96A8]">Web Push Alerts</span>
+                  <div className="pt-2 border-t border-[#3E3E43] mt-2 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-[#5A5F70]">Web Push Alerts</span>
                     <Link
                       href="/notifications"
                       onClick={() => setNotificationsOpen(false)}
-                      className="text-[#FCA311] hover:underline font-bold"
+                      className="text-[#EFFF4F] hover:underline font-bold"
                     >
                       Configure Push →
                     </Link>
@@ -184,10 +184,10 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
             {/* Student Custom Avatar & Homies Username */}
             <Link
               href="/settings"
-              className="flex items-center gap-2 px-2 py-1 rounded-full bg-[#14213D] border border-[#1f2d4d] hover:border-[#FCA311]/50 transition-all group"
+              className="flex items-center gap-2 px-2 py-1 rounded-full bg-[#333336] border border-[#3E3E43] hover:border-[#EFFF4F]/50 transition-all group"
               title="Settings & Persona Profile"
             >
-              <div className="w-7 h-7 rounded-full overflow-hidden border border-[#FCA311]/60 bg-black flex items-center justify-center text-xs font-bold shrink-0">
+              <div className="w-7 h-7 rounded-full overflow-hidden border border-[#EFFF4F]/60 bg-neutral-900 flex items-center justify-center text-xs font-bold shrink-0">
                 {studentProfile?.avatar_url ? (
                   <Image
                     src={studentProfile.avatar_url}
@@ -202,7 +202,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
                   </span>
                 )}
               </div>
-              <span className="font-bold text-white text-[11px] font-mono group-hover:text-[#FCA311] transition-colors truncate max-w-[110px] hidden sm:inline">
+              <span className="font-bold text-white text-[11px] font-mono group-hover:text-[#EFFF4F] transition-colors truncate max-w-[110px] hidden sm:inline">
                 @{studentProfile?.username || "Learner"}
               </span>
             </Link>

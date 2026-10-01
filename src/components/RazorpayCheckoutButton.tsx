@@ -208,7 +208,7 @@ export default function RazorpayCheckoutButton({
           userId: currentUser?.id || orderUser?.id || "",
         },
         theme: {
-          color: "#FCA311", // Gold NGTA signature color
+          color: "#EFFF4F", // Laser Lemon NGTA signature color
         },
         modal: {
           ondismiss: function () {
@@ -247,7 +247,7 @@ export default function RazorpayCheckoutButton({
   }
 
   const defaultClasses =
-    "px-4 py-2.5 bg-[#FCA311] text-[#000000] font-mono text-xs uppercase font-bold hover:bg-[#FCA311]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm disabled:opacity-50 cursor-pointer";
+    "px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm disabled:opacity-50 cursor-pointer";
 
   return (
     <button

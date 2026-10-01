@@ -9,13 +9,13 @@ import LoginButton from "@/components/LoginButton";
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen w-full bg-[#000000] text-white overflow-x-hidden selection:bg-[#FCA311] selection:text-[#000000] font-sans flex flex-col justify-between">
+    <div className="relative min-h-screen w-full bg-[#28282B] text-white overflow-x-hidden selection:bg-emerald-500 selection:text-[#28282B] font-sans flex flex-col justify-between">
       {/* ── AMBIENT COSMIC BACKGROUND & NEBULA PARTICLES ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Subtle deep nebula radial glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-[#FCA311]/10 via-[#14213D]/20 to-transparent blur-[120px] -z-10" />
-        <div className="absolute top-[40%] left-[15%] w-[450px] h-[450px] bg-[#14213D]/40 blur-[140px] -z-10" />
-        <div className="absolute top-[50%] right-[15%] w-[500px] h-[500px] bg-[#FCA311]/5 blur-[150px] -z-10" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-emerald-500/15 via-emerald-950/5 to-transparent blur-[120px] -z-10" />
+        <div className="absolute top-[40%] left-[15%] w-[450px] h-[450px] bg-blue-500/5 blur-[140px] -z-10" />
+        <div className="absolute top-[50%] right-[15%] w-[500px] h-[500px] bg-emerald-600/5 blur-[150px] -z-10" />
 
         {/* Ambient background micro-grid dots */}
         <div
@@ -33,7 +33,7 @@ export default function LandingPage() {
         <div className="w-full max-w-5xl relative">
 
           {/* High-Resolution Monitor Chassis */}
-          <div className="relative rounded-2xl border-4 border-[#1f2d4d] bg-[#000000] p-2 sm:p-3 shadow-[0_30px_120px_rgba(0,0,0,1),0_0_90px_rgba(252,163,17,0.12)]">
+          <div className="relative rounded-2xl border-4 border-zinc-800/90 bg-[#060f08] p-2 sm:p-3 shadow-[0_30px_120px_rgba(0,0,0,1),0_0_90px_rgba(34,197,94,0.14)]">
 
             {/* CRT Screen Display Area */}
             <div className="w-full h-[540px] sm:h-[620px] lg:h-[660px] rounded overflow-hidden">
@@ -50,7 +50,7 @@ export default function LandingPage() {
       </main>
 
       {/* ── MINIMAL DARK FOOTER ── */}
-      <footer className="relative z-20 border-t border-[#1f2d4d] bg-[#000000]/90 py-6 text-center text-xs font-mono text-[#E5E5E5]">
+      <footer className="relative z-20 border-t border-[#3E3E43] bg-[#28282B]/90 py-6 text-center text-xs font-mono text-[#A0A5B5]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Image
@@ -62,17 +62,17 @@ export default function LandingPage() {
             />
             <span>&copy; {new Date().getFullYear()} NextGen Testing Academy. All rights reserved.</span>
           </div>
-          <div className="flex items-center gap-6 text-[#8A96A8]">
-            <Link href="/lms" className="hover:text-[#FCA311] transition-colors">
+          <div className="flex items-center gap-6 text-zinc-500">
+            <Link href="/lms" className="hover:text-emerald-400 transition-colors">
               Platform
             </Link>
-            <Link href="/courses" className="hover:text-[#FCA311] transition-colors">
+            <Link href="/courses" className="hover:text-emerald-400 transition-colors">
               Curriculum
             </Link>
-            <Link href="/verify" className="hover:text-[#FCA311] transition-colors">
+            <Link href="/verify" className="hover:text-emerald-400 transition-colors">
               Verification
             </Link>
-            <Link href="/dashboard" className="hover:text-[#FCA311] transition-colors">
+            <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
               Dashboard
             </Link>
           </div>

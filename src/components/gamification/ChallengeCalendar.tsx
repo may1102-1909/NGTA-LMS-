@@ -203,18 +203,18 @@ export default function ChallengeCalendar({
   const completedCount = tasks.filter((t) => t.isCompleted).length;
 
   return (
-    <div className="relative border border-[#1f2d4d] bg-[#14213D] rounded-xl p-5 sm:p-6 shadow-card space-y-5 font-mono text-xs overflow-hidden min-h-[520px]">
+    <div className="relative border border-[#3E3E43] bg-[#2E2E32] rounded-xl p-5 sm:p-6 shadow-card space-y-5 font-mono text-xs overflow-hidden min-h-[520px]">
       {/* Calendar Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#1f2d4d] pb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#3E3E43] pb-4">
         <div>
-          <div className="text-[10px] text-[#8A96A8] uppercase tracking-widest flex items-center gap-2">
+          <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest flex items-center gap-2">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FCA311] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FCA311]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EFFF4F] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EFFF4F]" />
             </span>
             <span>30-DAY SDET SPRINT BATCH</span>
             <span>•</span>
-            <span className="text-[#FCA311] font-bold">OCTOBER 2026</span>
+            <span className="text-[#EFFF4F] font-bold">OCTOBER 2026</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2.5 mt-0.5">
             <CalendarIcon className="w-5 h-5 text-amber-400 shrink-0" />
@@ -234,7 +234,7 @@ export default function ChallengeCalendar({
             </button>
           )}
 
-          <div className="flex flex-wrap items-center gap-1.5 bg-[#000000] p-1 rounded-lg border border-[#1f2d4d]">
+          <div className="flex flex-wrap items-center gap-1.5 bg-[#202023] p-1 rounded-lg border border-[#3E3E43]">
           {(
             [
               { key: "ALL", label: "All 30d" },
@@ -252,8 +252,8 @@ export default function ChallengeCalendar({
               }}
               className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
                 phaseFilter === tab.key
-                  ? "bg-[#FCA311] text-[#000000] shadow-lemon-sm"
-                  : "text-[#E5E5E5] hover:text-white hover:bg-[#0d1527]"
+                  ? "bg-[#EFFF4F] text-[#28282B] shadow-lemon-sm"
+                  : "text-[#A0A5B5] hover:text-white hover:bg-[#28282B]"
               }`}
             >
               {tab.label}
@@ -264,19 +264,19 @@ export default function ChallengeCalendar({
     </div>
 
       {/* Legend & Stats Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#000000] px-3.5 py-2.5 rounded-lg border border-[#1f2d4d] text-[11px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#202023] px-3.5 py-2.5 rounded-lg border border-[#3E3E43] text-[11px]">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
             <span className="text-white font-bold">{completedCount} Completed</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FCA311] inline-block animate-pulse" />
-            <span className="text-[#FCA311] font-bold">Day {todayDayNumber} Active (Today)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#EFFF4F] inline-block animate-pulse" />
+            <span className="text-[#EFFF4F] font-bold">Day {todayDayNumber} Active (Today)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#8A96A8] inline-block" />
-            <span className="text-[#E5E5E5]">{tasks.length - completedCount} Remaining</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#5A5F70] inline-block" />
+            <span className="text-[#A0A5B5]">{tasks.length - completedCount} Remaining</span>
           </div>
         </div>
 
@@ -287,7 +287,7 @@ export default function ChallengeCalendar({
       </div>
 
       {/* Weekday Column Headers (Mon - Sun) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center text-[10px] text-[#E5E5E5] font-bold tracking-widest pb-1 border-b border-[#1f2d4d]/60 hidden md:grid">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center text-[10px] text-[#A0A5B5] font-bold tracking-widest pb-1 border-b border-[#3E3E43]/60 hidden md:grid">
         {WEEKDAYS.map((wd) => (
           <div key={wd} className="py-1 uppercase">
             {wd}
@@ -331,14 +331,14 @@ export default function ChallengeCalendar({
                 isAnimating
                   ? "animate-coin-flip z-30 border-amber-400 bg-gradient-to-br from-[#332A15] via-[#1E2E22] to-[#14261B] ring-4 ring-amber-400/80 shadow-[0_0_45px_rgba(245,158,11,0.7)]"
                   : isSelected
-                  ? "border-[#FCA311] bg-[#14213D] ring-2 ring-[#FCA311]/50 shadow-lemon-sm scale-[1.04] z-10"
+                  ? "border-[#EFFF4F] bg-[#38383D] ring-2 ring-[#EFFF4F]/50 shadow-lemon-sm scale-[1.04] z-10"
                   : task.isCompleted
-                  ? "border-emerald-500/40 bg-[#101b2b] hover:border-emerald-400 hover:bg-[#152338]"
+                  ? "border-emerald-500/40 bg-[#202722] hover:border-emerald-400 hover:bg-[#253028]"
                   : isToday
-                  ? "border-amber-400/80 bg-gradient-to-b from-[#1c2c4d] via-[#14213D] to-[#0a1120] ring-1 ring-amber-400/50 shadow-md hover:border-amber-300"
+                  ? "border-amber-400/80 bg-gradient-to-b from-[#333338] via-[#2A2A2E] to-[#202024] ring-1 ring-amber-400/50 shadow-md hover:border-amber-300"
                   : isDay15
-                  ? "border-amber-400/60 bg-gradient-to-b from-[#2E281C] via-[#1c2333] to-[#0d1527] ring-1 ring-amber-400/40 shadow-sm hover:border-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]"
-                  : "border-[#1f2d4d] bg-[#0d1527] hover:border-[#8A96A8] hover:bg-[#14213D] opacity-75 hover:opacity-100"
+                  ? "border-amber-400/60 bg-gradient-to-b from-[#2E281C] via-[#252220] to-[#1E1E22] ring-1 ring-amber-400/40 shadow-sm hover:border-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+                  : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-80 hover:opacity-100"
               }`}
             >
               {/* Golden Sheen Sweep across the coin surface */}
@@ -363,7 +363,7 @@ export default function ChallengeCalendar({
 
               {/* Top Row: Date Label (e.g. OCT 15) & Day Number badge */}
               <div className="w-full flex items-center justify-between text-[10px]">
-                <span className="text-[#E5E5E5] font-mono">
+                <span className="text-[#A0A5B5] font-mono">
                   {getDayDateLabel(task.dayNumber)}
                 </span>
                 {isDay15 && !task.isCompleted ? (
@@ -380,7 +380,7 @@ export default function ChallengeCalendar({
                         ? "text-emerald-400 bg-emerald-500/10"
                         : isToday
                         ? "text-amber-400 bg-amber-500/15"
-                        : "text-[#8A96A8] bg-[#000000]"
+                        : "text-[#5A5F70] bg-[#18181A]"
                     }`}
                   >
                     D{String(task.dayNumber).padStart(2, "0")}
@@ -408,8 +408,8 @@ export default function ChallengeCalendar({
                       : isToday
                       ? "text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
                       : isSelected
-                      ? "text-[#FCA311]"
-                      : "text-white hover:text-[#FCA311]"
+                      ? "text-[#EFFF4F]"
+                      : "text-white hover:text-[#EFFF4F]"
                   }`}
                   title={
                     !task.isCompleted
@@ -455,10 +455,10 @@ export default function ChallengeCalendar({
                       }}
                       className={`px-2 py-0.5 rounded text-[9px] font-bold font-mono transition-all flex items-center gap-1 border shadow-sm ${
                         isSelected
-                          ? "bg-[#FCA311] text-[#000000] border-[#FCA311] shadow-lemon-sm hover:scale-105"
+                          ? "bg-[#EFFF4F] text-[#18181B] border-[#EFFF4F] shadow-lemon-sm hover:scale-105"
                           : isToday
-                          ? "bg-amber-400/25 text-amber-300 border-amber-400/60 hover:bg-amber-400 hover:text-[#000000] hover:scale-105"
-                          : "bg-[#000000] text-[#E5E5E5] border-[#1f2d4d] hover:border-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 hover:scale-105"
+                          ? "bg-amber-400/25 text-amber-300 border-amber-400/60 hover:bg-amber-400 hover:text-[#18181B] hover:scale-105"
+                          : "bg-[#18181B] text-[#A0A5B5] border-[#3E3E43] hover:border-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 hover:scale-105"
                       }`}
                       title={`Click to mark Day ${task.dayNumber} as completed`}
                     >
@@ -470,7 +470,7 @@ export default function ChallengeCalendar({
               </div>
 
               {/* Bottom Row: Points Reward & Completed Stamp */}
-              <div className="w-full pt-1.5 border-t border-[#1f2d4d]/50 flex items-center justify-between text-[10px]">
+              <div className="w-full pt-1.5 border-t border-[#3E3E43]/50 flex items-center justify-between text-[10px]">
                 <span
                   className={`font-mono text-[9px] ${
                     isAnimating
@@ -481,7 +481,7 @@ export default function ChallengeCalendar({
                       ? "text-emerald-400 font-bold"
                       : isToday
                       ? "text-amber-400 font-bold"
-                      : "text-[#E5E5E5]"
+                      : "text-[#A0A5B5]"
                   }`}
                 >
                   +{task.pointsReward}P{isDay15 && " 🎁"}
@@ -504,7 +504,7 @@ export default function ChallengeCalendar({
                     HALFWAY
                   </span>
                 ) : (
-                  <span className="text-[9px] text-[#8A96A8]">DAY {task.dayNumber}</span>
+                  <span className="text-[9px] text-[#5A5F70]">DAY {task.dayNumber}</span>
                 )}
               </div>
             </div>
@@ -516,7 +516,7 @@ export default function ChallengeCalendar({
       {/* GIANT WARRIOR TROPHY CARTOON ANIMATION STAGE (COVERS WHOLE CALENDAR) */}
       {/* ======================================================== */}
       {showWarriorMural && (
-        <div className="absolute inset-0 z-40 bg-[#000000] flex flex-col justify-between p-4 sm:p-7 animate-warrior-pop border-4 border-amber-400/90 ring-8 ring-amber-400/30 rounded-xl overflow-hidden shadow-[0_0_90px_rgba(245,158,11,0.7)] select-none">
+        <div className="absolute inset-0 z-40 bg-[#07070B] flex flex-col justify-between p-4 sm:p-7 animate-warrior-pop border-4 border-amber-400/90 ring-8 ring-amber-400/30 rounded-xl overflow-hidden shadow-[0_0_90px_rgba(245,158,11,0.7)] select-none">
           {/* Background Vibrant Cartoon Animation Artwork */}
           <img
             src="/cartoon-warrior-trophy.jpg"
@@ -525,10 +525,10 @@ export default function ChallengeCalendar({
           />
 
           {/* Gradient Vignette Overlays for high contrast typography */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/45 to-[#000000]/75 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07070B] via-[#07070B]/45 to-[#07070B]/75 pointer-events-none" />
 
           {/* Golden Rotating Sunburst God-Rays */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1050px] h-[1050px] opacity-25 pointer-events-none bg-[conic-gradient(from_0deg,transparent_0deg_15deg,rgba(245,158,11,0.9)_15deg_30deg,transparent_30deg_45deg,rgba(252,163,17,0.9)_45deg_60deg,transparent_60deg_75deg,rgba(245,158,11,0.9)_75deg_90deg,transparent_90deg_105deg,rgba(252,163,17,0.9)_105deg_120deg,transparent_120deg_135deg,rgba(245,158,11,0.9)_135deg_150deg,transparent_150deg_165deg,rgba(252,163,17,0.9)_165deg_180deg,transparent_180deg_195deg,rgba(245,158,11,0.9)_195deg_210deg,transparent_210deg_225deg,rgba(252,163,17,0.9)_225deg_240deg,transparent_240deg_255deg,rgba(245,158,11,0.9)_255deg_270deg,transparent_270deg_285deg,rgba(252,163,17,0.9)_285deg_300deg,transparent_300deg_315deg,rgba(245,158,11,0.9)_315deg_330deg,transparent_330deg_345deg,rgba(252,163,17,0.9)_345deg_360deg)] animate-sunburst-rotate" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1050px] h-[1050px] opacity-25 pointer-events-none bg-[conic-gradient(from_0deg,transparent_0deg_15deg,rgba(245,158,11,0.9)_15deg_30deg,transparent_30deg_45deg,rgba(239,255,79,0.9)_45deg_60deg,transparent_60deg_75deg,rgba(245,158,11,0.9)_75deg_90deg,transparent_90deg_105deg,rgba(239,255,79,0.9)_105deg_120deg,transparent_120deg_135deg,rgba(245,158,11,0.9)_135deg_150deg,transparent_150deg_165deg,rgba(239,255,79,0.9)_165deg_180deg,transparent_180deg_195deg,rgba(245,158,11,0.9)_195deg_210deg,transparent_210deg_225deg,rgba(239,255,79,0.9)_225deg_240deg,transparent_240deg_255deg,rgba(245,158,11,0.9)_255deg_270deg,transparent_270deg_285deg,rgba(239,255,79,0.9)_285deg_300deg,transparent_300deg_315deg,rgba(245,158,11,0.9)_315deg_330deg,transparent_330deg_345deg,rgba(239,255,79,0.9)_345deg_360deg)] animate-sunburst-rotate" />
 
           {/* Central Radial Golden Spotlight */}
           <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-400/30 blur-[130px] rounded-full pointer-events-none animate-trophy-pulse" />
@@ -559,7 +559,7 @@ export default function ChallengeCalendar({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => playGrandVictoryFanfare(soundEnabled)}
-                className="px-3 py-1.5 bg-[#000000]/90 hover:bg-[#14213D] text-amber-300 border border-amber-400/50 rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
+                className="px-3 py-1.5 bg-[#1F1F24]/90 hover:bg-[#28282E] text-amber-300 border border-amber-400/50 rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
                 title="Replay cartoon victory fanfare"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -567,7 +567,7 @@ export default function ChallengeCalendar({
               </button>
               <button
                 onClick={() => handleToggleMural(false)}
-                className="px-3 py-1.5 bg-[#000000]/90 hover:bg-[#14213D] text-[#E5E5E5] hover:text-white border border-[#1f2d4d] rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm"
+                className="px-3 py-1.5 bg-[#1F1F24]/90 hover:bg-[#28282E] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 shadow-sm"
                 title="Inspect 30-Day Grid"
               >
                 <X className="w-3.5 h-3.5" />
@@ -595,19 +595,19 @@ export default function ChallengeCalendar({
           </div>
 
           {/* Bottom Achievement Telemetry & Certificate CTA */}
-          <div className="relative z-10 pt-3 border-t border-[#1f2d4d]/80 flex flex-col md:flex-row items-center justify-between gap-4 bg-[#000000]/85 backdrop-blur-md p-4 rounded-xl border border-amber-400/50">
+          <div className="relative z-10 pt-3 border-t border-[#3E3E43]/80 flex flex-col md:flex-row items-center justify-between gap-4 bg-[#141419]/85 backdrop-blur-md p-4 rounded-xl border border-amber-400/50">
             {/* 3 Milestone Badges */}
             <div className="grid grid-cols-3 gap-3 w-full md:w-auto text-center font-mono">
-              <div className="p-2 bg-[#0d1527] border border-amber-400/40 rounded-lg">
-                <div className="text-[10px] text-[#E5E5E5] uppercase font-bold">SUPREME RANK</div>
+              <div className="p-2 bg-[#202026] border border-amber-400/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">SUPREME RANK</div>
                 <div className="text-xs sm:text-sm font-black text-amber-300">SDET LEAD</div>
               </div>
-              <div className="p-2 bg-[#0d1527] border border-emerald-500/40 rounded-lg">
-                <div className="text-[10px] text-[#E5E5E5] uppercase font-bold">FINAL BOUNTY</div>
+              <div className="p-2 bg-[#202026] border border-emerald-500/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">FINAL BOUNTY</div>
                 <div className="text-xs sm:text-sm font-black text-emerald-400">+100 PTS 🏆</div>
               </div>
-              <div className="p-2 bg-[#0d1527] border border-orange-400/40 rounded-lg">
-                <div className="text-[10px] text-[#E5E5E5] uppercase font-bold">PERFECT STREAK</div>
+              <div className="p-2 bg-[#202026] border border-orange-400/40 rounded-lg">
+                <div className="text-[10px] text-[#A0A5B5] uppercase font-bold">PERFECT STREAK</div>
                 <div className="text-xs sm:text-sm font-black text-orange-400">30 DAYS 🔥</div>
               </div>
             </div>
@@ -615,7 +615,7 @@ export default function ChallengeCalendar({
             {/* Certificate Link CTA */}
             <Link
               href="/certificates"
-              className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-[#FCA311] via-amber-400 to-[#FCA311] hover:brightness-110 text-[#000000] font-black uppercase text-xs rounded-lg flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(252,163,17,0.5)] transition-all shrink-0 hover:scale-105"
+              className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-[#EFFF4F] via-amber-400 to-[#EFFF4F] hover:brightness-110 text-[#18181B] font-black uppercase text-xs rounded-lg flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(239,255,79,0.5)] transition-all shrink-0 hover:scale-105"
             >
               <Award className="w-4 h-4" />
               <span>CLAIM VERIFIABLE CAPSTONE CERTIFICATE</span>
