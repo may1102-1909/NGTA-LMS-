@@ -156,22 +156,28 @@ export default function RoleSelectionModal({
   const currentRole = ROLES.find((r) => r.id === selectedRole) || ROLES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-black/85 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-[#202023] border border-[#3E3E43] rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-white overflow-hidden max-h-[92vh] flex flex-col">
-        {/* Subtle Matte Ambient Lemon Glow */}
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#EFFF4F]/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-black/80 animate-in fade-in duration-200">
+      {/* Outer Ambient Radial Glow Backdrop Layer */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="w-[700px] h-[500px] bg-lime-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      </div>
+
+      {/* Modal Container */}
+      <div className="relative bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full text-white overflow-hidden max-h-[92vh] flex flex-col">
+        {/* Subtle Ambient Inner Highlight */}
+        <div className="absolute -top-32 -right-32 w-80 h-80 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-[#3E3E43] pb-4 relative z-10 shrink-0">
+        <div className="flex items-start justify-between border-b border-white/10 pb-5 relative z-10 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-              <Sparkles className="w-3 h-3 text-[#EFFF4F]" />
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-lime-400/10 text-lime-400 border border-lime-400/20 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-lime-400" />
               <span>NextGen Testing Academy • RBAC Access</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
               <span>Select Your Role</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#A0A5B5] mt-1">
+            <p className="text-zinc-400 text-sm font-normal mt-1.5">
               Choose your profile designation before authenticating with Google.
             </p>
           </div>
@@ -179,7 +185,8 @@ export default function RoleSelectionModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-1.5 text-[#5A5F70] hover:text-white rounded-lg hover:bg-[#333336] transition-colors"
+            className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all cursor-pointer"
+            aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -187,13 +194,13 @@ export default function RoleSelectionModal({
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono rounded shrink-0">
+          <div className="p-3 my-2 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono rounded-xl shrink-0">
             {errorMsg}
           </div>
         )}
 
-        {/* Roles Grid (Scrollable) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1 flex-1 py-1">
+        {/* Roles Grid (Scrollable with breathing room) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-1 flex-1 py-4 my-1">
           {ROLES.map((role) => {
             const isSelected = selectedRole === role.id;
             const Icon = role.icon;
@@ -204,65 +211,68 @@ export default function RoleSelectionModal({
                 type="button"
                 onClick={() => setSelectedRole(role.id)}
                 disabled={loading}
-                className={`relative p-4 rounded-xl border text-left transition-all group flex flex-col justify-between cursor-pointer focus:outline-none ${
+                className={`relative p-5 rounded-2xl text-left transition-all duration-200 ease-out hover:-translate-y-0.5 group flex flex-col justify-between cursor-pointer focus:outline-none ${
                   isSelected
-                    ? "border-[#EFFF4F] bg-[#EFFF4F]/10 ring-2 ring-[#EFFF4F]/50 shadow-lemon-sm"
-                    : "border-[#3E3E43] bg-[#28282B] hover:border-[#EFFF4F]/40 hover:bg-[#333336]"
+                    ? "bg-lime-400/10 border-2 border-lime-400 shadow-[0_0_25px_rgba(163,230,53,0.15)]"
+                    : "bg-[#121318]/60 hover:bg-[#181920]/80 border border-white/5 hover:border-white/20"
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <div
-                      className={`w-9 h-9 rounded-lg flex items-center justify-center border ${
+                      className={`p-3 rounded-xl transition-all ${
                         isSelected
-                          ? "bg-[#EFFF4F] border-[#EFFF4F] text-[#28282B] shadow-sm"
-                          : "bg-[#333336] border-[#3E3E43] text-[#A0A5B5] group-hover:text-white"
+                          ? "bg-lime-400 text-black font-bold shadow-sm"
+                          : "bg-white/5 text-zinc-400 group-hover:text-zinc-200"
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-5 h-5" />
                     </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-mono uppercase font-bold text-[#5A5F70]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-zinc-500 bg-white/5 px-2 py-0.5 rounded border border-white/5">
                         {role.badge}
                       </span>
                       {isSelected && (
-                        <div className="w-4 h-4 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center shadow-md">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        <div className="w-5 h-5 rounded-full bg-lime-400 text-black flex items-center justify-center shadow-md animate-in zoom-in-75 duration-150">
+                          <Check className="w-3 h-3 stroke-[3]" />
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-sm text-white uppercase tracking-wide">
+                  <h3 className="font-bold text-base text-white tracking-wide">
                     {role.label}
                   </h3>
-                  <p className="text-[11px] text-[#A0A5B5] mt-1 leading-snug line-clamp-2">
+                  <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed font-normal">
                     {role.description}
                   </p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-[#3E3E43]/60 flex items-center justify-between text-[10px] font-mono text-[#5A5F70]">
+                <div className="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between font-mono text-xs text-zinc-500 group-hover:text-lime-400 transition-colors">
                   <span>Redirects to:</span>
-                  <span className="text-[#EFFF4F] font-semibold">{role.targetDashboard}</span>
+                  <span className="font-semibold text-zinc-400 group-hover:text-lime-400">{role.targetDashboard}</span>
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Footer Action */}
-        <div className="border-t border-[#3E3E43] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <div className="text-[11px] font-mono text-[#A0A5B5]">
-            Selected: <strong className="text-white uppercase">{currentRole.label}</strong>
+        {/* Footer Action Bar */}
+        <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+          <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-400">
+            <span className="h-2 w-2 rounded-full bg-lime-400 animate-pulse" />
+            <span>
+              Selected: <strong className="text-white uppercase font-bold">{currentRole.label}</strong>
+            </span>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2.5 border border-[#3E3E43] bg-[#28282B] hover:bg-[#333336] text-white text-xs font-mono font-bold uppercase rounded-xl transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
+              className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-white/10 rounded-xl px-5 py-2.5 text-xs font-mono font-medium transition-colors cursor-pointer w-1/3 sm:w-auto text-center"
             >
               Cancel
             </button>
@@ -271,16 +281,16 @@ export default function RoleSelectionModal({
               type="button"
               onClick={handleProceedGoogle}
               disabled={loading}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase tracking-wider rounded-xl transition-all shadow-lemon-sm disabled:opacity-50 cursor-pointer"
+              className="flex-1 sm:flex-initial bg-lime-400 hover:bg-lime-300 text-black font-bold px-6 py-2.5 rounded-xl transition-all shadow-[0_0_20px_rgba(163,230,53,0.3)] hover:shadow-[0_0_30px_rgba(163,230,53,0.5)] flex items-center justify-center gap-2 text-xs font-mono tracking-wide cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-[#28282B]" />
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
                   <span>Connecting to Google...</span>
                 </>
               ) : (
                 <>
-                  {/* Google Icon */}
+                  {/* Google Color Icon */}
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
