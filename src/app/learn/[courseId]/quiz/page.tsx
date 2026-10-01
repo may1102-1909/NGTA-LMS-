@@ -30,6 +30,8 @@ export default function QuizAssessmentPage() {
   const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
   // Gated Assessment Access: Verify user is logged in and enrolled in the course
   useEffect(() => {
     let isMounted = true;
@@ -53,6 +55,8 @@ export default function QuizAssessmentPage() {
           if (isMounted) router.replace("/courses");
           return;
         }
+
+        if (isMounted) setCurrentUserId(user.id);
 
         const res = await fetch(
           `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
@@ -89,9 +93,11 @@ export default function QuizAssessmentPage() {
   const [selectedAnswers, setSelectedAnswers] = useState<{ [questionId: string]: string }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [attemptCount, setAttemptCount] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [issuedCertId, setIssuedCertId] = useState<string | null>(null);
 
   const handleSelectOption = (questionId: string, optionId: string) => {
-    if (isSubmitted) return;
+    if (isSubmitted || isSubmitting) return;
     setSelectedAnswers((prev) => ({
       ...prev,
       [questionId]: optionId,
@@ -108,7 +114,39 @@ export default function QuizAssessmentPage() {
 
   const percentageScore = Math.round((correctCount / totalQuestions) * 100);
   const isPassed = percentageScore >= quiz.passingPercentage;
-  const certificateId = `NGTA-CERT-${course.id}-2026-8910`;
+  const certificateId = issuedCertId || `NGTA-CERT-${course.id}-2026-8910`;
+
+  const handleSubmitEvaluation = async () => {
+    setIsSubmitting(true);
+    setIsSubmitted(true);
+
+    try {
+      if (isPassed) {
+        const res = await fetch("/api/learn/quiz/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            courseId: course.id,
+            courseTitle: course.title,
+            score: percentageScore,
+            passingThreshold: quiz.passingPercentage,
+            userId: currentUserId,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.certificateId) {
+            setIssuedCertId(data.certificateId);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Quiz submission error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleRetake = () => {
     setSelectedAnswers({});
@@ -209,13 +247,22 @@ export default function QuizAssessmentPage() {
                   <span className="text-[#A0A5B5]">ACCREDITED CERTIFICATE ISSUED:</span>{" "}
                   <strong className="text-white">{certificateId}</strong>
                 </div>
-                <Link
-                  href={`/verify?certId=${certificateId}`}
-                  className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
-                >
-                  <Award className="w-4 h-4" />
-                  <span>VIEW & VERIFY CREDENTIAL</span>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/certificates/${certificateId}`}
+                    className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                  >
+                    <Award className="w-4 h-4" />
+                    <span>VIEW CERTIFICATE</span>
+                  </Link>
+                  <Link
+                    href={`/verify?certId=${certificateId}`}
+                    className="px-3 py-2.5 bg-[#28282B] border border-[#3E3E43] text-white font-bold uppercase hover:border-[#EFFF4F]/40 transition-colors flex items-center gap-1.5"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-[#EFFF4F]" />
+                    <span>VERIFY</span>
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="border-t border-[#3E3E43] pt-4 flex items-center justify-between font-mono text-xs">
@@ -308,12 +355,21 @@ export default function QuizAssessmentPage() {
         {!isSubmitted && (
           <div className="border-t border-[#3E3E43] pt-6 flex justify-end">
             <button
-              onClick={() => setIsSubmitted(true)}
-              disabled={Object.keys(selectedAnswers).length < totalQuestions}
+              onClick={handleSubmitEvaluation}
+              disabled={isSubmitting || Object.keys(selectedAnswers).length < totalQuestions}
               className="px-8 py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              <span>SUBMIT ASSESSMENT ANSWERS</span>
-              <ArrowRight className="w-4 h-4" />
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>EVALUATING & CERTIFYING...</span>
+                </>
+              ) : (
+                <>
+                  <span>SUBMIT ASSESSMENT ANSWERS</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         )}

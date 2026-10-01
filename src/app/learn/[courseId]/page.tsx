@@ -33,6 +33,8 @@ export default function LearnPlayerPage() {
   const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
   // Gated Course Access: Verify user is logged in and has an active payment for this course
   useEffect(() => {
     let isMounted = true;
@@ -58,6 +60,8 @@ export default function LearnPlayerPage() {
           return;
         }
 
+        if (isMounted) setCurrentUserId(user.id);
+
         // Query database to check if user has purchased this course
         const res = await fetch(
           `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
@@ -76,6 +80,21 @@ export default function LearnPlayerPage() {
                 }
               }
             } catch {}
+
+            // Fetch persistent lesson progress from course_progress table
+            try {
+              const progRes = await fetch(
+                `/api/learn/progress?courseId=${course.id}&userId=${user.id}`
+              );
+              if (progRes.ok) {
+                const progData = await progRes.json();
+                if (isMounted && Array.isArray(progData.completedLessonIds)) {
+                  setCompletedLessonIds(progData.completedLessonIds);
+                }
+              }
+            } catch (progErr) {
+              console.warn("Could not fetch course progress:", progErr);
+            }
 
             if (isMounted) {
               setIsEnrolled(true);
@@ -121,12 +140,29 @@ export default function LearnPlayerPage() {
       ? Math.round((completedLessonIds.length / totalLessonsCount) * 100)
       : 0;
 
-  const handleMarkCompleted = (lessonId: string) => {
+  const handleMarkCompleted = async (lessonId: string) => {
     if (!completedLessonIds.includes(lessonId)) {
       setCompletedLessonIds((prev) => [...prev, lessonId]);
       setUserPoints((prev) => prev + 10);
       setPointsToast(`+10 PTS · Lesson completed · ${activeLesson.title}`);
       setTimeout(() => setPointsToast(null), 4000);
+
+      // Persist to Supabase course_progress table & enrollments
+      try {
+        await fetch("/api/learn/progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            courseId: course.id,
+            lessonId,
+            completed: true,
+            totalLessons: totalLessonsCount,
+            userId: currentUserId,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to save lesson progress to Supabase:", err);
+      }
     }
   };
 
@@ -205,11 +241,11 @@ export default function LearnPlayerPage() {
 
           {isEligibleForCertificate && (
             <Link
-              href={`/verify?certId=NGTA-CERT-${course.id}-9941`}
+              href={`/learn/${course.id}/quiz`}
               className="px-2.5 py-1 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
             >
               <Award className="w-3.5 h-3.5" />
-              <span>CLAIM CERTIFICATE</span>
+              <span>TAKE FINAL EXAM & GET CERTIFICATE</span>
             </Link>
           )}
         </div>

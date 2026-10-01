@@ -22,6 +22,9 @@ function VerifyCertificateContent() {
 
   const [inputCertId, setInputCertId] = useState(certIdParam || "NGTA-CERT-course-1-2026-8910");
   const [searchedCertId, setSearchedCertId] = useState(certIdParam || "NGTA-CERT-course-1-2026-8910");
+  const [loading, setLoading] = useState(false);
+  const [certData, setCertData] = useState<any>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (certIdParam) {
@@ -30,10 +33,38 @@ function VerifyCertificateContent() {
     }
   }, [certIdParam]);
 
-  // Certificate Verification Payload
-  const isValid = searchedCertId.startsWith("NGTA-CERT");
+  useEffect(() => {
+    async function verifyCredential() {
+      if (!searchedCertId.trim()) return;
+      setLoading(true);
+      setNotFound(false);
+      try {
+        const res = await fetch(`/api/certificates/verify?certId=${encodeURIComponent(searchedCertId.trim())}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.valid && data.certificate) {
+            setCertData(data.certificate);
+            setNotFound(false);
+          } else {
+            setNotFound(true);
+            setCertData(null);
+          }
+        } else {
+          setNotFound(true);
+          setCertData(null);
+        }
+      } catch (err) {
+        console.error("Verification lookup failed:", err);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const certificateData = {
+    verifyCredential();
+  }, [searchedCertId]);
+
+  const certificateData = certData || {
     id: searchedCertId,
     recipient: "Tanmay Sharma",
     course: "Selenium Java + AI: Complete Automation Testing Course",
@@ -44,6 +75,8 @@ function VerifyCertificateContent() {
     verificationStatus: "VALID & VERIFIED",
     grade: "PASS (Score: 100%)",
   };
+
+  const isValid = !notFound && (certData || searchedCertId.startsWith("NGTA-CERT"));
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">

@@ -112,27 +112,32 @@ Following the approval of the implementation plan, the technical architecture is
 | 2026-10-01 20:50 | `AUTONOMOUS` | Completed Stage 1 (Zero-Mock Data Enforcement). Cleaned `src/app/actions/community.ts` and `src/components/community/CommunityFeed.tsx` from hardcoded arrays/authors. Replaced with real Supabase database queries and verified clean empty state UI rendering when tables/feeds have 0 items. Verified all dashboards connect to real database stats. |
 | 2026-10-01 20:52 | `AUTONOMOUS` | Executed full type checking (`npx tsc --noEmit`) and full Next.js production build (`npm run build`). All 35 pages and routes generated successfully with 0 errors. Zero-mock policy and 7-role RBAC architecture fully verified. |
 | 2026-10-01 21:15 | `AUTONOMOUS` | Restored signature Matte Black (`#28282B`, `#333336`, `#3E3E43`) & Laser Lemon (`#EFFF4F`) design system across all 35 pages, dashboards, modals, and components as explicitly mandated by user. Type check and production build verified with 0 errors. |
+| 2026-10-01 22:05 | `AUTONOMOUS` | Implemented Core End-to-End Acceptance Scenarios (BRD Scenarios 44, 45, 46). Synced Supabase PostgreSQL with 5 new models (`course_progress`, `certificates`, `published_courses`, `live_classes`, `live_class_registrations`) and 3 enums via `npx prisma db push`. Built Razorpay order.paid webhook route (`/api/webhooks/razorpay`), dynamic course progress API (`/api/learn/progress`), automated quiz evaluation & unique verifiable certificate issuance (`/api/learn/quiz/submit`, `/certificates/[id]`, `/verify`), instructor course authoring studio (`/dashboard/instructor/courses/new`), admin course approval desk (`/dashboard/admin/approvals`), and live class broadcast & attendance system (`/dashboard/instructor/live`, `/live`). Production build verified (`✓ Generating static pages (44/44)`, 0 TypeScript errors). |
 
 ---
 
 ## 8. Current Implementation State
 
-- **Current State:** `COMPLETED` (Zero-Mock Data Policy & 7-Role Architecture with Restored Matte Black & Laser Lemon Palette)
+- **Current State:** `COMPLETED` (Core End-to-End Acceptance Scenarios 44, 45, 46 Fully Automated & Live)
 - **Completed Deliverables:**
-  - **Color Template:** Exact restoration of the Matte Black (`#28282B` base, `#333336` cards, `#3E3E43` borders) and Laser Lemon (`#EFFF4F` accent, `text-[#28282B]` on lemon buttons, `shadow-lemon-sm` glow) palette across all UI views and newly created role dashboards.
-  - **Stage 1 (Zero-Mock Data Policy):** Audited and purged fake objects/arrays (mock seed posts, fake authors, static community items). Direct queries to Supabase via Prisma ORM for all dashboards, stats, and feeds. All empty feeds and tables render clean, styled empty state UIs without falling back to mock data.
-  - **Stage 2 (Database Schema & Role Definitions):** Prisma `schema.prisma` synchronized with remote Supabase PostgreSQL with 7 roles: `SUPER_ADMIN`, `ADMIN`, `INSTRUCTOR`, `CONTENT_MANAGER`, `SUPPORT_STAFF`, `LEARNER`, `GUEST`. `profiles` table updated with `user_id`, `role`, and `updated_at`.
-  - **Stage 3 (Pre-Auth Role Selection Modal):** Created `RoleSelectionModal.tsx` featuring matte-black glassmorphism, role selection cards, and persistence via OAuth metadata (`options.data.role`), query parameters, cookie (`ngta_selected_role`), and `localStorage`.
-  - **Stage 4 (Role-Based Routing & Dashboards):**
-    - Dynamic redirecting in `src/app/auth/callback/route.ts` based on selected and assigned user role.
-    - Route protection via `src/middleware.ts` safeguarding all `/dashboard/:path*` subroutes.
-    - `/dashboard/learner` $\rightarrow$ Student Workspace & Progress.
-    - `/dashboard/instructor` $\rightarrow$ TagMango-style Creator Studio (student enrollments, earnings ledger, batch stats).
-    - `/dashboard/content` $\rightarrow$ Curriculum & Resource Publishing Desk.
-    - `/dashboard/support` $\rightarrow$ Learner Helpdesk & Troubleshooting console.
-    - `/dashboard/admin` $\rightarrow$ Operations & Business Governance console.
-    - `/dashboard/super-admin` $\rightarrow$ System Master Control with live Supabase role assignment switcher.
-  - **Stage 5 (Conditional Avatar Onboarding):** Updated `StudentOnboardingModal.tsx` to inspect Supabase `profiles` role upon sign-in. Triggers exclusively for `LEARNER` and `GUEST`, while automatically bypassing and hiding for all creator and admin roles (`INSTRUCTOR`, `CONTENT_MANAGER`, `SUPPORT_STAFF`, `ADMIN`, `SUPER_ADMIN`).
-- **Build Status:** Next.js production build verified (`✓ Compiled successfully`, 35/35 pages generated, 0 TypeScript errors).
+  - **Color Palette & Design System:** Strictly maintained Matte Black (`#28282B` base, `#333336` cards, `#3E3E43` borders) and Laser Lemon (`#EFFF4F` accent, `text-[#28282B]` on buttons, `shadow-lemon-sm` glow) across all existing and newly created routes.
+  - **Scenario 1 (Primary Learner Acceptance Journey - BRD Section 44):**
+    - Guest $\rightarrow$ Register/Login: Enforces matte-black glassmorphism persona onboarding (`StudentOnboardingModal.tsx`) exclusively for `LEARNER`.
+    - Browse $\rightarrow$ Razorpay Purchase: Webhook handler (`/api/webhooks/razorpay`) automatically processes `order.paid` and inserts records into `enrollments` and `payments` tables with zero manual DB edits.
+    - Dashboard Visualization: Enrolled courses display immediately on `/dashboard/learner` with completion percentages and active stats.
+    - Progress Tracking: Course player (`/learn/[courseId]`) synchronizes completed lessons via `/api/learn/progress` into Supabase `course_progress` table, recalculates module progress percentages dynamically, and awards 10 XP points.
+    - Assessment & Verifiable Certification: Passing the exam ($\ge 70\%$) automatically marks enrollment complete and issues an official unique verifiable credential (`/certificates/[id]`) with public registry verification endpoint (`/verify?certId=...`).
+  - **Scenario 2 (Instructor Course Publishing Journey - BRD Section 45):**
+    - Instructor authoring studio at `/dashboard/instructor/courses/new` with full Content Tree builder (Modules, Lessons, Media URLs, Resources), Assessment Quiz builder, and Certificate Rules.
+    - Course submission creates record in `published_courses` with status `PENDING_APPROVAL` (hidden from storefront).
+    - Administrator Approval Console at `/dashboard/admin/approvals` inspects content trees and approves courses $\rightarrow$ status changes to `PUBLISHED`.
+    - Public storefront (`/courses` and `/lms`) dynamically queries and lists newly approved `PUBLISHED` courses in real time.
+  - **Scenario 3 (Live Class Workflow - BRD Section 46):**
+    - Instructor live studio at `/dashboard/instructor/live` schedules sessions with title, date/time, stream URL, and cohort targeting.
+    - Learner live hub at `/live` enables enrolled students to click "Register for Live Class", saves to `live_class_registrations`, and queues Web Push notifications.
+    - Attendance tracking records `ATTENDED` status in Supabase when learner joins stream.
+    - Post-session recording attachment allows instructors to save archive URLs, instantly displaying them under course resources for registered learners.
+- **Build Status:** Verified production build (`npm run build`, `✓ Compiled successfully`, 44/44 static & dynamic pages generated, 0 TypeScript errors).
+
 
 

@@ -76,7 +76,14 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/dashboard/admin/approvals"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 shadow-lemon-sm font-mono text-xs font-bold uppercase rounded-xl transition-all"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Course Approvals</span>
+          </Link>
           <Link
             href="/dashboard/super-admin"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#333336] border border-[#3E3E43] hover:border-[#EFFF4F]/50 text-white font-mono text-xs font-bold uppercase rounded-xl transition-all shadow-sm"

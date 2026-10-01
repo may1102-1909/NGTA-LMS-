@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Clock,
   Compass,
+  Radio,
 } from "lucide-react";
 import RankTag from "@/components/gamification/RankTag";
 import StreakGrid from "@/components/gamification/StreakGrid";
@@ -292,6 +293,17 @@ export default function LearnerDashboardPage() {
             <h3 className="text-xs uppercase font-bold tracking-wider text-[#5A5F70] mb-2">
               Action Hub
             </h3>
+
+            <Link
+              href="/live"
+              className="flex items-center justify-between p-3 rounded-xl bg-[#28282B] border border-[#3E3E43] hover:border-[#EFFF4F]/50 transition-colors group"
+            >
+              <div className="flex items-center gap-2.5">
+                <Radio className="w-4 h-4 text-[#EFFF4F] animate-pulse" />
+                <span className="font-bold text-white">Live Classes & Recordings</span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#5A5F70] group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </Link>
 
             <Link
               href="/challenge"

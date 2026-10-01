@@ -16,6 +16,7 @@ import {
   Clock,
   TrendingUp,
   FileCheck,
+  Radio,
 } from "lucide-react";
 
 interface EnrollmentItem {
@@ -109,20 +110,27 @@ export default function InstructorDashboardPage() {
         </div>
 
         {/* Creator Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/dashboard/instructor/courses/new"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 shadow-lemon-sm font-mono text-xs font-bold uppercase rounded-xl transition-all"
+          >
+            <PlusCircle className="w-3.5 h-3.5" />
+            <span>Create Course</span>
+          </Link>
+          <Link
+            href="/dashboard/instructor/live"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#333336] border border-[#3E3E43] hover:border-[#EFFF4F]/50 text-white font-mono text-xs font-bold uppercase rounded-xl transition-all shadow-sm"
+          >
+            <Radio className="w-3.5 h-3.5 text-[#EFFF4F]" />
+            <span>Live Sessions</span>
+          </Link>
           <Link
             href="/mentorship"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#333336] border border-[#3E3E43] hover:border-[#EFFF4F]/50 text-white font-mono text-xs font-bold uppercase rounded-xl transition-all shadow-sm"
           >
             <Calendar className="w-3.5 h-3.5 text-[#06B6D4]" />
             <span>1-on-1 Slots</span>
-          </Link>
-          <Link
-            href="/community/feed"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 shadow-lemon-sm font-mono text-xs font-bold uppercase rounded-xl hover:brightness-110 transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Broadcast Update</span>
           </Link>
         </div>
       </div>

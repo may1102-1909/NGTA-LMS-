@@ -25,8 +25,51 @@ export default function CoursesPage() {
     Record<string, { completed: number; total: number; percent: number }>
   >({});
 
+  const [publishedDbCourses, setPublishedDbCourses] = useState<any[]>([]);
+
   useEffect(() => {
-    async function loadEnrollments() {
+    async function loadData() {
+      // 1. Fetch published courses from Supabase database
+      try {
+        const pubRes = await fetch("/api/courses?status=PUBLISHED");
+        if (pubRes.ok) {
+          const pubData = await pubRes.json();
+          if (Array.isArray(pubData.courses)) {
+            const mapped = pubData.courses.map((pc: any) => ({
+              id: pc.slug || pc.id,
+              slug: pc.slug,
+              title: pc.title,
+              subtitle: pc.description.slice(0, 120),
+              description: pc.description,
+              instructorId: pc.instructor_id,
+              instructorName: pc.instructor?.full_name || pc.instructor_name || "Lead SDET",
+              instructorTitle: "Lead Instructor",
+              category: pc.category || "Automation Testing",
+              tags: [pc.category, pc.level, "Accredited"],
+              thumbnailUrl: "/courses/selenium-java-ai.jpg",
+              bannerUrl: "/courses/selenium-java-ai.jpg",
+              difficultyLevel: pc.level || "Intermediate",
+              durationHours: 20,
+              priceINR: Math.round(Number(pc.price) * 1.5),
+              discountPriceINR: Number(pc.price),
+              status: "PUBLISHED",
+              rating: 5.0,
+              ratingsCount: 12,
+              studentsCount: 35,
+              updatedAt: new Date(pc.updated_at || pc.created_at).toISOString().split("T")[0],
+              objectives: ["Master full-stack automation architecture"],
+              prerequisites: ["Basic computer literacy"],
+              targetAudience: ["SDETs and QA Engineers"],
+              modules: Array.isArray(pc.modules) ? pc.modules : [],
+            }));
+            setPublishedDbCourses(mapped);
+          }
+        }
+      } catch (pubErr) {
+        console.warn("Could not load published courses from DB:", pubErr);
+      }
+
+      // 2. Fetch user enrollments
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -60,16 +103,19 @@ export default function CoursesPage() {
         console.error("Error loading course enrollments:", err);
       }
     }
-    loadEnrollments();
+
+    loadData();
   }, []);
 
   const categories = ["ALL", "Automation Testing", "Modern Web Testing", "Performance", "Security"];
   const levels = ["ALL", "Beginner", "Intermediate", "Advanced"];
 
-  const filteredCourses = INITIAL_COURSES.filter((course) => {
+  const combinedCourses = [...INITIAL_COURSES, ...publishedDbCourses];
+
+  const filteredCourses = combinedCourses.filter((course) => {
     const matchesSearch =
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      course.tags.some((t: string) => t.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory =
       selectedCategory === "ALL" || course.category === selectedCategory;
     const matchesLevel =
@@ -213,7 +259,7 @@ export default function CoursesPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {course.tags.map((tag) => (
+                    {course.tags.map((tag: string) => (
                       <span
                         key={tag}
                         className="font-mono text-[10px] px-2 py-0.5 border border-[#3E3E43] text-[#5A5F70] bg-[#28282B]"
