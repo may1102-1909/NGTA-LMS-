@@ -134,21 +134,21 @@ export default function LearnPlayerPage() {
 
   if (isVerifyingEnrollment) {
     return (
-      <div className="min-h-screen bg-[#28282B] flex flex-col items-center justify-center font-mono text-xs text-white p-6">
-        <div className="border border-[#3E3E43] bg-[#202023] p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
-          <div className="w-12 h-12 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 flex items-center justify-center mx-auto text-[#EFFF4F]">
+      <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-center font-mono text-xs text-white p-6">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-[#FCA311]/10 border border-[#FCA311]/30 flex items-center justify-center mx-auto text-[#FCA311]">
             <Lock className="w-6 h-6 animate-pulse" />
           </div>
           <div className="space-y-1">
             <h2 className="text-base font-bold text-white uppercase font-sans">
               Verifying Enrollment Access
             </h2>
-            <p className="text-xs text-[#A0A5B5]">
+            <p className="text-xs text-[#E5E5E5]">
               Confirming course credentials for {course.title}...
             </p>
           </div>
-          <div className="flex items-center justify-center gap-2 text-[11px] text-[#5A5F70]">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#EFFF4F]" />
+          <div className="flex items-center justify-center gap-2 text-[11px] text-[#8A96A8]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#FCA311]" />
             <span>Syncing database credentials...</span>
           </div>
         </div>
@@ -161,18 +161,18 @@ export default function LearnPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#28282B] text-white flex flex-col font-sans">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col font-sans">
       {/* Top Player Bar */}
-      <div className="border-b border-[#3E3E43] bg-[#0C0E14] px-4 py-3 flex items-center justify-between font-mono text-xs">
+      <div className="border-b border-[#1f2d4d] bg-[#000000] px-4 py-3 flex items-center justify-between font-mono text-xs">
         <div className="flex items-center gap-3">
           <Link
             href="/courses"
-            className="flex items-center gap-1 text-[#5A5F70] hover:text-[#EFFF4F] transition-colors"
+            className="flex items-center gap-1 text-[#8A96A8] hover:text-[#FCA311] transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>EXIT PLAYER</span>
           </Link>
-          <span className="text-[#3E3E43]">|</span>
+          <span className="text-[#1f2d4d]">|</span>
           <span className="text-white font-bold uppercase truncate max-w-xs sm:max-w-md">
             {course.title}
           </span>
@@ -180,7 +180,7 @@ export default function LearnPlayerPage() {
 
         <div className="flex items-center gap-4 font-mono">
           {pointsToast && (
-            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[11px] animate-in fade-in slide-in-from-top-1">
+            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 bg-[#FCA311]/10 border border-[#FCA311]/30 text-[#FCA311] text-[11px] animate-in fade-in slide-in-from-top-1">
               <span className="font-bold">●</span>
               <span>{pointsToast}</span>
             </div>
@@ -188,16 +188,16 @@ export default function LearnPlayerPage() {
 
           <div className="hidden lg:flex items-center gap-2">
             <RankTag points={userPoints} size="sm" />
-            <span className="text-[#3E3E43]">|</span>
-            <span className="text-[#EFFF4F] font-bold tabular-nums">{userPoints} PTS</span>
+            <span className="text-[#1f2d4d]">|</span>
+            <span className="text-[#FCA311] font-bold tabular-nums">{userPoints} PTS</span>
           </div>
 
           <div className="hidden sm:flex items-center gap-2">
-            <span className="text-[#5A5F70]">PROGRESS:</span>
-            <span className="font-bold text-[#EFFF4F]">{progressPercentage}%</span>
-            <div className="w-20 h-2 bg-[#3E3E43] border border-[#3E3E43] overflow-hidden">
+            <span className="text-[#8A96A8]">PROGRESS:</span>
+            <span className="font-bold text-[#FCA311]">{progressPercentage}%</span>
+            <div className="w-20 h-2 bg-[#1f2d4d] border border-[#1f2d4d] overflow-hidden">
               <div
-                className="h-full bg-[#EFFF4F] transition-all duration-300"
+                className="h-full bg-[#FCA311] transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
@@ -206,7 +206,7 @@ export default function LearnPlayerPage() {
           {isEligibleForCertificate && (
             <Link
               href={`/verify?certId=NGTA-CERT-${course.id}-9941`}
-              className="px-2.5 py-1 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
+              className="px-2.5 py-1 bg-[#FCA311] text-[#000000] font-bold hover:bg-[#FCA311]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
             >
               <Award className="w-3.5 h-3.5" />
               <span>CLAIM CERTIFICATE</span>
@@ -218,8 +218,8 @@ export default function LearnPlayerPage() {
       {/* Main Player Grid */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
         {/* Left Column: Video & Lesson Content */}
-        <div className="lg:col-span-8 flex flex-col bg-[#0C0E14] border-r border-[#3E3E43]">
-          <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#3E3E43]">
+        <div className="lg:col-span-8 flex flex-col bg-[#000000] border-r border-[#1f2d4d]">
+          <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#1f2d4d]">
             {activeLesson.type === "video" ? (
               (() => {
                 const url = activeLesson.videoUrl || "";
@@ -277,16 +277,16 @@ export default function LearnPlayerPage() {
               })()
             ) : (
               <div className="p-8 text-center space-y-4">
-                <HelpCircle className="w-16 h-16 text-[#EFFF4F] mx-auto" />
+                <HelpCircle className="w-16 h-16 text-[#FCA311] mx-auto" />
                 <h3 className="text-xl font-bold text-white uppercase font-mono">
                   ASSESSMENT & QUIZ STAGE
                 </h3>
-                <p className="text-[#A0A5B5] text-sm max-w-md mx-auto">
+                <p className="text-[#E5E5E5] text-sm max-w-md mx-auto">
                   Evaluate your architecture knowledge to validate competency and unlock your accredited certificate.
                 </p>
                 <Link
                   href={`/learn/${course.id}/quiz`}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#FCA311] text-[#000000] font-mono text-xs uppercase font-bold hover:bg-[#FCA311]/90 transition-colors shadow-lemon-sm"
                 >
                   <span>START TIMED QUIZ</span>
                   <ArrowRight className="w-4 h-4" />
@@ -296,10 +296,10 @@ export default function LearnPlayerPage() {
           </div>
 
           {/* Lesson Metadata */}
-          <div className="p-6 bg-[#28282B] flex-1 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#3E3E43] pb-4">
+          <div className="p-6 bg-[#000000] flex-1 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1f2d4d] pb-4">
               <div>
-                <div className="font-mono text-xs text-[#5A5F70] uppercase">
+                <div className="font-mono text-xs text-[#8A96A8] uppercase">
                   LESSON {activeLesson.order} // {activeLesson.durationMinutes} MIN
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-1">
@@ -313,7 +313,7 @@ export default function LearnPlayerPage() {
                     href={activeLesson.videoUrl.replace("/preview", "/view")}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-2 font-mono text-xs text-[#A0A5B5] hover:text-[#EFFF4F] border border-[#3E3E43] hover:border-[#EFFF4F]/40 transition-colors flex items-center gap-1.5"
+                    className="px-3 py-2 font-mono text-xs text-[#E5E5E5] hover:text-[#FCA311] border border-[#1f2d4d] hover:border-[#FCA311]/40 transition-colors flex items-center gap-1.5"
                     title="Open full video in Google Drive"
                   >
                     <span>DRIVE SOURCE</span>
@@ -325,11 +325,11 @@ export default function LearnPlayerPage() {
                   onClick={() => handleMarkCompleted(activeLesson.id)}
                   className={`px-4 py-2 font-mono text-xs uppercase font-bold flex items-center gap-2 transition-colors border ${
                     completedLessonIds.includes(activeLesson.id)
-                      ? "bg-[#EFFF4F]/10 border-[#EFFF4F]/30 text-[#EFFF4F]"
-                      : "bg-[#333336] border-[#3E3E43] text-[#A0A5B5] hover:bg-[#3E3E43]"
+                      ? "bg-[#FCA311]/10 border-[#FCA311]/30 text-[#FCA311]"
+                      : "bg-[#14213D] border-[#1f2d4d] text-[#E5E5E5] hover:bg-[#1f2d4d]"
                   }`}
                 >
-                  <CheckCircle2 className="w-4 h-4 text-[#EFFF4F]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#FCA311]" />
                   <span>
                     {completedLessonIds.includes(activeLesson.id)
                       ? "COMPLETED"
@@ -339,8 +339,8 @@ export default function LearnPlayerPage() {
               </div>
             </div>
 
-            <div className="space-y-3 font-sans text-sm text-[#A0A5B5]">
-              <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
+            <div className="space-y-3 font-sans text-sm text-[#E5E5E5]">
+              <div className="font-mono text-xs uppercase font-bold text-[#8A96A8]">
                 ARCHITECTURE NOTES:
               </div>
               <p className="leading-relaxed">
@@ -352,13 +352,13 @@ export default function LearnPlayerPage() {
         </div>
 
         {/* Right Column: Syllabus Sidebar */}
-        <div className="lg:col-span-4 bg-[#28282B] flex flex-col h-full border-[#3E3E43]">
-          <div className="p-4 border-b border-[#3E3E43] font-mono text-xs font-bold text-[#5A5F70] uppercase tracking-wider flex justify-between items-center">
+        <div className="lg:col-span-4 bg-[#14213D] flex flex-col h-full border-[#1f2d4d]">
+          <div className="p-4 border-b border-[#1f2d4d] font-mono text-xs font-bold text-[#8A96A8] uppercase tracking-wider flex justify-between items-center">
             <span>CURRICULUM SYLLABUS</span>
-            <span className="text-[#EFFF4F]">{completedLessonIds.length} / {allLessons.length} DONE</span>
+            <span className="text-[#FCA311]">{completedLessonIds.length} / {allLessons.length} DONE</span>
           </div>
 
-          <div className="overflow-y-auto divide-y divide-[#3E3E43] flex-1">
+          <div className="overflow-y-auto divide-y divide-[#1f2d4d] flex-1">
             {course.modules.map((mod, modIdx) => {
               const modLessons = mod.chapters.flatMap((c) => c.lessons);
               const modCompleted = modLessons.filter((l) =>
@@ -369,8 +369,8 @@ export default function LearnPlayerPage() {
               return (
                 <div key={mod.id} className="p-3">
                   <div className="flex items-center justify-between font-mono text-xs font-bold text-white mb-2">
-                    <span className="text-[#5A5F70]">MODULE 0{modIdx + 1}</span>
-                    <span className={isModAllDone ? "text-[#EFFF4F]" : "text-[#5A5F70]"}>
+                    <span className="text-[#8A96A8]">MODULE 0{modIdx + 1}</span>
+                    <span className={isModAllDone ? "text-[#FCA311]" : "text-[#8A96A8]"}>
                       {isModAllDone ? "✓ 100%" : `${Math.round((modCompleted / modLessons.length) * 100 || 0)}%`}
                     </span>
                   </div>
@@ -387,21 +387,21 @@ export default function LearnPlayerPage() {
                           onClick={() => setActiveLessonId(les.id)}
                           className={`w-full text-left p-2 transition-colors flex items-center justify-between border ${
                             isCurrent
-                              ? "bg-[#EFFF4F]/10 border-[#EFFF4F]/30 text-white font-bold"
-                              : "border-transparent hover:bg-[#333336] text-[#5A5F70] hover:text-white"
+                              ? "bg-[#FCA311]/10 border-[#FCA311]/30 text-white font-bold"
+                              : "border-transparent hover:bg-[#1f2d4d] text-[#8A96A8] hover:text-white"
                           }`}
                         >
                           <div className="flex items-center gap-2 truncate">
                             {isDone ? (
-                              <CheckCircle2 className="w-3.5 h-3.5 text-[#EFFF4F] shrink-0" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#FCA311] shrink-0" />
                             ) : les.type === "quiz" ? (
-                              <HelpCircle className="w-3.5 h-3.5 text-[#EFFF4F] shrink-0" />
+                              <HelpCircle className="w-3.5 h-3.5 text-[#FCA311] shrink-0" />
                             ) : (
-                              <Play className="w-3.5 h-3.5 text-[#5A5F70] shrink-0" />
+                              <Play className="w-3.5 h-3.5 text-[#8A96A8] shrink-0" />
                             )}
                             <span className="truncate">{les.title}</span>
                           </div>
-                          <span className="text-[10px] text-[#5A5F70] shrink-0 ml-2">
+                          <span className="text-[10px] text-[#8A96A8] shrink-0 ml-2">
                             {les.durationMinutes}m
                           </span>
                         </button>
@@ -413,10 +413,10 @@ export default function LearnPlayerPage() {
             })}
           </div>
 
-          <div className="p-4 border-t border-[#3E3E43] bg-[#0C0E14] font-mono text-xs">
+          <div className="p-4 border-t border-[#1f2d4d] bg-[#000000] font-mono text-xs">
             <Link
               href={`/learn/${course.id}/quiz`}
-              className="w-full py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm"
+              className="w-full py-2.5 bg-[#FCA311] text-[#000000] font-bold hover:bg-[#FCA311]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm"
             >
               <HelpCircle className="w-4 h-4" />
               <span>GO TO ASSESSMENT QUIZ</span>

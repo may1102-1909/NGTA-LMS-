@@ -265,25 +265,25 @@ export default function ChallengePage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 font-sans selection:bg-[#EFFF4F] selection:text-[#28282B]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 font-sans selection:bg-[#FCA311] selection:text-[#000000]">
       {/* Top Header */}
-      <div className="border-b border-[#3E3E43] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-5">
+      <div className="border-b border-[#1f2d4d] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-5">
         <div className="space-y-2">
-          <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-amber-400/15 border border-amber-400/30 text-amber-400 font-bold text-[10px] flex items-center gap-1">
+          <div className="font-mono text-xs text-[#8A96A8] uppercase tracking-widest flex items-center gap-2">
+            <span className="px-2.5 py-0.5 bg-[#FCA311]/15 border border-[#FCA311]/30 text-[#FCA311] font-bold text-[10px] flex items-center gap-1">
               <Flame className="w-3 h-3 fill-current" />
               HIGH INTENSITY SDET GAUNTLET
             </span>
             <span>•</span>
-            <span className="text-[#A0A5B5]">DAY 12 ACTIVE</span>
+            <span className="text-[#E5E5E5]">DAY 12 ACTIVE</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight flex items-center gap-3">
             <span>30-DAY SELENIUM AUTOMATION SPRINT</span>
-            <Trophy className="w-8 h-8 text-amber-400 shrink-0" />
+            <Trophy className="w-8 h-8 text-[#FCA311] shrink-0" />
           </h1>
 
-          <p className="text-sm text-[#A0A5B5] max-w-3xl leading-relaxed">
+          <p className="text-sm text-[#E5E5E5] max-w-3xl leading-relaxed">
             Curated by Rahul Kamat to build production-grade SDET competencies through daily hands-on implementation challenges, TestNG architecture, and CI/CD pipelines.
           </p>
         </div>
@@ -292,10 +292,10 @@ export default function ChallengePage() {
           {/* Sound FX Toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 border border-[#3E3E43] bg-[#2E2E32] text-[#A0A5B5] hover:text-[#EFFF4F] transition-colors rounded-lg flex items-center gap-1.5"
+            className="p-2 border border-[#1f2d4d] bg-[#14213D] text-[#E5E5E5] hover:text-[#FCA311] transition-colors rounded-lg flex items-center gap-1.5"
             title={soundEnabled ? "Mute sound FX" : "Enable sound FX"}
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-[#EFFF4F]" /> : <VolumeX className="w-4 h-4" />}
+            {soundEnabled ? <Volume2 className="w-4 h-4 text-[#FCA311]" /> : <VolumeX className="w-4 h-4" />}
             <span className="text-[10px] hidden sm:inline">{soundEnabled ? "AUDIO ON" : "MUTED"}</span>
           </button>
 
@@ -306,17 +306,17 @@ export default function ChallengePage() {
               handleCompleteDay(30);
               setShowDay30Victory(true);
             }}
-            className="px-3 py-2 border-2 border-amber-400 bg-gradient-to-r from-amber-400/20 via-yellow-400/15 to-amber-500/20 text-amber-300 hover:text-white hover:bg-amber-400/30 font-bold uppercase transition-all rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.35)] flex items-center gap-1.5"
+            className="px-3 py-2 border-2 border-[#FCA311] bg-[#14213D] text-[#FCA311] hover:text-white hover:bg-[#FCA311]/20 font-bold uppercase transition-all rounded-lg shadow-[0_0_15px_rgba(252,163,17,0.35)] flex items-center gap-1.5"
             title="Demonstrate the giant warrior cartoon trophy animation covering the whole calendar"
           >
-            <Trophy className="w-3.5 h-3.5 text-amber-400 fill-current" />
+            <Trophy className="w-3.5 h-3.5 text-[#FCA311] fill-current" />
             <span className="hidden sm:inline">Test Day 30 Cartoon Trophy</span>
             <span className="sm:hidden">Day 30 Trophy</span>
           </button>
 
           <Link
             href="/leaderboard"
-            className="px-4 py-2 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-[#EFFF4F] hover:border-[#EFFF4F]/40 font-bold uppercase transition-colors rounded-lg shadow-sm"
+            className="px-4 py-2 border border-[#1f2d4d] bg-[#14213D] text-[#E5E5E5] hover:text-[#FCA311] hover:border-[#FCA311]/40 font-bold uppercase transition-colors rounded-lg shadow-sm"
           >
             View Leaderboard
           </Link>
@@ -326,15 +326,15 @@ export default function ChallengePage() {
       {/* Challenge Metrics Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
         {/* Status */}
-        <div className="border border-[#3E3E43] bg-[#2E2E32] p-4 rounded-xl space-y-1 shadow-card">
-          <div className="text-[10px] text-[#5A5F70] uppercase tracking-wider font-bold">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-4 rounded-xl space-y-1 shadow-card">
+          <div className="text-[10px] text-[#8A96A8] uppercase tracking-wider font-bold">
             SPRINT TRACKER
           </div>
-          <div className="text-xl sm:text-2xl font-black text-amber-400 flex items-center gap-1.5">
+          <div className="text-xl sm:text-2xl font-black text-[#FCA311] flex items-center gap-1.5">
             <span>DAY {selectedDay} / 30</span>
           </div>
-          <div className="text-[10px] text-[#A0A5B5] flex items-center gap-1">
-            <Clock className="w-3 h-3 text-amber-400" />
+          <div className="text-[10px] text-[#E5E5E5] flex items-center gap-1">
+            <Clock className="w-3 h-3 text-[#FCA311]" />
             <span>
               {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")} left today
             </span>
@@ -342,48 +342,48 @@ export default function ChallengePage() {
         </div>
 
         {/* Completion Progress */}
-        <div className="border border-[#3E3E43] bg-[#2E2E32] p-4 rounded-xl space-y-1 shadow-card">
-          <div className="text-[10px] text-[#5A5F70] uppercase tracking-wider font-bold">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-4 rounded-xl space-y-1 shadow-card">
+          <div className="text-[10px] text-[#8A96A8] uppercase tracking-wider font-bold">
             GAUNTLET PROGRESS
           </div>
-          <div className="text-xl sm:text-2xl font-black text-[#EFFF4F] flex items-center justify-between">
+          <div className="text-xl sm:text-2xl font-black text-[#FCA311] flex items-center justify-between">
             <span>{progressPercent}%</span>
-            <span className="text-xs font-normal text-[#A0A5B5]">
+            <span className="text-xs font-normal text-[#E5E5E5]">
               {completedCount}/{tasks.length} Days
             </span>
           </div>
-          <div className="w-full bg-[#18181A] h-1.5 rounded-full overflow-hidden border border-[#3E3E43]">
+          <div className="w-full bg-[#000000] h-1.5 rounded-full overflow-hidden border border-[#1f2d4d]">
             <div
-              className="bg-[#EFFF4F] h-full transition-all duration-500 rounded-full"
+              className="bg-[#FCA311] h-full transition-all duration-500 rounded-full"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
         </div>
 
         {/* Reputation Points */}
-        <div className="border border-[#3E3E43] bg-[#2E2E32] p-4 rounded-xl space-y-1 shadow-card">
-          <div className="text-[10px] text-[#5A5F70] uppercase tracking-wider font-bold">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-4 rounded-xl space-y-1 shadow-card">
+          <div className="text-[10px] text-[#8A96A8] uppercase tracking-wider font-bold">
             REPUTATION POINTS
           </div>
           <div className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-1">
             <Zap className="w-5 h-5 fill-current" />
             <span>+{totalPoints} PTS</span>
           </div>
-          <div className="text-[10px] text-[#A0A5B5]">
+          <div className="text-[10px] text-[#E5E5E5]">
             +{currentTask.pointsReward} PTS on Day {selectedDay}
           </div>
         </div>
 
         {/* Active Streak */}
-        <div className="border border-[#3E3E43] bg-[#2E2E32] p-4 rounded-xl space-y-1 shadow-card">
-          <div className="text-[10px] text-[#5A5F70] uppercase tracking-wider font-bold">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-4 rounded-xl space-y-1 shadow-card">
+          <div className="text-[10px] text-[#8A96A8] uppercase tracking-wider font-bold">
             ACTIVE STREAK
           </div>
           <div className="text-xl sm:text-2xl font-black text-orange-400 flex items-center gap-1.5">
             <Flame className="w-5 h-5 fill-orange-400 animate-pulse" />
             <span>{streakCount} DAYS</span>
           </div>
-          <div className="text-[10px] text-[#A0A5B5]">MULTIPLIER: 1.25x XP</div>
+          <div className="text-[10px] text-[#E5E5E5]">MULTIPLIER: 1.25x XP</div>
         </div>
       </div>
 
@@ -415,7 +415,7 @@ export default function ChallengePage() {
               <span className="font-bold text-white uppercase">
                 DAY {selectedDay} ACCREDITED & COMPLETED!
               </span>
-              <span className="text-[#A0A5B5] ml-2 font-sans text-[11px]">
+              <span className="text-[#E5E5E5] ml-2 font-sans text-[11px]">
                 Checkmark animation stamped on the calendar. +{currentTask.pointsReward} PTS earned!
               </span>
             </div>
@@ -423,7 +423,7 @@ export default function ChallengePage() {
 
           <button
             onClick={() => handleResetDay(selectedDay)}
-            className="px-3 py-1 bg-[#202023] hover:bg-[#28282B] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded text-[11px] font-bold transition-colors flex items-center gap-1 shrink-0"
+            className="px-3 py-1 bg-[#14213D] hover:bg-[#1f2d4d] text-[#E5E5E5] hover:text-white border border-[#1f2d4d] rounded text-[11px] font-bold transition-colors flex items-center gap-1 shrink-0"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Replay Date Animation</span>
@@ -434,18 +434,18 @@ export default function ChallengePage() {
       {/* ======================================================== */}
       {/* SELECTED DAY ACTIVE CHALLENGE WORKBENCH                  */}
       {/* ======================================================== */}
-      <div className="border border-amber-400/50 bg-gradient-to-br from-[#2D2D31] via-[#262629] to-[#1E1E22] p-6 sm:p-8 rounded-xl shadow-card space-y-6">
+      <div className="border border-[#FCA311]/50 bg-gradient-to-br from-[#14213D] via-[#0d172a] to-[#000000] p-6 sm:p-8 rounded-xl shadow-card space-y-6">
         {/* Active Task Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#3E3E43] pb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#1f2d4d] pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="px-2.5 py-0.5 bg-amber-400 text-[#28282B] font-black uppercase text-[10px] rounded flex items-center gap-1">
+              <span className="px-2.5 py-0.5 bg-[#FCA311] text-[#000000] font-black uppercase text-[10px] rounded flex items-center gap-1">
                 <Flame className="w-3 h-3 fill-current" />
                 DAY {selectedDay} SPRINT
               </span>
-              <span className="text-[#A0A5B5] text-[11px]">• Estimated time: 45 min</span>
-              <span className="text-[#5A5F70]">•</span>
-              <span className={currentTask.isCompleted ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
+              <span className="text-[#E5E5E5] text-[11px]">• Estimated time: 45 min</span>
+              <span className="text-[#8A96A8]">•</span>
+              <span className={currentTask.isCompleted ? "text-emerald-400 font-bold" : "text-[#FCA311] font-bold"}>
                 {currentTask.isCompleted ? "✔ COMPLETED ON CALENDAR" : "⌛ UNRESOLVED"}
               </span>
             </div>
@@ -459,15 +459,15 @@ export default function ChallengePage() {
                   handleCompleteDay(30);
                   setShowDay30Victory(true);
                 }}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:scale-105 transition-all"
+                className="px-3.5 py-1.5 bg-[#FCA311] text-[#000000] font-black text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(252,163,17,0.5)] hover:scale-105 transition-all"
               >
-                <Trophy className="w-4 h-4 fill-current shrink-0 text-[#18181B]" />
+                <Trophy className="w-4 h-4 fill-current shrink-0 text-[#000000]" />
                 <span>DAY 30 CAPSTONE: LAUNCH GIANT TROPHY CEREMONY 🏆</span>
               </button>
             ) : selectedDay === 15 ? (
-              <span className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400/25 via-yellow-400/20 to-amber-500/25 border-2 border-amber-400 text-amber-300 font-bold text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.35)]">
-                <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
-                <Gift className="w-4 h-4 text-yellow-300 animate-bounce shrink-0" />
+              <span className="px-3.5 py-1.5 bg-[#14213D] border-2 border-[#FCA311] text-[#FCA311] font-bold text-xs flex items-center gap-2 rounded-lg shadow-[0_0_20px_rgba(252,163,17,0.35)]">
+                <Trophy className="w-4 h-4 text-[#FCA311] shrink-0" />
+                <Gift className="w-4 h-4 text-[#FCA311] animate-bounce shrink-0" />
                 <span>HALFWAY MILESTONE: +{currentTask.pointsReward} PTS & POM ARCHITECT GIFT 🎁</span>
               </span>
             ) : (
@@ -486,12 +486,12 @@ export default function ChallengePage() {
             {/* Objective */}
             <div className="space-y-2">
               <h3 className="font-bold text-white uppercase font-mono text-xs tracking-wider flex items-center gap-2">
-                <Code className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                <Code className="w-3.5 h-3.5 text-[#FCA311]" />
                 <span>CHALLENGE OBJECTIVE:</span>
               </h3>
-              <p className="text-[#A0A5B5] leading-relaxed bg-[#202023] p-4 border border-[#3E3E43] rounded-lg">
+              <p className="text-[#E5E5E5] leading-relaxed bg-[#000000] p-4 border border-[#1f2d4d] rounded-lg">
                 Connect your Selenium automation suite to an external Apache POI Excel workbook. Create a dynamic TestNG{" "}
-                <code className="text-[#EFFF4F] bg-[#18181B] px-1.5 py-0.5 rounded border border-[#3E3E43] font-mono">
+                <code className="text-[#FCA311] bg-[#14213D] px-1.5 py-0.5 rounded border border-[#1f2d4d] font-mono">
                   @DataProvider
                 </code>{" "}
                 that iterates through rows, feeds test sets into your login and checkout test methods, and logs results with ThreadLocal isolation.
@@ -505,7 +505,7 @@ export default function ChallengePage() {
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   <span>ACCEPTANCE CRITERIA:</span>
                 </h3>
-                <span className="text-[11px] text-[#EFFF4F] font-bold">
+                <span className="text-[11px] text-[#FCA311] font-bold">
                   {criteriaCompletedCount}/4 COMPLETED
                 </span>
               </div>
@@ -520,15 +520,15 @@ export default function ChallengePage() {
                       className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                         isDone
                           ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-                          : "border-[#3E3E43] bg-[#202023] text-[#A0A5B5] hover:border-[#5A5F70]"
+                          : "border-[#1f2d4d] bg-[#000000] text-[#E5E5E5] hover:border-[#8A96A8]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <div
                           className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
                             isDone
-                              ? "bg-emerald-500 border-emerald-500 text-[#28282B]"
-                              : "border-[#5A5F70] bg-[#28282B]"
+                              ? "bg-emerald-500 border-emerald-500 text-[#000000]"
+                              : "border-[#8A96A8] bg-[#000000]"
                           }`}
                         >
                           {isDone && <Check className="w-3 h-3 stroke-[3]" />}
@@ -548,14 +548,14 @@ export default function ChallengePage() {
 
             {/* Command Snippet with Copy */}
             {currentTask.commandSnippet && (
-              <div className="p-3 bg-[#18181A] border border-[#3E3E43] rounded-lg font-mono text-xs flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 overflow-x-auto text-[#EFFF4F]">
-                  <Terminal className="w-3.5 h-3.5 shrink-0 text-[#A0A5B5]" />
+              <div className="p-3 bg-[#000000] border border-[#1f2d4d] rounded-lg font-mono text-xs flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 overflow-x-auto text-[#FCA311]">
+                  <Terminal className="w-3.5 h-3.5 shrink-0 text-[#E5E5E5]" />
                   <code>{currentTask.commandSnippet}</code>
                 </div>
                 <button
                   onClick={() => copyCode(currentTask.commandSnippet || "")}
-                  className="px-2 py-1 bg-[#28282B] hover:bg-[#333336] text-[#A0A5B5] hover:text-white border border-[#3E3E43] rounded text-[10px] shrink-0 flex items-center gap-1"
+                  className="px-2 py-1 bg-[#000000] hover:bg-[#14213D] text-[#E5E5E5] hover:text-white border border-[#1f2d4d] rounded text-[10px] shrink-0 flex items-center gap-1"
                 >
                   {copiedCode ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedCode ? "COPIED" : "COPY"}</span>
@@ -565,13 +565,13 @@ export default function ChallengePage() {
           </div>
 
           {/* Right Column: Submission Form & Interactive Triggers */}
-          <div className="lg:col-span-5 border border-[#3E3E43] bg-[#202023] p-5 sm:p-6 rounded-xl space-y-5">
+          <div className="lg:col-span-5 border border-[#1f2d4d] bg-[#14213D] p-5 sm:p-6 rounded-xl space-y-5">
             <div className="font-mono text-xs font-bold text-white uppercase flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Code className="w-4 h-4 text-[#EFFF4F]" />
+                <Code className="w-4 h-4 text-[#FCA311]" />
                 <span>SUBMIT DAILY WORK</span>
               </span>
-              <span className="text-[10px] text-amber-400 font-bold">DAY {selectedDay}</span>
+              <span className="text-[10px] text-[#FCA311] font-bold">DAY {selectedDay}</span>
             </div>
 
             {currentTask.isCompleted ? (
@@ -580,7 +580,7 @@ export default function ChallengePage() {
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Day {selectedDay} Marked as Completed!</span>
                 </div>
-                <p className="text-[11px] text-[#A0A5B5] font-sans">
+                <p className="text-[11px] text-[#E5E5E5] font-sans">
                   The respective date on the calendar has been verified and stamped. +{currentTask.pointsReward} PTS accredited.
                 </p>
 
@@ -595,7 +595,7 @@ export default function ChallengePage() {
                     </button>
                     <button
                       onClick={() => handleResetDay(selectedDay)}
-                      className="p-2 border border-[#3E3E43] bg-[#28282B] text-[#A0A5B5] hover:text-white rounded"
+                      className="p-2 border border-[#1f2d4d] bg-[#000000] text-[#E5E5E5] hover:text-white rounded"
                       title="Reset to incomplete"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
@@ -605,9 +605,9 @@ export default function ChallengePage() {
                   {selectedDay === 30 && (
                     <button
                       onClick={() => setShowDay30Victory(true)}
-                      className="w-full py-2.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#18181B] font-black rounded flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:brightness-110 transition-all text-xs uppercase"
+                      className="w-full py-2.5 bg-[#FCA311] text-[#000000] font-black rounded flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(252,163,17,0.5)] hover:brightness-110 transition-all text-xs uppercase"
                     >
-                      <Trophy className="w-4 h-4 fill-current text-[#18181B]" />
+                      <Trophy className="w-4 h-4 fill-current text-[#000000]" />
                       <span>View Giant Warrior Trophy Stage (Whole Calendar)</span>
                     </button>
                   )}
@@ -616,7 +616,7 @@ export default function ChallengePage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="text-[10px] text-[#A0A5B5] uppercase block mb-1">
+                  <label className="text-[10px] text-[#E5E5E5] uppercase block mb-1">
                     GitHub PR or Repository Link
                   </label>
                   <input
@@ -624,21 +624,21 @@ export default function ChallengePage() {
                     value={submissionUrl}
                     onChange={(e) => setSubmissionUrl(e.target.value)}
                     placeholder="https://github.com/username/sdet-day-12..."
-                    className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] text-white placeholder:text-[#5A5F70] focus:outline-none focus:border-[#EFFF4F] rounded text-xs"
+                    className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#000000] text-white placeholder:text-[#8A96A8] focus:outline-none focus:border-[#FCA311] rounded text-xs"
                   />
                 </div>
 
                 {/* Primary Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#EFFF4F] text-[#28282B] font-black uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm rounded"
+                  className="w-full py-2.5 bg-[#FCA311] text-[#000000] font-black uppercase hover:bg-[#FCA311]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm rounded"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Submit & Complete Day {selectedDay} (+{currentTask.pointsReward} PTS)</span>
                 </button>
 
                 {/* Direct 1-Click Mark Done Button */}
-                <div className="pt-2 border-t border-[#3E3E43]/60 space-y-1.5">
+                <div className="pt-2 border-t border-[#1f2d4d]/60 space-y-1.5">
                   <button
                     type="button"
                     onClick={() => handleCompleteDay(selectedDay)}
@@ -647,7 +647,7 @@ export default function ChallengePage() {
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     <span>✔ Mark Day {selectedDay} as Completed (+{currentTask.pointsReward} PTS)</span>
                   </button>
-                  <p className="text-[10px] text-[#A0A5B5] text-center font-sans">
+                  <p className="text-[10px] text-[#E5E5E5] text-center font-sans">
                     💡 Or simply click on Day {selectedDay}&apos;s date on the calendar above to mark it done!
                   </p>
                 </div>
@@ -660,17 +660,17 @@ export default function ChallengePage() {
       {/* Bottom Telemetry & Milestone Badges */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: 4 Milestone Badges */}
-        <div className="lg:col-span-6 border border-[#3E3E43] bg-[#2E2E32] p-5 sm:p-6 rounded-xl shadow-card space-y-4 font-mono text-xs">
-          <div className="border-b border-[#3E3E43] pb-3 flex justify-between items-center">
+        <div className="lg:col-span-6 border border-[#1f2d4d] bg-[#14213D] p-5 sm:p-6 rounded-xl shadow-card space-y-4 font-mono text-xs">
+          <div className="border-b border-[#1f2d4d] pb-3 flex justify-between items-center">
             <div>
-              <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
+              <div className="text-[10px] text-[#8A96A8] uppercase tracking-widest">
                 CREDENTIALS & MILESTONES
               </div>
               <h3 className="text-base font-black text-white uppercase tracking-tight">
                 VERIFIABLE GAUNTLET BADGES
               </h3>
             </div>
-            <Award className="w-5 h-5 text-amber-400" />
+            <Award className="w-5 h-5 text-[#FCA311]" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -681,54 +681,54 @@ export default function ChallengePage() {
               <div className="text-[9px] text-emerald-300">✔ UNLOCKED</div>
             </div>
 
-            <div className="p-3 border-2 border-amber-400/60 bg-gradient-to-b from-amber-400/15 via-amber-400/5 to-transparent rounded-lg space-y-1 text-center shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+            <div className="p-3 border-2 border-[#FCA311]/60 bg-[#000000] rounded-lg space-y-1 text-center shadow-[0_0_15px_rgba(252,163,17,0.2)]">
               <div className="text-xl flex items-center justify-center gap-1">
                 <span>🏆</span>
                 <span>🎁</span>
               </div>
               <div className="font-bold text-white text-xs">Day 15 Halfway Gift</div>
-              <div className="text-[10px] text-amber-400 font-black">+50 PTS & POM ARCHITECT</div>
-              <div className="text-[9px] text-amber-300 font-mono">3 DAYS REMAINING</div>
+              <div className="text-[10px] text-[#FCA311] font-black">+50 PTS & POM ARCHITECT</div>
+              <div className="text-[9px] text-[#FCA311] font-mono">3 DAYS REMAINING</div>
             </div>
 
-            <div className="p-3 border border-[#3E3E43] bg-[#242427] rounded-lg space-y-1 text-center opacity-70">
+            <div className="p-3 border border-[#1f2d4d] bg-[#000000] rounded-lg space-y-1 text-center opacity-70">
               <div className="text-xl">🐳</div>
               <div className="font-bold text-white text-xs">Day 22 Milestone</div>
-              <div className="text-[10px] text-[#A0A5B5] font-bold">GRID & DOCKER</div>
-              <div className="text-[9px] text-[#5A5F70]">LOCKED</div>
+              <div className="text-[10px] text-[#E5E5E5] font-bold">GRID & DOCKER</div>
+              <div className="text-[9px] text-[#8A96A8]">LOCKED</div>
             </div>
 
-            <div className="p-3 border border-[#3E3E43] bg-[#242427] rounded-lg space-y-1 text-center opacity-70">
+            <div className="p-3 border border-[#1f2d4d] bg-[#000000] rounded-lg space-y-1 text-center opacity-70">
               <div className="text-xl">🏆</div>
               <div className="font-bold text-white text-xs">Day 30 Capstone</div>
-              <div className="text-[10px] text-[#A0A5B5] font-bold">SDET LEAD ARCHITECT</div>
-              <div className="text-[9px] text-[#5A5F70]">FINAL AUDIT</div>
+              <div className="text-[10px] text-[#E5E5E5] font-bold">SDET LEAD ARCHITECT</div>
+              <div className="text-[9px] text-[#8A96A8]">FINAL AUDIT</div>
             </div>
           </div>
         </div>
 
         {/* Right Column: Live Community Telemetry Feed */}
-        <div className="lg:col-span-6 border border-[#3E3E43] bg-[#2E2E32] p-5 sm:p-6 rounded-xl shadow-card space-y-4 font-mono text-xs">
-          <div className="border-b border-[#3E3E43] pb-3 flex justify-between items-center">
+        <div className="lg:col-span-6 border border-[#1f2d4d] bg-[#14213D] p-5 sm:p-6 rounded-xl shadow-card space-y-4 font-mono text-xs">
+          <div className="border-b border-[#1f2d4d] pb-3 flex justify-between items-center">
             <div>
-              <div className="text-[10px] text-[#5A5F70] uppercase tracking-widest">
+              <div className="text-[10px] text-[#8A96A8] uppercase tracking-widest">
                 COMMUNITY TELEMETRY
               </div>
               <h3 className="text-base font-black text-white uppercase tracking-tight flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#EFFF4F]" />
+                <Users className="w-4 h-4 text-[#FCA311]" />
                 <span>RECENT SPRINT SUBMISSIONS</span>
               </h3>
             </div>
-            <span className="text-[10px] px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] font-bold rounded">
+            <span className="text-[10px] px-2 py-0.5 bg-[#FCA311]/10 border border-[#FCA311]/30 text-[#FCA311] font-bold rounded">
               LIVE
             </span>
           </div>
 
-          <div className="divide-y divide-[#3E3E43] space-y-2 text-xs">
+          <div className="divide-y divide-[#1f2d4d] space-y-2 text-xs">
             <div className="pt-2 flex items-center justify-between">
               <div>
                 <span className="font-bold text-white">Vikram Verma</span>
-                <span className="text-[#A0A5B5] text-[10px] ml-1.5">passed Day 12 with POI Excel</span>
+                <span className="text-[#E5E5E5] text-[10px] ml-1.5">passed Day 12 with POI Excel</span>
               </div>
               <span className="text-emerald-400 font-bold">+35 PTS</span>
             </div>
@@ -736,7 +736,7 @@ export default function ChallengePage() {
             <div className="pt-2 flex items-center justify-between">
               <div>
                 <span className="font-bold text-white">Priya Nair</span>
-                <span className="text-[#A0A5B5] text-[10px] ml-1.5">achieved 14-day streak bonus</span>
+                <span className="text-[#E5E5E5] text-[10px] ml-1.5">achieved 14-day streak bonus</span>
               </div>
               <span className="text-orange-400 font-bold">14d 🔥</span>
             </div>
@@ -744,7 +744,7 @@ export default function ChallengePage() {
             <div className="pt-2 flex items-center justify-between">
               <div>
                 <span className="font-bold text-white">Rohit Iyer</span>
-                <span className="text-[#A0A5B5] text-[10px] ml-1.5">submitted ThreadLocal PR</span>
+                <span className="text-[#E5E5E5] text-[10px] ml-1.5">submitted ThreadLocal PR</span>
               </div>
               <span className="text-emerald-400 font-bold">+25 PTS</span>
             </div>

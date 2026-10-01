@@ -87,20 +87,20 @@ export default function SettingsPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
       {/* Header */}
-      <div className="border-b border-[#3E3E43] pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <div className="border-b border-[#1f2d4d] pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1 flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] font-bold text-[10px]">
+          <div className="font-mono text-xs text-[#8A96A8] uppercase tracking-widest mb-1 flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-[#FCA311]/10 border border-[#FCA311]/30 text-[#FCA311] font-bold text-[10px]">
               ACCOUNT CONFIGURATION
             </span>
             <span>•</span>
-            <span className="text-[#A0A5B5]">STUDENT PROFILE</span>
+            <span className="text-[#E5E5E5]">STUDENT PROFILE</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight flex items-center gap-3">
             <span>SETTINGS & PROFILE</span>
-            <Settings className="w-8 h-8 text-[#EFFF4F] shrink-0" />
+            <Settings className="w-8 h-8 text-[#FCA311] shrink-0" />
           </h1>
-          <p className="text-sm text-[#A0A5B5] mt-2 max-w-2xl">
+          <p className="text-sm text-[#E5E5E5] mt-2 max-w-2xl">
             Manage your personal profile details, learning streak preferences, public registry verification handle, and notification options.
           </p>
         </div>
@@ -108,7 +108,7 @@ export default function SettingsPage() {
         <div className="flex items-center gap-3 font-mono text-xs">
           <Link
             href="/dashboard"
-            className="px-4 py-2 border border-[#3E3E43] bg-[#333336] text-[#A0A5B5] hover:text-[#EFFF4F] hover:border-[#EFFF4F]/40 font-bold uppercase transition-colors"
+            className="px-4 py-2 border border-[#1f2d4d] bg-[#14213D] text-[#E5E5E5] hover:text-[#FCA311] hover:border-[#FCA311]/40 font-bold uppercase transition-colors"
           >
             Back to Dashboard
           </Link>
@@ -116,13 +116,13 @@ export default function SettingsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border border-[#3E3E43] bg-[#333336] font-mono text-xs font-bold w-fit">
+      <div className="flex border border-[#1f2d4d] bg-[#14213D] font-mono text-xs font-bold w-fit">
         <button
           onClick={() => setActiveTab("PROFILE")}
           className={`px-4 py-2 uppercase transition-colors flex items-center gap-2 ${
             activeTab === "PROFILE"
-              ? "bg-[#EFFF4F] text-[#28282B]"
-              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
+              ? "bg-[#FCA311] text-[#000000]"
+              : "text-[#E5E5E5] hover:bg-[#1f2d4d]"
           }`}
         >
           <User className="w-3.5 h-3.5" />
@@ -130,10 +130,10 @@ export default function SettingsPage() {
         </button>
         <button
           onClick={() => setActiveTab("PREFERENCES")}
-          className={`px-4 py-2 uppercase border-l border-[#3E3E43] transition-colors flex items-center gap-2 ${
+          className={`px-4 py-2 uppercase border-l border-[#1f2d4d] transition-colors flex items-center gap-2 ${
             activeTab === "PREFERENCES"
-              ? "bg-[#EFFF4F] text-[#28282B]"
-              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
+              ? "bg-[#FCA311] text-[#000000]"
+              : "text-[#E5E5E5] hover:bg-[#1f2d4d]"
           }`}
         >
           <Bell className="w-3.5 h-3.5" />
@@ -141,10 +141,10 @@ export default function SettingsPage() {
         </button>
         <button
           onClick={() => setActiveTab("SECURITY")}
-          className={`px-4 py-2 uppercase border-l border-[#3E3E43] transition-colors flex items-center gap-2 ${
+          className={`px-4 py-2 uppercase border-l border-[#1f2d4d] transition-colors flex items-center gap-2 ${
             activeTab === "SECURITY"
-              ? "bg-[#EFFF4F] text-[#28282B]"
-              : "text-[#A0A5B5] hover:bg-[#3E3E43]"
+              ? "bg-[#FCA311] text-[#000000]"
+              : "text-[#E5E5E5] hover:bg-[#1f2d4d]"
           }`}
         >
           <Shield className="w-3.5 h-3.5" />
@@ -155,16 +155,16 @@ export default function SettingsPage() {
       {/* Tab 1: Profile Details */}
       {activeTab === "PROFILE" && (
         <form onSubmit={handleSave} className="space-y-6">
-          <div className="border border-[#3E3E43] bg-[#333336] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
-            <div className="border-b border-[#3E3E43] pb-3 flex items-center justify-between">
+          <div className="border border-[#1f2d4d] bg-[#14213D] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
+            <div className="border-b border-[#1f2d4d] pb-3 flex items-center justify-between">
               <h3 className="font-bold text-white uppercase text-sm">PERSONAL INFORMATION</h3>
-              <span className="text-[10px] text-[#EFFF4F]">VERIFIED LEARNER</span>
+              <span className="text-[10px] text-[#FCA311]">VERIFIED LEARNER</span>
             </div>
 
             {/* 3D Student Persona Banner */}
-            <div className="p-4 bg-[#202023] border border-white/10 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="p-4 bg-[#000000] border border-[#1f2d4d] rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-[#EFFF4F] bg-neutral-900 shrink-0 shadow-lemon-sm">
+                <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-[#FCA311] bg-neutral-900 shrink-0 shadow-lemon-sm">
                   <Image
                     src={avatarUrl}
                     alt="Persona"
@@ -178,11 +178,11 @@ export default function SettingsPage() {
                     <span className="font-bold text-white text-sm font-mono">
                       @{handle || "learner"}
                     </span>
-                    <span className="px-2 py-0.5 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] text-[10px] font-mono font-bold uppercase rounded">
+                    <span className="px-2 py-0.5 bg-[#FCA311]/10 border border-[#FCA311]/30 text-[#FCA311] text-[10px] font-mono font-bold uppercase rounded">
                       Gamer Persona
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A0A5B5] font-sans">
+                  <p className="text-[11px] text-[#E5E5E5] font-sans">
                     Your custom 3D avatar & homies username across all LMS threads and leaderboards.
                   </p>
                 </div>
@@ -191,7 +191,7 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new CustomEvent("open-student-onboarding"))}
-                className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 font-mono text-xs uppercase font-bold transition-all shadow-lemon-sm rounded-lg shrink-0 cursor-pointer"
+                className="px-4 py-2 bg-[#FCA311] text-[#000000] hover:bg-[#FCA311]/90 font-mono text-xs uppercase font-bold transition-all shadow-lemon-sm rounded-lg shrink-0 cursor-pointer"
               >
                 Change Persona
               </button>
@@ -199,45 +199,45 @@ export default function SettingsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] text-[#A0A5B5] uppercase block">Full Name</label>
+                <label className="text-[10px] text-[#E5E5E5] uppercase block">Full Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]"
+                  className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#000000] text-white focus:outline-none focus:border-[#FCA311]"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-[#A0A5B5] uppercase block">Candidate Handle</label>
+                <label className="text-[10px] text-[#E5E5E5] uppercase block">Candidate Handle</label>
                 <div className="flex">
-                  <span className="px-3 py-2 border border-r-0 border-[#3E3E43] bg-[#202023] text-[#5A5F70]">@</span>
+                  <span className="px-3 py-2 border border-r-0 border-[#1f2d4d] bg-[#14213D] text-[#8A96A8]">@</span>
                   <input
                     type="text"
                     value={handle}
                     onChange={(e) => setHandle(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]"
+                    className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#000000] text-white focus:outline-none focus:border-[#FCA311]"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-[10px] text-[#A0A5B5] uppercase block">Email Address</label>
+                <label className="text-[10px] text-[#E5E5E5] uppercase block">Email Address</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]"
+                  className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#000000] text-white focus:outline-none focus:border-[#FCA311]"
                 />
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-[10px] text-[#A0A5B5] uppercase block">Bio & Learning Goals</label>
+                <label className="text-[10px] text-[#E5E5E5] uppercase block">Bio & Learning Goals</label>
                 <textarea
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F] font-sans text-xs"
+                  className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#000000] text-white focus:outline-none focus:border-[#FCA311] font-sans text-xs"
                 />
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function SettingsPage() {
 
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold uppercase hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
+                className="px-5 py-2.5 bg-[#FCA311] text-[#000000] font-bold uppercase hover:bg-[#FCA311]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Changes</span>
@@ -265,40 +265,40 @@ export default function SettingsPage() {
 
       {/* Tab 2: Preferences */}
       {activeTab === "PREFERENCES" && (
-        <div className="border border-[#3E3E43] bg-[#333336] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
-          <div className="border-b border-[#3E3E43] pb-3">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
+          <div className="border-b border-[#1f2d4d] pb-3">
             <h3 className="font-bold text-white uppercase text-sm">LEARNING CADENCE & NOTIFICATIONS</h3>
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 border border-[#3E3E43] bg-[#28282B]">
+            <div className="flex items-center justify-between p-3 border border-[#1f2d4d] bg-[#000000]">
               <div>
                 <div className="font-bold text-white">Daily Streak Reminder</div>
-                <div className="text-[11px] text-[#A0A5B5] font-sans">
+                <div className="text-[11px] text-[#E5E5E5] font-sans">
                   Send reminder notification at 7:00 PM IST if no lesson completed.
                 </div>
               </div>
-              <input type="checkbox" defaultChecked className="accent-[#EFFF4F] w-4 h-4 cursor-pointer" />
+              <input type="checkbox" defaultChecked className="accent-[#FCA311] w-4 h-4 cursor-pointer" />
             </div>
 
-            <div className="flex items-center justify-between p-3 border border-[#3E3E43] bg-[#28282B]">
+            <div className="flex items-center justify-between p-3 border border-[#1f2d4d] bg-[#000000]">
               <div>
                 <div className="font-bold text-white">Live Workshop Alerts</div>
-                <div className="text-[11px] text-[#A0A5B5] font-sans">
+                <div className="text-[11px] text-[#E5E5E5] font-sans">
                   Receive email invites 1 hour before live weekend bootcamp sessions start.
                 </div>
               </div>
-              <input type="checkbox" defaultChecked className="accent-[#EFFF4F] w-4 h-4 cursor-pointer" />
+              <input type="checkbox" defaultChecked className="accent-[#FCA311] w-4 h-4 cursor-pointer" />
             </div>
 
-            <div className="flex items-center justify-between p-3 border border-[#3E3E43] bg-[#28282B]">
+            <div className="flex items-center justify-between p-3 border border-[#1f2d4d] bg-[#000000]">
               <div>
                 <div className="font-bold text-white">Community Discussion Mentions</div>
-                <div className="text-[11px] text-[#A0A5B5] font-sans">
+                <div className="text-[11px] text-[#E5E5E5] font-sans">
                   Notify when instructors or peers reply to your code review queries.
                 </div>
               </div>
-              <input type="checkbox" defaultChecked className="accent-[#EFFF4F] w-4 h-4 cursor-pointer" />
+              <input type="checkbox" defaultChecked className="accent-[#FCA311] w-4 h-4 cursor-pointer" />
             </div>
           </div>
         </div>
@@ -306,23 +306,23 @@ export default function SettingsPage() {
 
       {/* Tab 3: Security & Integrations */}
       {activeTab === "SECURITY" && (
-        <div className="border border-[#3E3E43] bg-[#333336] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
-          <div className="border-b border-[#3E3E43] pb-3">
+        <div className="border border-[#1f2d4d] bg-[#14213D] p-6 space-y-5 rounded-lg shadow-card font-mono text-xs">
+          <div className="border-b border-[#1f2d4d] pb-3">
             <h3 className="font-bold text-white uppercase text-sm">GITHUB & API INTEGRATIONS</h3>
           </div>
 
           <div className="space-y-4">
-            <div className="p-4 border border-[#3E3E43] bg-[#28282B] space-y-3">
+            <div className="p-4 border border-[#1f2d4d] bg-[#000000] space-y-3">
               <div className="flex items-center gap-2 text-white font-bold">
-                <Code className="w-4 h-4 text-[#EFFF4F]" />
+                <Code className="w-4 h-4 text-[#FCA311]" />
                 <span>GitHub Personal Access Token (For Automated PR Grading)</span>
               </div>
               <input
                 type="password"
                 defaultValue="ghp_************************************"
-                className="w-full px-3 py-2 border border-[#3E3E43] bg-[#202023] text-white focus:outline-none focus:border-[#EFFF4F]"
+                className="w-full px-3 py-2 border border-[#1f2d4d] bg-[#14213D] text-white focus:outline-none focus:border-[#FCA311]"
               />
-              <p className="text-[11px] text-[#5A5F70] font-sans">
+              <p className="text-[11px] text-[#8A96A8] font-sans">
                 Used strictly by the automated code grader to check test pass rates and report generator artifacts.
               </p>
             </div>

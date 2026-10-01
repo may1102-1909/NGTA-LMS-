@@ -20,17 +20,17 @@ export default function CredentialCard({
     <div
       className={`p-5 font-mono text-xs space-y-3 transition-all ${
         isCertificate
-          ? "border border-[#EFFF4F]/30 bg-[#333336] shadow-lemon-sm"
-          : "border border-dashed border-[#3E3E43] bg-[#28282B]"
+          ? "border border-[#FCA311]/40 bg-[#14213D] shadow-lemon-sm"
+          : "border border-dashed border-[#1f2d4d] bg-[#000000]"
       } ${className}`}
     >
       {/* Card Header & Status Stamp */}
-      <div className="flex items-start justify-between gap-3 border-b border-[#3E3E43] pb-2.5">
+      <div className="flex items-start justify-between gap-3 border-b border-[#1f2d4d] pb-2.5">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span
               className={`text-[10px] font-bold uppercase tracking-wider ${
-                isCertificate ? "text-[#EFFF4F]" : "text-[#5A5F70]"
+                isCertificate ? "text-[#FCA311]" : "text-[#8A96A8]"
               }`}
             >
               {isCertificate
@@ -38,7 +38,7 @@ export default function CredentialCard({
                 : "SKILL BADGE"}
             </span>
           </div>
-          <div className="text-[11px] text-[#5A5F70] font-mono">
+          <div className="text-[11px] text-[#8A96A8] font-mono">
             ID: {credential.code}
           </div>
         </div>
@@ -47,8 +47,8 @@ export default function CredentialCard({
         <div
           className={`p-1.5 border ${
             isCertificate
-              ? "border-[#EFFF4F]/30 bg-[#EFFF4F]/10 text-[#EFFF4F]"
-              : "border-dashed border-[#3E3E43] bg-[#333336] text-[#5A5F70]"
+              ? "border-[#FCA311]/30 bg-[#FCA311]/10 text-[#FCA311]"
+              : "border-dashed border-[#1f2d4d] bg-[#14213D] text-[#8A96A8]"
           }`}
         >
           {isCertificate ? (
@@ -64,13 +64,13 @@ export default function CredentialCard({
         <h4 className="font-bold text-sm text-white uppercase tracking-tight leading-snug">
           {credential.title}
         </h4>
-        <p className="text-[11px] text-[#A0A5B5] font-sans leading-relaxed">
+        <p className="text-[11px] text-[#E5E5E5] font-sans leading-relaxed">
           {credential.description}
         </p>
       </div>
 
       {/* Metadata Footprint */}
-      <div className="pt-2 border-t border-[#3E3E43] flex items-center justify-between text-[10px] text-[#5A5F70] tabular-nums">
+      <div className="pt-2 border-t border-[#1f2d4d] flex items-center justify-between text-[10px] text-[#8A96A8] tabular-nums">
         <div>
           ISSUED: <span className="font-semibold text-white">{credential.issuedAt}</span>
         </div>
@@ -78,13 +78,13 @@ export default function CredentialCard({
         {isCertificate && credential.verificationId ? (
           <Link
             href={`/verify?certId=${credential.verificationId}`}
-            className="text-[#EFFF4F] hover:underline font-bold flex items-center gap-1 uppercase"
+            className="text-[#FCA311] hover:underline font-bold flex items-center gap-1 uppercase"
           >
             <span>Verify in Registry</span>
             <ExternalLink className="w-3 h-3" />
           </Link>
         ) : (
-          <span className="text-[#5A5F70] uppercase font-bold tracking-wider">
+          <span className="text-[#8A96A8] uppercase font-bold tracking-wider">
             {credential.tier || "COMPETENCY VERIFIED"}
           </span>
         )}

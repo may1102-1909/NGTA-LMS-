@@ -8,15 +8,17 @@
   :root {
     --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
-    --night-base: #28282B;
-    --night-card: #333336;
-    --night-border: #3E3E43;
-    --night-hover: #48484E;
-    --lemon: #EFFF4F;
-    --lemon-dim: rgba(239, 255, 79, 0.15);
+    --night-base: #000000;
+    --night-card: #14213D;
+    --night-border: #1f2d4d;
+    --night-hover: #1c2b4d;
+    --lemon: #FCA311;
+    --lemon-dim: rgba(252, 163, 17, 0.15);
+    --gold: #FCA311;
+    --navy: #14213D;
     --text-primary: #FFFFFF;
-    --text-muted: #A0A5B5;
-    --text-faint: #5A5F70;
+    --text-muted: #E5E5E5;
+    --text-faint: #8A96A8;
   }
 
   body {
@@ -33,8 +35,8 @@
   }
 
   ::selection {
-    background-color: #EFFF4F;
-    color: #28282B;
+    background-color: #FCA311;
+    color: #000000;
   }
 
   /* Smooth scrollbar for dark theme */
@@ -63,15 +65,15 @@
   .night-card-elevated {
     background-color: var(--night-card);
     border: 1px solid var(--night-border);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
   }
 
   .lemon-glow {
-    box-shadow: 0 0 30px rgba(239, 255, 79, 0.35);
+    box-shadow: 0 0 30px rgba(252, 163, 17, 0.45);
   }
 
   .lemon-glow-sm {
-    box-shadow: 0 0 12px rgba(239, 255, 79, 0.12);
+    box-shadow: 0 0 12px rgba(252, 163, 17, 0.2);
   }
 
   .swiss-index {
@@ -102,7 +104,7 @@
     }
     30% {
       transform: scale(1.08) translateY(-4px);
-      box-shadow: 0 0 35px rgba(16, 185, 129, 0.8), 0 0 60px rgba(239, 255, 79, 0.4);
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.8), 0 0 60px rgba(252, 163, 17, 0.4);
     }
     55% {
       transform: scale(0.98) translateY(1px);
@@ -185,26 +187,26 @@
   @keyframes coinFlip3D {
     0% {
       transform: perspective(1000px) rotateY(0deg) translateY(0) scale(1);
-      box-shadow: 0 0 0 rgba(239, 255, 79, 0);
+      box-shadow: 0 0 0 rgba(252, 163, 17, 0);
     }
     20% {
       transform: perspective(1000px) rotateY(270deg) translateY(-22px) scale(1.12);
-      box-shadow: 0 10px 30px rgba(239, 255, 79, 0.5), 0 0 40px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 10px 30px rgba(252, 163, 17, 0.5), 0 0 40px rgba(16, 185, 129, 0.6);
     }
     45% {
       transform: perspective(1000px) rotateY(540deg) translateY(-32px) scale(1.18);
-      box-shadow: 0 15px 45px rgba(239, 255, 79, 0.85), 0 0 60px rgba(16, 185, 129, 0.8);
+      box-shadow: 0 15px 45px rgba(252, 163, 17, 0.85), 0 0 60px rgba(16, 185, 129, 0.8);
     }
     70% {
       transform: perspective(1000px) rotateY(810deg) translateY(-14px) scale(1.08);
-      box-shadow: 0 10px 30px rgba(239, 255, 79, 0.5), 0 0 35px rgba(16, 185, 129, 0.5);
+      box-shadow: 0 10px 30px rgba(252, 163, 17, 0.5), 0 0 35px rgba(16, 185, 129, 0.5);
     }
     88% {
       transform: perspective(1000px) rotateY(1080deg) translateY(-3px) scale(1.03);
     }
     100% {
       transform: perspective(1000px) rotateY(1080deg) translateY(0) scale(1);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), 0 0 15px rgba(239, 255, 79, 0.3);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), 0 0 15px rgba(252, 163, 17, 0.3);
     }
   }
 
@@ -279,10 +281,10 @@
 
   @keyframes trophyGlowPulse {
     0%, 100% {
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.45), 0 0 70px rgba(239, 255, 79, 0.25), inset 0 0 40px rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.45), 0 0 70px rgba(252, 163, 17, 0.25), inset 0 0 40px rgba(245, 158, 11, 0.35);
     }
     50% {
-      box-shadow: 0 0 65px rgba(245, 158, 11, 0.8), 0 0 110px rgba(239, 255, 79, 0.5), inset 0 0 60px rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 65px rgba(245, 158, 11, 0.8), 0 0 110px rgba(252, 163, 17, 0.5), inset 0 0 60px rgba(245, 158, 11, 0.6);
     }
   }
 
