@@ -60,6 +60,7 @@ For webinars, workshops, cohort sessions, and 1-on-1 consultations (BRD Sections
 ### 6. Social Logins (Future-Ready OAuth)
 - [ ] **Google OAuth Client ID:** `________________________________`
 - [ ] **Google OAuth Client Secret:** `________________________________`
+- [ ] **Supabase Redirect URLs Whitelisted:** Ensure `http://localhost:3000/auth/callback` and production domain are added in Supabase Project Settings -> Auth -> URL Configuration.
 - [ ] **(Optional) Microsoft OAuth Client ID / Secret:** `________________________________`
 
 ---

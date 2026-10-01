@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getRankTier, LeaderboardEntry } from "@/lib/gamification";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const studentProfiles = await prisma.student_profiles.findMany({

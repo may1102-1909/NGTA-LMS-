@@ -207,7 +207,7 @@ export default function PushNotificationButton({
 
   if (!isSupported) {
     return (
-      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-[#3E3E43] bg-[#28282B] text-[#5A5F70] font-mono text-xs ${className}`}>
+      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-[#26213B] bg-[#161326] text-[#64748B] font-mono text-xs rounded-lg ${className}`}>
         <BellOff className="w-3.5 h-3.5 text-zinc-500" />
         <span>Push Notifications Unsupported</span>
       </div>
@@ -216,7 +216,7 @@ export default function PushNotificationButton({
 
   if (permission === "denied") {
     return (
-      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-red-500/30 bg-red-950/20 text-red-400 font-mono text-xs ${className}`}>
+      <div className={`inline-flex items-center gap-2 px-3 py-1.5 border border-red-500/30 bg-red-950/20 text-red-400 font-mono text-xs rounded-lg ${className}`}>
         <BellOff className="w-3.5 h-3.5" />
         <span>Push Blocked (Enable in Browser Settings)</span>
       </div>
@@ -230,7 +230,7 @@ export default function PushNotificationButton({
           <button
             onClick={handleUnsubscribe}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 border border-emerald-500/40 bg-emerald-950/20 text-emerald-400 hover:border-red-500/40 hover:text-red-400 hover:bg-red-950/20 transition-all font-bold group"
+            className="inline-flex items-center gap-2 px-3.5 py-2 border border-emerald-500/40 bg-emerald-950/20 text-emerald-400 hover:border-red-500/40 hover:text-red-400 hover:bg-red-950/20 transition-all font-bold group rounded-lg"
             title="Click to disable push notifications"
           >
             {loading ? (
@@ -249,13 +249,13 @@ export default function PushNotificationButton({
             <button
               onClick={handleTestAlert}
               disabled={testing}
-              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#3E3E43] bg-[#333336] text-[#EFFF4F] hover:bg-[#3E3E43] hover:border-[#EFFF4F]/50 transition-colors font-bold uppercase shadow-lemon-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#26213B] bg-[#161326] text-[#C084FC] hover:bg-[#1E1933] hover:border-[#8B5CF6]/50 transition-colors font-bold uppercase rounded-lg shadow-sm"
               title="Send a sample test notification now"
             >
               {testing ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
               ) : (
-                <Send className="w-3 h-3" />
+                <Send className="w-3 h-3 text-[#A855F7]" />
               )}
               <span>Send Test Alert</span>
             </button>
@@ -265,19 +265,19 @@ export default function PushNotificationButton({
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 transition-all font-bold uppercase shadow-lemon-sm hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#8B5CF6] bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] text-white hover:brightness-110 transition-all font-bold uppercase shadow-[0_0_15px_rgba(139,92,246,0.4)] rounded-lg hover:scale-[1.02] active:scale-[0.98]"
         >
           {loading ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#28282B]" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
           ) : (
-            <Bell className="w-3.5 h-3.5 text-[#28282B]" />
+            <Bell className="w-3.5 h-3.5 text-white" />
           )}
           <span>Enable Web Push Alerts</span>
         </button>
       )}
 
       {statusMessage && (
-        <span className="text-[11px] text-[#A0A5B5] animate-in fade-in flex items-center gap-1">
+        <span className="text-[11px] text-[#94A3B8] animate-in fade-in flex items-center gap-1">
           {statusMessage.includes("success") || statusMessage.includes("sent") ? (
             <Check className="w-3 h-3 text-emerald-400" />
           ) : null}

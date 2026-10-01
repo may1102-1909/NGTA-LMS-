@@ -208,7 +208,7 @@ export default function RazorpayCheckoutButton({
           userId: currentUser?.id || orderUser?.id || "",
         },
         theme: {
-          color: "#EFFF4F", // Laser Lemon NGTA signature color
+          color: "#8B5CF6", // Rune Realms electric purple
         },
         modal: {
           ondismiss: function () {
@@ -247,7 +247,7 @@ export default function RazorpayCheckoutButton({
   }
 
   const defaultClasses =
-    "px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm disabled:opacity-50 cursor-pointer";
+    "px-4 py-2.5 bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] text-white font-mono text-xs uppercase font-bold hover:brightness-110 transition-all rounded-lg flex items-center gap-1.5 shadow-[0_0_15px_rgba(139,92,246,0.4)] disabled:opacity-50 cursor-pointer";
 
   return (
     <button

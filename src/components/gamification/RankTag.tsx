@@ -29,15 +29,15 @@ export default function RankTag({
     <div className={`inline-flex flex-col gap-1.5 font-mono ${className}`}>
       <div className="flex items-center gap-2">
         <span
-          className={`inline-flex items-center gap-1 font-bold uppercase tracking-wider border border-[#EFFF4F]/30 bg-[#EFFF4F]/10 text-[#EFFF4F] select-none ${sizeClasses[size]}`}
+          className={`inline-flex items-center gap-1 font-bold uppercase tracking-wider border border-[#8B5CF6]/40 bg-[#8B5CF6]/15 text-[#C084FC] select-none rounded shadow-[0_0_10px_rgba(139,92,246,0.25)] ${sizeClasses[size]}`}
           title={`${currentTier.name}: ${currentTier.description}`}
         >
-          <span className="text-[#A0A5B5] font-normal">RANK:</span>
-          <span className="text-[#EFFF4F] font-black">{currentTier.code}</span>
+          <span className="text-[#94A3B8] font-normal">RANK:</span>
+          <span className="text-[#C084FC] font-black">{currentTier.code}</span>
         </span>
 
         {nextTier && !showProgress && (
-          <span className="text-[10px] text-[#5A5F70] tabular-nums hidden sm:inline-block">
+          <span className="text-[10px] text-[#64748B] tabular-nums hidden sm:inline-block">
             [{percentage}% TO {nextTier.code}]
           </span>
         )}
@@ -45,16 +45,16 @@ export default function RankTag({
 
       {showProgress && nextTier && (
         <div className="space-y-1 w-full max-w-xs">
-          <div className="flex justify-between items-center text-[10px] text-[#5A5F70] tabular-nums">
+          <div className="flex justify-between items-center text-[10px] text-[#64748B] tabular-nums">
             <span>NEXT: {nextTier.code}</span>
             <span className="font-bold text-white">
               {points}/{nextTier.minPoints} PTS [{percentage}%]
             </span>
           </div>
 
-          <div className="w-full h-1.5 bg-[#3E3E43] border border-[#3E3E43] flex overflow-hidden">
+          <div className="w-full h-1.5 bg-[#08070D] border border-[#26213B] flex overflow-hidden rounded-full">
             <div
-              className="h-full bg-[#EFFF4F] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#06B6D4] transition-all duration-300 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"
               style={{ width: `${percentage}%` }}
             />
           </div>

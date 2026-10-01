@@ -88,8 +88,15 @@ export async function GET(request: Request) {
       });
     }
 
-    // Determine normalized role (STUDENT, INSTRUCTOR, ADMIN)
-    const normalizedRole = userRole.toUpperCase() || "STUDENT";
+    // Query authoritative role from profiles table
+    const profileRecord = await prisma.profiles.findFirst({
+      where: {
+        OR: [{ user_id: userId }, { id: userId }],
+      },
+    });
+
+    const finalRole = profileRecord?.role || (userRole ? userRole.toUpperCase() : "LEARNER");
+    const isLearnerOrGuest = finalRole === "LEARNER" || finalRole === "GUEST";
 
     // Query student_profiles table
     const profile = await prisma.student_profiles.findUnique({
@@ -109,8 +116,8 @@ export async function GET(request: Request) {
       profile: safeProfile,
       xp_points: safeProfile?.xp_points ?? 0,
       current_streak: safeProfile?.current_streak ?? 0,
-      role: normalizedRole,
-      isStudent: normalizedRole === "STUDENT",
+      role: finalRole,
+      isLearnerOrGuest,
     });
   } catch (error: any) {
     console.error("Error fetching student profile:", error);

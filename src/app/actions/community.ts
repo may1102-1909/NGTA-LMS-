@@ -5,81 +5,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-const SEED_PAWPAW_ID = "00000000-0000-4000-a000-000000000001";
-const SEED_KANAAN_ID = "00000000-0000-4000-a000-000000000002";
-const SEED_INSTRUCTOR_ID = "00000000-0000-4000-a000-000000000003";
-const SEED_SARAH_ID = "00000000-0000-4000-a000-000000000004";
-const SEED_DEVON_ID = "00000000-0000-4000-a000-000000000005";
-const SEED_TANMAY_ID = "00000000-0000-4000-a000-000000000006";
 
-const SEED_POST_1_ID = "11111111-1111-4111-a111-111111111111";
-const SEED_POST_2_ID = "22222222-2222-4222-a222-222222222222";
-const SEED_POST_3_ID = "33333333-3333-4333-a333-333333333333";
-
-const SEED_AUTHORS: Record<
-  string,
-  {
-    name: string;
-    handle: string;
-    avatar: string;
-    role: "Member" | "Lead" | "Instructor";
-    spaceName: string;
-    spaceIcon: string;
-    type?: "MOCKUPS" | "MEDIA";
-  }
-> = {
-  [SEED_PAWPAW_ID]: {
-    name: "Pawpaw",
-    handle: "@/Pawpaw",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    role: "Member",
-    spaceName: "Crack Designers",
-    spaceIcon: "👥",
-    type: "MOCKUPS",
-  },
-  [SEED_KANAAN_ID]: {
-    name: "Kanaan",
-    handle: "@/Kanaan_",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-    role: "Member",
-    spaceName: "GymMotivation",
-    spaceIcon: "👥",
-    type: "MEDIA",
-  },
-  [SEED_INSTRUCTOR_ID]: {
-    name: "Rahul Kamat",
-    handle: "@/RahulKamat",
-    avatar: "/instructor/rahul-kamat.png",
-    role: "Instructor",
-    spaceName: "Selenium Java + AI Architect",
-    spaceIcon: "⚡",
-    type: "MEDIA",
-  },
-  [SEED_SARAH_ID]: {
-    name: "Sarah Jenkins",
-    handle: "@/SarahJ",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-    role: "Member",
-    spaceName: "Automation",
-    spaceIcon: "⚡",
-  },
-  [SEED_DEVON_ID]: {
-    name: "Devon Miles",
-    handle: "@/DevonMiles",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-    role: "Member",
-    spaceName: "GymMotivation",
-    spaceIcon: "👥",
-  },
-  [SEED_TANMAY_ID]: {
-    name: "Tanmay Sharma",
-    handle: "@/TanmaySharma",
-    avatar: "/avatars/avatar-15.png",
-    role: "Member",
-    spaceName: "General",
-    spaceIcon: "⚡",
-  },
-};
 
 export async function getCurrentUser() {
   try {
@@ -482,29 +408,29 @@ export async function getCommunityFeed() {
     const profileMap = new Map<string, any>(profilesList.map((p: any) => [p.id, p]));
     const studentMap = new Map<string, any>(studentProfilesList.map((s: any) => [s.user_id, s]));
 
-    // Format DB posts
+    // Format DB posts purely from real database entities
     const formattedDbPosts = dbPosts.map((post: any) => {
       const student = studentMap.get(post.user_id);
       const profile = profileMap.get(post.user_id);
-      const seedAuthor = SEED_AUTHORS[post.user_id];
 
       const isInstructor =
-        seedAuthor?.role === "Instructor" ||
+        profile?.role === "INSTRUCTOR" ||
         profile?.email?.toLowerCase().includes("rahul") ||
-        profile?.full_name?.toLowerCase().includes("rahul") ||
-        post.user_id === SEED_INSTRUCTOR_ID;
+        profile?.full_name?.toLowerCase().includes("rahul");
 
-      let authorName = seedAuthor?.name || profile?.full_name || "Community Member";
-      let authorHandle = seedAuthor?.handle || `@/${authorName.replace(/\s+/g, "").toLowerCase()}`;
-      let authorAvatar = seedAuthor?.avatar || profile?.avatar_url || "/avatars/avatar-1.png";
-      let role: "Member" | "Lead" | "Instructor" = seedAuthor?.role || "Member";
-      let spaceName = seedAuthor?.spaceName || "Crack Designers";
-      let spaceIcon = seedAuthor?.spaceIcon || "👥";
+      let authorName = profile?.full_name || (student?.username ? `@${student.username}` : "Member");
+      let authorHandle = student?.username
+        ? `@/${student.username.toLowerCase()}`
+        : `@/${authorName.replace(/\s+/g, "").toLowerCase()}`;
+      let authorAvatar = student?.avatar_url || profile?.avatar_url || "/avatars/avatar-1.png";
+      let role: "Member" | "Lead" | "Instructor" = isInstructor ? "Instructor" : "Member";
+      let spaceName = isInstructor ? "Selenium Java + AI Architect" : "General Community";
+      let spaceIcon = isInstructor ? "⚡" : "👥";
 
       if (isInstructor) {
-        authorName = "Rahul Kamat";
+        authorName = profile?.full_name || "Rahul Kamat";
         authorHandle = "@/RahulKamat";
-        authorAvatar = "/instructor/rahul-kamat.png";
+        authorAvatar = profile?.avatar_url || "/instructor/rahul-kamat.png";
         role = "Instructor";
         spaceName = "Selenium Java + AI Architect";
         spaceIcon = "⚡";
@@ -528,20 +454,18 @@ export async function getCommunityFeed() {
       const comments = post.comments.map((c: any) => {
         const cStudent = studentMap.get(c.user_id);
         const cProfile = profileMap.get(c.user_id);
-        const cSeedAuthor = SEED_AUTHORS[c.user_id];
         const cIsInstructor =
-          cSeedAuthor?.role === "Instructor" ||
+          cProfile?.role === "INSTRUCTOR" ||
           cProfile?.email?.toLowerCase().includes("rahul") ||
-          cProfile?.full_name?.toLowerCase().includes("rahul") ||
-          c.user_id === SEED_INSTRUCTOR_ID;
+          cProfile?.full_name?.toLowerCase().includes("rahul");
 
-        let cAuthorName = cSeedAuthor?.name || cProfile?.full_name || "Learner";
-        let cAuthorAvatar = cSeedAuthor?.avatar || cProfile?.avatar_url || "/avatars/avatar-1.png";
-        let cRole = "STUDENT";
+        let cAuthorName = cProfile?.full_name || (cStudent?.username ? `@${cStudent.username}` : "Learner");
+        let cAuthorAvatar = cStudent?.avatar_url || cProfile?.avatar_url || "/avatars/avatar-1.png";
+        let cRole = cIsInstructor ? "INSTRUCTOR" : "STUDENT";
 
         if (cIsInstructor) {
-          cAuthorName = "Rahul Kamat";
-          cAuthorAvatar = "/instructor/rahul-kamat.png";
+          cAuthorName = cProfile?.full_name || "Rahul Kamat";
+          cAuthorAvatar = cProfile?.avatar_url || "/instructor/rahul-kamat.png";
           cRole = "INSTRUCTOR";
         } else if (cStudent) {
           cAuthorName = `@${cStudent.username}`;
@@ -573,7 +497,7 @@ export async function getCommunityFeed() {
         role,
         timeAgo,
         content: post.content,
-        type: (post.id === SEED_POST_1_ID ? "MOCKUPS" : post.image_url ? "MEDIA" : "MOCKUPS") as "MOCKUPS" | "MEDIA",
+        type: (post.image_url ? "MEDIA" : "MOCKUPS") as "MOCKUPS" | "MEDIA",
         mediaUrl: post.image_url || undefined,
         commentsCount: post._count.comments,
         likesCount: post._count.likes,

@@ -156,12 +156,12 @@ export default function CourseDetailPage() {
   return (
     <div className="w-full">
       {/* Course Banner Header */}
-      <section className="bg-[#28282B] border-b border-[#3E3E43] py-12">
+      <section className="bg-[#0C0A14] border-b border-[#26213B] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8 space-y-4">
-              <div className="flex items-center gap-2 font-mono text-xs text-[#5A5F70] uppercase">
-                <span className="px-2 py-0.5 border border-[#3E3E43] bg-[#333336] font-bold text-[#EFFF4F]">
+              <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] uppercase">
+                <span className="px-2 py-0.5 border border-[#26213B] bg-[#120F1D] font-bold text-[#C084FC] rounded">
                   {course.category}
                 </span>
                 <span>•</span>
@@ -174,7 +174,7 @@ export default function CourseDetailPage() {
                 {course.title}
               </h1>
 
-              <p className="text-base sm:text-lg text-[#A0A5B5] leading-relaxed font-normal">
+              <p className="text-base sm:text-lg text-[#94A3B8] leading-relaxed font-normal">
                 {course.subtitle}
               </p>
 
@@ -182,17 +182,17 @@ export default function CourseDetailPage() {
                 <img
                   src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
-                  className="w-9 h-9 rounded-full object-cover border border-[#3E3E43]"
+                  className="w-9 h-9 rounded-full object-cover border border-[#26213B]"
                 />
-                <div className="font-mono text-xs text-[#A0A5B5]">
+                <div className="font-mono text-xs text-[#94A3B8]">
                   INSTRUCTOR: <strong className="text-white">{course.instructorName}</strong> • {course.instructorTitle}
                 </div>
               </div>
             </div>
 
             {/* Pricing Card */}
-            <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
-              <div className="relative aspect-video overflow-hidden border border-[#3E3E43] bg-[#28282B] -mx-6 -mt-6 mb-2">
+            <div className="lg:col-span-4 border border-[#26213B] bg-[#120F1D] p-6 space-y-5 shadow-card rounded-lg">
+              <div className="relative aspect-video overflow-hidden border border-[#26213B] bg-[#08070D] -mx-6 -mt-6 mb-2 rounded-t-lg">
                 <img
                   src={course.thumbnailUrl}
                   alt={course.title}
@@ -201,17 +201,17 @@ export default function CourseDetailPage() {
               </div>
 
               <div className="space-y-1">
-                <div className="font-mono text-[10px] text-[#5A5F70] uppercase tracking-widest">
+                <div className="font-mono text-[10px] text-[#64748B] uppercase tracking-widest">
                   ALL-INCLUSIVE ENROLLMENT
                 </div>
                 <div className="flex items-baseline gap-3">
                   <span className="text-3xl font-black font-mono text-white">
                     ₹{course.discountPriceINR.toLocaleString()}
                   </span>
-                  <span className="text-sm line-through text-[#5A5F70] font-mono">
+                  <span className="text-sm line-through text-[#64748B] font-mono">
                     ₹{course.priceINR.toLocaleString()}
                   </span>
-                  <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#EFFF4F]/10 text-[#EFFF4F] border border-[#EFFF4F]/30 font-bold">
+                  <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#8B5CF6]/15 text-[#C084FC] border border-[#8B5CF6]/30 font-bold rounded">
                     50% OFF
                   </span>
                 </div>
@@ -219,13 +219,13 @@ export default function CourseDetailPage() {
 
               {isEnrolled ? (
                 <div className="space-y-2">
-                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold flex items-center justify-center gap-2">
+                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold flex items-center justify-center gap-2 rounded">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>ENROLLED IN COURSE</span>
                   </div>
                   <Link
                     href={`/learn/${course.id}`}
-                    className="w-full py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#06B6D4] text-white font-mono text-xs uppercase font-bold hover:opacity-95 transition-all shadow-rune-purple flex items-center justify-center gap-2 rounded"
                   >
                     <span>RESUME LEARNING</span>
                     <ArrowRight className="w-4 h-4" />
@@ -233,32 +233,32 @@ export default function CourseDetailPage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="p-2 bg-[#202023] border border-[#3E3E43] text-[#A0A5B5] font-mono text-xs font-bold flex items-center justify-center gap-2">
-                    <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                  <div className="p-2 bg-[#0E0C17] border border-[#26213B] text-[#94A3B8] font-mono text-xs font-bold flex items-center justify-center gap-2 rounded">
+                    <Lock className="w-3.5 h-3.5 text-[#64748B]" />
                     <span>STATUS: LOCKED (NOT ENROLLED)</span>
                   </div>
                   <RazorpayCheckoutButton
                     courseId={course.id}
                     courseTitle={course.title}
                     amountINR={course.discountPriceINR}
-                    className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3.5 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#06B6D4] text-white font-mono text-xs uppercase font-bold hover:opacity-95 transition-all shadow-rune-purple flex items-center justify-center gap-2 cursor-pointer rounded"
                     buttonText="ENROLL VIA UPI / CARDS"
                     onSuccess={() => setIsEnrolled(true)}
                   />
                 </div>
               )}
 
-              <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
+              <div className="space-y-2 border-t border-[#26213B] pt-4 font-mono text-xs text-[#94A3B8]">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                  <Clock className="w-3.5 h-3.5 text-[#06B6D4]" />
                   <span>{course.durationHours} Hours Self-Paced Learning</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#5A5F70]" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#C084FC]" />
                   <span>Verifiable Digital Certificate Included</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <HelpCircle className="w-3.5 h-3.5 text-[#5A5F70]" />
+                  <HelpCircle className="w-3.5 h-3.5 text-[#F59E0B]" />
                   <span>24/7 Dedicated QA Channel Access</span>
                 </div>
               </div>
@@ -272,8 +272,8 @@ export default function CourseDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-8 space-y-12">
             {/* Objectives */}
-            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4">
-              <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
+            <div className="border border-[#26213B] bg-[#120F1D] p-6 shadow-card space-y-4 rounded-lg">
+              <div className="font-mono text-xs uppercase font-bold text-[#64748B]">
                 LEARNING OBJECTIVES
               </div>
               <h3 className="text-xl font-black uppercase tracking-tight text-white">
@@ -281,8 +281,8 @@ export default function CourseDetailPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                 {course.objectives.map((obj, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-[#A0A5B5] font-sans">
-                    <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-2 text-xs text-[#94A3B8] font-sans">
+                    <CheckCircle2 className="w-4 h-4 text-[#C084FC] shrink-0 mt-0.5" />
                     <span>{obj}</span>
                   </div>
                 ))}
@@ -291,9 +291,9 @@ export default function CourseDetailPage() {
 
             {/* Curriculum Accordion */}
             <div className="space-y-4">
-              <div className="flex justify-between items-end border-b border-[#3E3E43] pb-2">
+              <div className="flex justify-between items-end border-b border-[#26213B] pb-2">
                 <div>
-                  <div className="font-mono text-xs uppercase text-[#5A5F70]">COURSE SYLLABUS</div>
+                  <div className="font-mono text-xs uppercase text-[#64748B]">COURSE SYLLABUS</div>
                   <h3 className="text-2xl font-black uppercase tracking-tight text-white">
                     CURRICULUM & MODULES
                   </h3>
@@ -304,8 +304,8 @@ export default function CourseDetailPage() {
                     <span>{course.modules.length} MODULES • ALL LESSONS ENROLLED & UNLOCKED</span>
                   </span>
                 ) : (
-                  <span className="font-mono text-xs text-[#A0A5B5] flex items-center gap-1.5 font-bold">
-                    <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                  <span className="font-mono text-xs text-[#94A3B8] flex items-center gap-1.5 font-bold">
+                    <Lock className="w-3.5 h-3.5 text-[#64748B]" />
                     <span>{course.modules.length} MODULES • ENROLL TO UNLOCK</span>
                   </span>
                 )}
@@ -315,57 +315,57 @@ export default function CourseDetailPage() {
                 {course.modules.map((mod, modIdx) => (
                   <div
                     key={mod.id}
-                    className="border border-[#3E3E43] bg-[#333336] shadow-card"
+                    className="border border-[#26213B] bg-[#120F1D] shadow-card rounded-lg overflow-hidden"
                   >
                     <button
                       onClick={() => toggleModule(mod.id)}
-                      className="w-full px-5 py-4 flex items-center justify-between text-left font-mono text-sm font-bold bg-[#28282B] hover:bg-[#3E3E43] transition-colors border-b border-[#3E3E43]"
+                      className="w-full px-5 py-4 flex items-center justify-between text-left font-mono text-sm font-bold bg-[#0E0C17] hover:bg-[#1A162B] transition-colors border-b border-[#26213B]"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-[#EFFF4F]">0{modIdx + 1}.</span>
+                        <span className="text-[#C084FC]">0{modIdx + 1}.</span>
                         <span className="text-white">{mod.title}</span>
                       </div>
                       {openModules[mod.id] ? (
-                        <ChevronDown className="w-4 h-4 text-[#5A5F70]" />
+                        <ChevronDown className="w-4 h-4 text-[#64748B]" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[#5A5F70]" />
+                        <ChevronRight className="w-4 h-4 text-[#64748B]" />
                       )}
                     </button>
 
                     {openModules[mod.id] && (
-                      <div className="divide-y divide-[#3E3E43]">
+                      <div className="divide-y divide-[#26213B]">
                         {mod.chapters.map((chap) => (
-                          <div key={chap.id} className="p-4 bg-[#333336] space-y-2">
-                            <div className="font-mono text-[11px] uppercase font-bold text-[#5A5F70]">
+                          <div key={chap.id} className="p-4 bg-[#120F1D] space-y-2">
+                            <div className="font-mono text-[11px] uppercase font-bold text-[#64748B]">
                               CHAPTER: {chap.title}
                             </div>
                             <div className="space-y-1.5 pl-2">
                               {chap.lessons.map((les) => (
                                 <div
                                   key={les.id}
-                                  className="flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs"
+                                  className="flex items-center justify-between py-1.5 px-3 hover:bg-[#0E0C17] border border-transparent hover:border-[#26213B] transition-colors text-xs rounded"
                                 >
-                                  <div className="flex items-center gap-2 text-[#A0A5B5]">
+                                  <div className="flex items-center gap-2 text-[#94A3B8]">
                                     {isEnrolled ? (
                                       les.type === "video" ? (
-                                        <PlayCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                                        <PlayCircle className="w-3.5 h-3.5 text-[#C084FC]" />
                                       ) : les.type === "quiz" ? (
-                                        <HelpCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                                        <HelpCircle className="w-3.5 h-3.5 text-[#C084FC]" />
                                       ) : (
-                                        <FileText className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                        <FileText className="w-3.5 h-3.5 text-[#06B6D4]" />
                                       )
                                     ) : (
-                                      <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                      <Lock className="w-3.5 h-3.5 text-[#64748B]" />
                                     )}
-                                    <span className="font-medium">{les.title}</span>
+                                    <span className="font-medium text-white">{les.title}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
                                     {!isEnrolled && (
-                                      <span className="text-[10px] font-mono text-[#5A5F70] uppercase">
+                                      <span className="text-[10px] font-mono text-[#64748B] uppercase">
                                         Locked
                                       </span>
                                     )}
-                                    <span className="font-mono text-[11px] text-[#5A5F70]">
+                                    <span className="font-mono text-[11px] text-[#64748B]">
                                       {les.durationMinutes}m
                                     </span>
                                   </div>
@@ -382,29 +382,29 @@ export default function CourseDetailPage() {
             </div>
 
             {/* Instructor Spotlight */}
-            <div className="border border-[#3E3E43] bg-[#333336] p-6 shadow-card space-y-4">
-              <div className="font-mono text-xs uppercase font-bold text-[#5A5F70]">
+            <div className="border border-[#26213B] bg-[#120F1D] p-6 shadow-card space-y-4 rounded-lg">
+              <div className="font-mono text-xs uppercase font-bold text-[#64748B]">
                 YOUR INSTRUCTOR
               </div>
               <div className="flex flex-col sm:flex-row gap-5 items-start">
                 <img
                   src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
                   alt={course.instructorName}
-                  className="w-24 h-24 rounded-lg object-cover border border-[#3E3E43] shrink-0"
+                  className="w-24 h-24 rounded-lg object-cover border border-[#26213B] shrink-0"
                 />
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-baseline gap-2">
                     <h4 className="text-xl font-bold text-white">{course.instructorName}</h4>
-                    <span className="text-xs text-[#EFFF4F] font-mono font-bold bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 px-2 py-0.5">
+                    <span className="text-xs text-[#C084FC] font-mono font-bold bg-[#8B5CF6]/15 border border-[#8B5CF6]/30 px-2 py-0.5 rounded">
                       17+ Years Experience
                     </span>
                   </div>
-                  <p className="text-xs text-[#A0A5B5] font-mono">{course.instructorTitle}</p>
-                  <p className="text-sm text-[#A0A5B5] font-sans leading-relaxed">
+                  <p className="text-xs text-[#94A3B8] font-mono">{course.instructorTitle}</p>
+                  <p className="text-sm text-[#94A3B8] font-sans leading-relaxed">
                     {course.instructorBio || "Founder and Lead SDET Instructor at NextGen Testing Academy (NGTA)."}
                   </p>
-                  <div className="flex flex-wrap gap-4 pt-1 font-mono text-xs text-[#5A5F70]">
-                    <span>★ 4.9 Instructor Rating</span>
+                  <div className="flex flex-wrap gap-4 pt-1 font-mono text-xs text-[#64748B]">
+                    <span className="text-[#F59E0B]">★ 4.9 Instructor Rating</span>
                     <span>•</span>
                     <span>10,000+ Students Mentored</span>
                     <span>•</span>
@@ -417,22 +417,22 @@ export default function CourseDetailPage() {
 
           {/* Right Column */}
           <div className="lg:col-span-4 space-y-6 font-mono text-xs">
-            <div className="border border-[#3E3E43] bg-[#333336] p-5 space-y-3 shadow-card">
-              <div className="font-bold text-white uppercase border-b border-[#3E3E43] pb-2">
+            <div className="border border-[#26213B] bg-[#120F1D] p-5 space-y-3 shadow-card rounded-lg">
+              <div className="font-bold text-white uppercase border-b border-[#26213B] pb-2">
                 PREREQUISITES
               </div>
-              <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
+              <ul className="space-y-2 text-[#94A3B8] list-disc pl-4 font-sans text-xs">
                 {course.prerequisites.map((p, idx) => (
                   <li key={idx}>{p}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="border border-[#3E3E43] bg-[#333336] p-5 space-y-3 shadow-card">
-              <div className="font-bold text-white uppercase border-b border-[#3E3E43] pb-2">
+            <div className="border border-[#26213B] bg-[#120F1D] p-5 space-y-3 shadow-card rounded-lg">
+              <div className="font-bold text-white uppercase border-b border-[#26213B] pb-2">
                 TARGET AUDIENCE
               </div>
-              <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
+              <ul className="space-y-2 text-[#94A3B8] list-disc pl-4 font-sans text-xs">
                 {course.targetAudience.map((t, idx) => (
                   <li key={idx}>{t}</li>
                 ))}
@@ -442,9 +442,9 @@ export default function CourseDetailPage() {
             <ChallengeStepLog maxVisible={6} />
 
             <div className="space-y-3 pt-2">
-              <div className="flex justify-between items-center text-[#5A5F70] uppercase text-[10px] tracking-wider border-b border-[#3E3E43] pb-1">
+              <div className="flex justify-between items-center text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#26213B] pb-1">
                 <span>COURSE ACCREDITATION & BADGES</span>
-                <span>UNLOCKABLE</span>
+                <span className="text-[#C084FC]">UNLOCKABLE</span>
               </div>
               <div className="space-y-3">
                 {INITIAL_CREDENTIALS.slice(0, 2).map((cred) => (
@@ -458,41 +458,41 @@ export default function CourseDetailPage() {
 
       {/* PAYMENT MODAL */}
       {isCheckoutOpen && (
-        <div className="fixed inset-0 z-50 bg-[#28282B]/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#333336] border border-[#3E3E43] shadow-lemon-md p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex justify-between items-start border-b border-[#3E3E43] pb-3">
+        <div className="fixed inset-0 z-50 bg-[#08070D]/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#120F1D] border border-[#26213B] shadow-rune-purple p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150 rounded-lg font-mono">
+            <div className="flex justify-between items-start border-b border-[#26213B] pb-3">
               <div>
-                <div className="font-mono text-[10px] text-[#5A5F70] uppercase">
+                <div className="font-mono text-[10px] text-[#64748B] uppercase">
                   SECURE CHECKOUT
                 </div>
                 <h4 className="text-xl font-black text-white uppercase">ORDER CHECKOUT</h4>
               </div>
               <button
                 onClick={() => setIsCheckoutOpen(false)}
-                className="p-1 hover:bg-[#3E3E43] border border-[#3E3E43] text-[#A0A5B5] transition-colors"
+                className="p-1 hover:bg-[#1C172E] border border-[#26213B] text-[#94A3B8] hover:text-white transition-colors rounded"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-[#28282B] border border-[#3E3E43] space-y-1 font-mono text-xs">
-              <div className="text-[#5A5F70]">ITEM: {course.title}</div>
-              <div className="flex justify-between font-bold text-white text-sm pt-1 border-t border-[#3E3E43]">
+            <div className="p-3 bg-[#08070D] border border-[#26213B] space-y-1 font-mono text-xs rounded">
+              <div className="text-[#64748B]">ITEM: {course.title}</div>
+              <div className="flex justify-between font-bold text-white text-sm pt-1 border-t border-[#26213B]">
                 <span>TOTAL PAYABLE:</span>
-                <span>₹{course.discountPriceINR.toLocaleString()} INR</span>
+                <span className="text-[#C084FC]">₹{course.discountPriceINR.toLocaleString()} INR</span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <div className="font-mono text-xs font-bold text-[#A0A5B5]">SELECT PAYMENT RAILS:</div>
+              <div className="font-mono text-xs font-bold text-[#94A3B8]">SELECT PAYMENT RAILS:</div>
               <div className="grid grid-cols-3 gap-2 font-mono text-xs">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("UPI")}
-                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
+                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-all rounded ${
                     paymentMethod === "UPI"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
-                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#8B5CF6] bg-[#8B5CF6] text-white shadow-rune-purple font-bold"
+                      : "border-[#26213B] bg-[#0E0C17] hover:border-[#8B5CF6]/40 text-[#94A3B8]"
                   }`}
                 >
                   <Smartphone className="w-4 h-4" />
@@ -501,10 +501,10 @@ export default function CourseDetailPage() {
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("CARD")}
-                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
+                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-all rounded ${
                     paymentMethod === "CARD"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
-                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#8B5CF6] bg-[#8B5CF6] text-white shadow-rune-purple font-bold"
+                      : "border-[#26213B] bg-[#0E0C17] hover:border-[#8B5CF6]/40 text-[#94A3B8]"
                   }`}
                 >
                   <CreditCard className="w-4 h-4" />
@@ -513,10 +513,10 @@ export default function CourseDetailPage() {
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("NET_BANKING")}
-                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-colors ${
+                  className={`p-2.5 border text-center flex flex-col items-center gap-1 transition-all rounded ${
                     paymentMethod === "NET_BANKING"
-                      ? "border-[#EFFF4F] bg-[#EFFF4F] text-[#28282B] font-bold"
-                      : "border-[#3E3E43] hover:border-[#EFFF4F]/30 text-[#A0A5B5]"
+                      ? "border-[#8B5CF6] bg-[#8B5CF6] text-white shadow-rune-purple font-bold"
+                      : "border-[#26213B] bg-[#0E0C17] hover:border-[#8B5CF6]/40 text-[#94A3B8]"
                   }`}
                 >
                   <Building className="w-4 h-4" />
@@ -527,15 +527,15 @@ export default function CourseDetailPage() {
 
             {paymentMethod === "UPI" && (
               <div className="space-y-2 font-mono text-xs">
-                <label className="text-[#5A5F70] block">VIRTUAL PAYMENT ADDRESS (UPI ID):</label>
+                <label className="text-[#64748B] block">VIRTUAL PAYMENT ADDRESS (UPI ID):</label>
                 <input
                   type="text"
                   value={upiId}
                   onChange={(e) => setUpiId(e.target.value)}
-                  className="w-full p-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]/50"
+                  className="w-full p-2 border border-[#26213B] bg-[#08070D] text-white focus:outline-none focus:border-[#8B5CF6]/50 rounded"
                   placeholder="name@upi"
                 />
-                <div className="text-[10px] text-[#5A5F70]">
+                <div className="text-[10px] text-[#64748B]">
                   Supported: Google Pay, PhonePe, Paytm, CRED, BHIM.
                 </div>
               </div>
@@ -546,19 +546,19 @@ export default function CourseDetailPage() {
                 <input
                   type="text"
                   placeholder="Card Number (Rupay / Visa / Mastercard)"
-                  className="w-full p-2 border border-[#3E3E43] bg-[#28282B] text-white focus:outline-none focus:border-[#EFFF4F]/50"
+                  className="w-full p-2 border border-[#26213B] bg-[#08070D] text-white focus:outline-none focus:border-[#8B5CF6]/50 rounded"
                   defaultValue="4312 •••• •••• 8910"
                 />
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" placeholder="MM/YY" className="p-2 border border-[#3E3E43] bg-[#28282B] text-white" defaultValue="08/29" />
-                  <input type="password" placeholder="CVV" className="p-2 border border-[#3E3E43] bg-[#28282B] text-white" defaultValue="•••" />
+                  <input type="text" placeholder="MM/YY" className="p-2 border border-[#26213B] bg-[#08070D] text-white rounded" defaultValue="08/29" />
+                  <input type="password" placeholder="CVV" className="p-2 border border-[#26213B] bg-[#08070D] text-white rounded" defaultValue="•••" />
                 </div>
               </div>
             )}
 
             {paymentSuccess ? (
-              <div className="p-3 bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] font-mono text-xs text-center font-bold flex items-center justify-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="p-3 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-xs text-center font-bold flex items-center justify-center gap-2 rounded">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 PAYMENT CONFIRMED! REDIRECTING TO LEARNER PLAYER...
               </div>
             ) : (
@@ -566,7 +566,7 @@ export default function CourseDetailPage() {
                 courseId={course.id}
                 courseTitle={course.title}
                 amountINR={course.discountPriceINR}
-                className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#06B6D4] text-white font-mono text-xs uppercase font-bold hover:opacity-95 transition-all shadow-rune-purple flex items-center justify-center gap-2 cursor-pointer rounded"
                 buttonText={`PAY ₹${course.discountPriceINR.toLocaleString()} & START LEARNING`}
                 onSuccess={() => {
                   setPaymentSuccess(true);
@@ -578,7 +578,7 @@ export default function CourseDetailPage() {
               />
             )}
 
-            <div className="font-mono text-[10px] text-center text-[#5A5F70]">
+            <div className="font-mono text-[10px] text-center text-[#64748B]">
               256-Bit SSL Encrypted • Instant Access Upon Confirmation
             </div>
           </div>
