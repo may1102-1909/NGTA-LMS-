@@ -6,6 +6,26 @@
 
 @layer base {
   :root {
+    --background: 240 4% 16%;
+    --foreground: 0 0% 100%;
+    --card: 240 3% 21%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 4% 18%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 65 100% 65%;
+    --primary-foreground: 240 4% 16%;
+    --secondary: 240 3% 21%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 4% 22%;
+    --muted-foreground: 224 13% 67%;
+    --accent: 240 3% 25%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 25%;
+    --input: 240 4% 25%;
+    --ring: 65 100% 65%;
+    --radius: 0.5rem;
     --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
     --night-base: #28282B;
@@ -17,6 +37,28 @@
     --text-primary: #FFFFFF;
     --text-muted: #A0A5B5;
     --text-faint: #5A5F70;
+  }
+
+  .dark {
+    --background: 240 4% 16%;
+    --foreground: 0 0% 100%;
+    --card: 240 3% 21%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 4% 18%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 65 100% 65%;
+    --primary-foreground: 240 4% 16%;
+    --secondary: 240 3% 21%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 4% 22%;
+    --muted-foreground: 224 13% 67%;
+    --accent: 240 3% 25%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 25%;
+    --input: 240 4% 25%;
+    --ring: 65 100% 65%;
   }
 
   body {

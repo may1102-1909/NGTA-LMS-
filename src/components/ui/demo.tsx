@@ -1,12 +1,11 @@
-"use client";
-
-import React from "react";
 import { Footerdemo } from "@/components/ui/footer-section";
 
-export default function Footer() {
+function Footer() {
   return (
-    <div className="w-full">
+    <div className="block">
       <Footerdemo />
     </div>
   );
 }
+
+export { Footer };

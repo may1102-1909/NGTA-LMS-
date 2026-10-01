@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Scene } from "@/components/CrtScene";
 import LoginButton from "@/components/LoginButton";
+import Footer from "@/components/Footer";
 
 export default function LandingPage() {
   return (
@@ -49,35 +50,10 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {/* ── MINIMAL DARK FOOTER ── */}
-      <footer className="relative z-20 border-t border-[#3E3E43] bg-[#28282B]/90 py-6 text-center text-xs font-mono text-[#A0A5B5]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="NGTA Logo"
-              width={20}
-              height={20}
-              className="w-5 h-5 object-contain rounded"
-            />
-            <span>&copy; {new Date().getFullYear()} NextGen Testing Academy. All rights reserved.</span>
-          </div>
-          <div className="flex items-center gap-6 text-zinc-500">
-            <Link href="/lms" className="hover:text-emerald-400 transition-colors">
-              Platform
-            </Link>
-            <Link href="/courses" className="hover:text-emerald-400 transition-colors">
-              Curriculum
-            </Link>
-            <Link href="/verify" className="hover:text-emerald-400 transition-colors">
-              Verification
-            </Link>
-            <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
-              Dashboard
-            </Link>
-          </div>
-        </div>
-      </footer>
+      {/* ── FOOTER ── */}
+      <div className="relative z-20">
+        <Footer />
+      </div>
     </div>
   );
 }
