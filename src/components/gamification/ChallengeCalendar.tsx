@@ -130,6 +130,8 @@ interface ChallengeCalendarProps {
   tasks: ChallengeTask[];
   selectedDay: number;
   onSelectDay: (day: number) => void;
+  onCompleteDay?: (day: number) => void;
+  onResetDay?: (day: number) => void;
   animatingDay: number | null;
   todayDayNumber?: number;
   soundEnabled?: boolean;
@@ -149,6 +151,8 @@ export default function ChallengeCalendar({
   tasks,
   selectedDay,
   onSelectDay,
+  onCompleteDay,
+  onResetDay,
   animatingDay,
   todayDayNumber = 1,
   soundEnabled = true,
@@ -276,8 +280,9 @@ export default function ChallengeCalendar({
           </div>
         </div>
 
-        <div className="text-[#A0A5B5] text-[10px]">
-          Click any date to inspect objectives or verify completion
+        <div className="text-amber-300 font-bold text-[11px] flex items-center gap-1.5">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span>Click any date or &quot;Mark Done&quot; button to complete that day&apos;s sprint</span>
         </div>
       </div>
 
@@ -303,10 +308,26 @@ export default function ChallengeCalendar({
             <div
               key={task.dayNumber}
               onClick={() => {
-                onSelectDay(task.dayNumber);
-                playCalendarSound("click", soundEnabled);
+                if (isSelected && !task.isCompleted && onCompleteDay) {
+                  onCompleteDay(task.dayNumber);
+                } else {
+                  onSelectDay(task.dayNumber);
+                  playCalendarSound("click", soundEnabled);
+                }
               }}
-              className={`relative rounded-xl p-3 cursor-pointer transition-all duration-300 select-none overflow-hidden flex flex-col justify-between items-center text-center min-h-[92px] sm:min-h-[105px] border ${
+              onDoubleClick={() => {
+                if (!task.isCompleted && onCompleteDay) {
+                  onCompleteDay(task.dayNumber);
+                }
+              }}
+              title={
+                !task.isCompleted
+                  ? isSelected
+                    ? `Day ${task.dayNumber} selected — Click date to mark completed!`
+                    : `Click to select Day ${task.dayNumber} (or click Mark Done)`
+                  : `Day ${task.dayNumber} completed`
+              }
+              className={`relative rounded-xl p-3 cursor-pointer transition-all duration-300 select-none overflow-hidden flex flex-col justify-between items-center text-center min-h-[96px] sm:min-h-[110px] border ${
                 isAnimating
                   ? "animate-coin-flip z-30 border-amber-400 bg-gradient-to-br from-[#332A15] via-[#1E2E22] to-[#14261B] ring-4 ring-amber-400/80 shadow-[0_0_45px_rgba(245,158,11,0.7)]"
                   : isSelected
@@ -317,7 +338,7 @@ export default function ChallengeCalendar({
                   ? "border-amber-400/80 bg-gradient-to-b from-[#333338] via-[#2A2A2E] to-[#202024] ring-1 ring-amber-400/50 shadow-md hover:border-amber-300"
                   : isDay15
                   ? "border-amber-400/60 bg-gradient-to-b from-[#2E281C] via-[#252220] to-[#1E1E22] ring-1 ring-amber-400/40 shadow-sm hover:border-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]"
-                  : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-75 hover:opacity-100"
+                  : "border-[#3E3E43] bg-[#222225] hover:border-[#5A5F70] hover:bg-[#28282B] opacity-80 hover:opacity-100"
               }`}
             >
               {/* Golden Sheen Sweep across the coin surface */}
@@ -367,10 +388,19 @@ export default function ChallengeCalendar({
                 )}
               </div>
 
-              {/* Center: Big Prominent Calendar Date & Status Icon */}
-              <div className="my-auto py-1 flex flex-col items-center justify-center gap-1">
+              {/* Center: Big Prominent Calendar Date & Status / Completion Button */}
+              <div className="my-auto py-1 flex flex-col items-center justify-center gap-1 w-full">
                 <span
-                  className={`font-black text-xl sm:text-2xl tracking-tight leading-none ${
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectDay(task.dayNumber);
+                    if (!task.isCompleted && onCompleteDay) {
+                      onCompleteDay(task.dayNumber);
+                    } else {
+                      playCalendarSound("click", soundEnabled);
+                    }
+                  }}
+                  className={`font-black text-xl sm:text-2xl tracking-tight leading-none cursor-pointer transition-transform hover:scale-110 ${
                     isAnimating
                       ? "text-yellow-300 drop-shadow-[0_0_12px_rgba(250,204,21,0.85)]"
                       : task.isCompleted
@@ -379,37 +409,62 @@ export default function ChallengeCalendar({
                       ? "text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
                       : isSelected
                       ? "text-[#EFFF4F]"
-                      : "text-white"
+                      : "text-white hover:text-[#EFFF4F]"
                   }`}
+                  title={
+                    !task.isCompleted
+                      ? `Click date number to mark Day ${task.dayNumber} completed`
+                      : `Day ${task.dayNumber} completed`
+                  }
                 >
                   {String(task.dayNumber).padStart(2, "0")}
                 </span>
 
-                {/* Status Indicator Icon */}
+                {/* Status Indicator or Interactive Completion Button */}
                 <div className="flex items-center justify-center mt-0.5">
                   {isAnimating ? (
                     <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 text-[#18181B] font-black shadow-md border-2 border-white text-xs">
                       {isDay15 ? "🎁" : "🪙"}
                     </span>
                   ) : task.isCompleted ? (
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </span>
-                  ) : isToday ? (
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse">
-                      <Flame className="w-3 h-3 fill-current" />
-                    </span>
-                  ) : isDay15 ? (
-                    <div className="flex items-center gap-1 text-amber-400 animate-pulse" title="Day 15 Halfway Gift & Trophy (+50 PTS)">
-                      <Trophy className="w-4 h-4 text-amber-400" />
-                      <Gift className="w-3.5 h-3.5 text-yellow-300" />
+                    <div className="flex items-center gap-1">
+                      <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </span>
+                      {onResetDay && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onResetDay(task.dayNumber);
+                          }}
+                          className="opacity-60 hover:opacity-100 p-0.5 text-[#5A5F70] hover:text-amber-400 transition-opacity"
+                          title={`Reset Day ${task.dayNumber} to uncompleted`}
+                        >
+                          <RotateCcw className="w-2.5 h-2.5" />
+                        </button>
+                      )}
                     </div>
-                  ) : isBossDay ? (
-                    <Trophy className="w-3.5 h-3.5 text-amber-400/70" />
                   ) : (
-                    <span className="text-[#5A5F70]">
-                      <Lock className="w-3 h-3" />
-                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectDay(task.dayNumber);
+                        if (onCompleteDay) onCompleteDay(task.dayNumber);
+                      }}
+                      className={`px-2 py-0.5 rounded text-[9px] font-bold font-mono transition-all flex items-center gap-1 border shadow-sm ${
+                        isSelected
+                          ? "bg-[#EFFF4F] text-[#18181B] border-[#EFFF4F] shadow-lemon-sm hover:scale-105"
+                          : isToday
+                          ? "bg-amber-400/25 text-amber-300 border-amber-400/60 hover:bg-amber-400 hover:text-[#18181B] hover:scale-105"
+                          : "bg-[#18181B] text-[#A0A5B5] border-[#3E3E43] hover:border-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 hover:scale-105"
+                      }`}
+                      title={`Click to mark Day ${task.dayNumber} as completed`}
+                    >
+                      <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <span>{isSelected ? "Mark Done ✔" : "Mark Done"}</span>
+                    </button>
                   )}
                 </div>
               </div>

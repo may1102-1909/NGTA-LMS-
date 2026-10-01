@@ -209,9 +209,9 @@ export default function ChallengePage() {
     // Update all criteria to true for aesthetic completion
     setCheckedCriteria({ 0: true, 1: true, 2: true, 3: true });
 
-    // Update streak and points if completing active day
-    if (dayNumber === 12 && streakCount === 7) {
-      setStreakCount(8);
+    // Update streak and points if completing a day that was not yet completed
+    if (!task.isCompleted) {
+      setStreakCount((prev) => prev + 1);
       setTotalPoints((prev) => prev + reward);
     }
 
@@ -231,13 +231,15 @@ export default function ChallengePage() {
 
   // Reset Day State (allows user to re-test the animation)
   const handleResetDay = (dayNumber: number) => {
+    const task = tasks.find((t) => t.dayNumber === dayNumber);
     playAudioBlip("click", soundEnabled);
     setTasks((prev) =>
       prev.map((t) => (t.dayNumber === dayNumber ? { ...t, isCompleted: false } : t))
     );
-    if (dayNumber === 12) {
-      setStreakCount(7);
-      setTotalPoints(420);
+    if (task && task.isCompleted) {
+      const reward = task.pointsReward || 35;
+      setTotalPoints((prev) => Math.max(0, prev - reward));
+      setStreakCount((prev) => Math.max(1, prev - 1));
     }
     if (dayNumber === 30) {
       setShowDay30Victory(false);
@@ -392,6 +394,8 @@ export default function ChallengePage() {
         tasks={tasks}
         selectedDay={selectedDay}
         onSelectDay={(day) => setSelectedDay(day)}
+        onCompleteDay={handleCompleteDay}
+        onResetDay={handleResetDay}
         animatingDay={animatingDay}
         todayDayNumber={12}
         soundEnabled={soundEnabled}
@@ -633,18 +637,18 @@ export default function ChallengePage() {
                   <span>Submit & Complete Day {selectedDay} (+{currentTask.pointsReward} PTS)</span>
                 </button>
 
-                {/* Quick Simulation Button to trigger the calendar date animation directly */}
-                <div className="pt-2 border-t border-[#3E3E43]/60">
+                {/* Direct 1-Click Mark Done Button */}
+                <div className="pt-2 border-t border-[#3E3E43]/60 space-y-1.5">
                   <button
                     type="button"
                     onClick={() => handleCompleteDay(selectedDay)}
-                    className="w-full py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold uppercase rounded flex items-center justify-center gap-1.5 transition-colors text-[11px]"
+                    className="w-full py-2.5 bg-gradient-to-r from-emerald-500/25 via-emerald-400/20 to-emerald-500/25 hover:bg-emerald-500/35 text-emerald-300 border-2 border-emerald-400/60 font-black uppercase rounded flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(16,185,129,0.25)] text-xs"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>⚡ Quick Test: Animate Date Completed</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>✔ Mark Day {selectedDay} as Completed (+{currentTask.pointsReward} PTS)</span>
                   </button>
-                  <p className="text-[10px] text-[#5A5F70] mt-1 text-center font-sans">
-                    Click to test the date stamp, green glow, and points burst animation
+                  <p className="text-[10px] text-[#A0A5B5] text-center font-sans">
+                    💡 Or simply click on Day {selectedDay}&apos;s date on the calendar above to mark it done!
                   </p>
                 </div>
               </form>
