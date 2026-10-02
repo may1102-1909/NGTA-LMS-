@@ -617,24 +617,24 @@ export default function CertificatesPage() {
 
             {/* ======================================================== */}
             {/* FLAT PARCHMENT PAGE AREA                                 */}
-            {/* STRICTLY BOUNDED WITHIN THE OPEN PARCHMENT WRITING ZONE  */}
-            {/* LEFT 22% - RIGHT 22%, TOP 20% - BOTTOM 20%              */}
+            {/* STRICTLY CENTERED IN THE MIDDLE OF THE PARCHMENT CANVAS */}
+            {/* BOUNDED WITHIN THE CLEAN WRITING AREA (NO BORDER OVERLAY)*/}
             {/* ======================================================== */}
             <div
-              className={`absolute left-[22%] right-[22%] top-[20%] bottom-[20%] flex flex-col justify-between text-[#241306] overflow-hidden px-2 sm:px-4 py-1 transition-opacity duration-300 ${
+              className={`absolute left-[25%] right-[25%] top-[27%] bottom-[29%] flex flex-col justify-between items-center text-center text-[#241306] overflow-hidden px-2 sm:px-4 py-1 transition-opacity duration-300 ${
                 isRolled ? "opacity-0" : "opacity-100"
               }`}
             >
               {/* 1. Top Proclamation Header */}
-              <div className="text-center space-y-0.5">
-                <div className="flex items-center justify-center gap-2 text-[#5A3816] text-[8px] sm:text-[10px] md:text-[11px] font-serif tracking-[0.22em] uppercase font-bold">
+              <div className="w-full space-y-0.5">
+                <div className="flex items-center justify-center gap-2 text-[#6B3D14] text-[8px] sm:text-[9px] md:text-[10px] font-serif tracking-[0.22em] uppercase font-bold">
                   <span>✦</span>
                   <span>CHANCELLERIA ACADEMIAE NEXTGENENSIS</span>
                   <span>✦</span>
                 </div>
 
                 <h2
-                  className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-[#2B1405] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] leading-tight"
+                  className="text-sm sm:text-lg md:text-xl lg:text-2xl font-black text-[#2B1405] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] leading-tight"
                   style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                 >
                   Letters Patent of Mastery
@@ -642,9 +642,9 @@ export default function CertificatesPage() {
               </div>
 
               {/* 2. Recipient Proclamation & User Details */}
-              <div className="text-center space-y-0.5 sm:space-y-1 my-auto">
+              <div className="w-full space-y-0.5 sm:space-y-1 my-auto">
                 <div
-                  className="text-[8px] sm:text-[9px] md:text-[10px] text-[#5C3717] tracking-[0.2em] uppercase font-bold"
+                  className="text-[7px] sm:text-[8px] md:text-[9px] text-[#7A4B1D] tracking-[0.2em] uppercase font-bold"
                   style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                 >
                   BE IT KNOWN ACROSS THE REALM THAT
@@ -653,7 +653,7 @@ export default function CertificatesPage() {
                 {/* Recipient Full Name (Strictly fitted within flat page) */}
                 <div className="relative inline-block max-w-full">
                   <div
-                    className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-black text-[#1A0B02] tracking-tight px-2 truncate"
+                    className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-[#1A0B02] tracking-tight px-2 truncate leading-tight"
                     style={{
                       fontFamily: "'Cinzel Decorative', 'Cinzel', Georgia, serif",
                       textShadow: "1px 1px 0px rgba(255,255,255,0.5)",
@@ -663,15 +663,15 @@ export default function CertificatesPage() {
                   </div>
 
                   {/* Hand-Drawn Double Quill Flourish Divider */}
-                  <div className="flex items-center justify-center gap-1.5 text-[#7B4F23]">
-                    <span className="h-[1.5px] w-12 sm:w-20 bg-gradient-to-r from-transparent via-[#7B4F23] to-[#4A2E12]" />
-                    <span className="text-[9px] sm:text-[10px]">⚜</span>
-                    <span className="h-[1.5px] w-12 sm:w-20 bg-gradient-to-l from-transparent via-[#7B4F23] to-[#4A2E12]" />
+                  <div className="flex items-center justify-center gap-1.5 text-[#8B5A2B]">
+                    <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-r from-transparent via-[#8B5A2B] to-[#4A2E12]" />
+                    <span className="text-[8px] sm:text-[9px]">⚜</span>
+                    <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-l from-transparent via-[#8B5A2B] to-[#4A2E12]" />
                   </div>
                 </div>
 
                 {/* Candidate Code & Cohort */}
-                <div className="text-[8px] sm:text-[9px] md:text-[10px] text-[#5A3816] font-mono tracking-wider">
+                <div className="text-[7px] sm:text-[8px] md:text-[9px] text-[#5A3816] font-mono tracking-wider">
                   <span>CANDIDATE: </span>
                   <span className="font-bold text-[#2A1507]">{studentId}</span>
                   <span> • COHORT OF SDET SCHOLARS</span>
@@ -679,59 +679,47 @@ export default function CertificatesPage() {
               </div>
 
               {/* 3. Course Title & Distinction Banner */}
-              <div className="text-center space-y-0.5">
+              <div className="w-full space-y-0.5">
                 <div
-                  className="text-[7px] sm:text-[8px] md:text-[9px] text-[#754619] tracking-[0.2em] font-bold uppercase"
+                  className="text-[6px] sm:text-[7px] md:text-[8px] text-[#754619] tracking-[0.2em] font-bold uppercase"
                   style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                 >
                   CONFERRED FOR SUPREME PROFICIENCY IN
                 </div>
 
                 <div
-                  className="text-xs sm:text-sm md:text-base lg:text-lg font-black text-[#210D03] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] leading-tight px-1 line-clamp-2 max-w-xl mx-auto"
+                  className="text-xs sm:text-sm md:text-base font-black text-[#210D03] tracking-tight uppercase drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] leading-tight px-1 line-clamp-1 max-w-lg mx-auto"
                   style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                 >
                   {activeCourse.courseTitle}
                 </div>
 
                 <div
-                  className="text-[8px] sm:text-[9px] md:text-[10px] text-[#5C3819] italic font-serif line-clamp-1"
+                  className="text-[7px] sm:text-[8px] md:text-[9px] text-[#5C3819] italic font-serif line-clamp-1"
                   style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
                 >
                   {activeCourse.latinTitle}
                 </div>
-
-                {/* Compact Guild Competencies */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 max-w-xl mx-auto text-left text-[7px] sm:text-[8px] md:text-[9px] text-[#4A280D] font-mono pt-1 border-t border-[#8B5A2B]/25">
-                  {activeCourse.competencies.slice(0, 4).map((comp, idx) => (
-                    <div key={idx} className="flex items-center gap-1 truncate">
-                      <span className="text-[#8B5A2B] text-[8px]">⚜</span>
-                      <span className="font-medium text-[#2E1606] truncate">
-                        {comp.replace(/^[IVXLC]+\.\s*/, "")}
-                      </span>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               {/* 4. Bottom Signatures, Wax Seal & Verification */}
-              <div className="pt-1 sm:pt-2 border-t border-[#6D421A]/30 flex items-center justify-between gap-2 relative">
+              <div className="w-full pt-1 border-t border-[#8B5A2B]/30 flex items-center justify-between gap-2 relative">
                 {/* Left Signature: Rahul Kamat */}
                 <div className="text-center sm:text-left space-y-0.5 w-[30%]">
                   <div
-                    className="text-base sm:text-xl md:text-2xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
+                    className="text-sm sm:text-lg md:text-xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
                     style={{ fontFamily: "'Alex Brush', cursive" }}
                   >
                     Rahul Kamat
                   </div>
-                  <div className="h-[1px] w-20 sm:w-28 bg-[#5C3819]/60 mx-auto sm:mx-0" />
+                  <div className="h-[1px] w-16 sm:w-24 bg-[#5C3819]/60 mx-auto sm:mx-0" />
                   <div
-                    className="text-[7px] sm:text-[8px] md:text-[9px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif truncate"
+                    className="text-[6px] sm:text-[7px] md:text-[8px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif truncate"
                     style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                   >
                     Rahul Kamat
                   </div>
-                  <div className="text-[6px] sm:text-[7px] md:text-[8px] text-[#5A3816] font-mono truncate">
+                  <div className="text-[5px] sm:text-[6px] md:text-[7px] text-[#5A3816] font-mono truncate">
                     Founder & Grand Master, NGTA
                   </div>
                 </div>
@@ -744,11 +732,11 @@ export default function CertificatesPage() {
                   }`}
                   title="Royal Crimson Wax Seal (Click to Stamp)"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center animate-wax-seal rounded-full">
+                  <div className="w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 flex items-center justify-center animate-wax-seal rounded-full">
                     <img
                       src="/antique-wax-seal.jpg"
                       alt="Royal Crimson Wax Seal 1600s"
-                      className="w-full h-full object-contain rounded-full shadow-[0_6px_16px_rgba(0,0,0,0.85)]"
+                      className="w-full h-full object-contain rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.85)]"
                     />
                   </div>
                 </div>
@@ -756,26 +744,26 @@ export default function CertificatesPage() {
                 {/* Right Signature: Academic Dean */}
                 <div className="text-center sm:text-right space-y-0.5 w-[30%]">
                   <div
-                    className="text-base sm:text-xl md:text-2xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
+                    className="text-sm sm:text-lg md:text-xl text-[#1E0D03] leading-none select-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)] truncate"
                     style={{ fontFamily: "'Alex Brush', cursive" }}
                   >
                     Dr. Eric Vance
                   </div>
-                  <div className="h-[1px] w-20 sm:w-28 bg-[#5C3819]/60 mx-auto sm:ml-auto" />
+                  <div className="h-[1px] w-16 sm:w-24 bg-[#5C3819]/60 mx-auto sm:ml-auto" />
                   <div
-                    className="text-[7px] sm:text-[8px] md:text-[9px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif truncate"
+                    className="text-[6px] sm:text-[7px] md:text-[8px] font-bold text-[#3B1F08] tracking-wider uppercase font-serif truncate"
                     style={{ fontFamily: "'Cinzel', Georgia, serif" }}
                   >
                     Dr. Eric Vance
                   </div>
-                  <div className="text-[6px] sm:text-[7px] md:text-[8px] text-[#5A3816] font-mono truncate">
+                  <div className="text-[5px] sm:text-[6px] md:text-[7px] text-[#5A3816] font-mono truncate">
                     Grand Chancellor & Architect
                   </div>
                 </div>
               </div>
 
               {/* 5. Footer Footnote: Serial & Date */}
-              <div className="pt-0.5 sm:pt-1 border-t border-[#8B5A2B]/20 flex items-center justify-between text-[7px] sm:text-[8px] md:text-[9px] text-[#5A3816] font-mono">
+              <div className="w-full pt-0.5 border-t border-[#8B5A2B]/20 flex items-center justify-between text-[6px] sm:text-[7px] md:text-[8px] text-[#5A3816] font-mono">
                 <span className="truncate">№ {activeCourse.serialNumber}</span>
                 <span>CONFERRED: {activeCourse.conferredDate}</span>
               </div>
