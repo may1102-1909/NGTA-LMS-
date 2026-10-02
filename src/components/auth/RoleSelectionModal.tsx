@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   X,
@@ -105,6 +106,11 @@ export default function RoleSelectionModal({
   const [selectedRole, setSelectedRole] = useState<RoleOption>(defaultRole);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Body Scroll Locking: prevent landing page & footer background from scrolling while modal is open
   useEffect(() => {
@@ -119,7 +125,7 @@ export default function RoleSelectionModal({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleProceedGoogle = async () => {
     try {
@@ -168,8 +174,8 @@ export default function RoleSelectionModal({
 
   const currentRole = ROLES.find((r) => r.id === selectedRole) || ROLES[0];
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
       {/* Subtle Inner Glow Backdrop */}
       <div className="absolute w-[500px] h-[500px] bg-[#EFFF4F]/10 rounded-full blur-[130px] pointer-events-none -z-10" />
 
@@ -339,7 +345,8 @@ export default function RoleSelectionModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

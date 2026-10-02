@@ -29,7 +29,7 @@ export default function LandingPage() {
       </div>
 
       {/* ── MAIN FULL-FOCUS CRT TERMINAL STAGE ── */}
-      <main className="relative z-20 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-12 text-center flex flex-col items-center justify-center flex-1">
+      <main className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-28 sm:pb-40 text-center flex flex-col items-center justify-center flex-1">
         {/* Centerpiece High-Resolution ThreeUI Zion Mainframe CRT Terminal */}
         <div className="w-full max-w-5xl relative">
 
@@ -45,13 +45,13 @@ export default function LandingPage() {
         </div>
 
         {/* ── ACTION BUTTON TO ENTER UNTOUCHED LMS PLATFORM ── */}
-        <div className="mt-10 flex flex-wrap justify-center items-center gap-4 font-mono">
+        <div className="mt-16 sm:mt-24 mb-16 sm:mb-28 flex flex-col items-center justify-center gap-4 font-mono">
           <LoginButton />
         </div>
       </main>
 
       {/* ── FOOTER ── */}
-      <div className="relative z-20">
+      <div className="relative z-10 w-full mt-auto">
         <Footer />
       </div>
     </div>
