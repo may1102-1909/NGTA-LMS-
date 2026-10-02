@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   X,
@@ -106,6 +106,19 @@ export default function RoleSelectionModal({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Body Scroll Locking: prevent landing page & footer background from scrolling while modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.classList.remove("overflow-hidden");
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleProceedGoogle = async () => {
@@ -156,12 +169,12 @@ export default function RoleSelectionModal({
   const currentRole = ROLES.find((r) => r.id === selectedRole) || ROLES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-2xl bg-black/85 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
       {/* Subtle Inner Glow Backdrop */}
       <div className="absolute w-[500px] h-[500px] bg-[#EFFF4F]/10 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       {/* Main Glassmorphic Container */}
-      <div className="relative bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full text-white overflow-hidden max-h-[92vh] flex flex-col space-y-6">
+      <div className="relative bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full text-white max-h-[90vh] overflow-y-auto flex flex-col space-y-6 my-auto">
         {/* Header */}
         <div className="flex items-start justify-between border-b border-white/10 pb-5 shrink-0">
           <div>
