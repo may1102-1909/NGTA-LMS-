@@ -28,8 +28,11 @@ import {
   DollarSign,
   Clock,
   ShieldAlert,
+  AlertTriangle,
 } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
+import { createLesson } from "@/app/actions/courses";
 
 type VideoSourceOption = "MP4_UPLOAD" | "GOOGLE_DRIVE" | "YOUTUBE";
 
@@ -60,6 +63,93 @@ interface QuizQuestionDraft {
   options: { id: string; text: string }[];
   correctAnswer: string;
   explanation: string;
+}
+
+// Direct Browser-to-Supabase Storage Video Uploader (Bypasses Next.js & Vercel 4.5MB Limits)
+async function uploadVideoDirectToSupabase({
+  file,
+  onProgress,
+}: {
+  file: File;
+  onProgress: (percent: number) => void;
+}): Promise<string> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const filePath = `lessons/${Date.now()}-${sanitizedFileName}`;
+
+  // Direct client browser upload to Supabase Storage endpoint with real-time XHR progress tracking
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const endpoint = `${supabaseUrl}/storage/v1/object/course-videos/${filePath}`;
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        onProgress(percent);
+      }
+    };
+
+    xhr.onload = async () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const { data: publicUrlData } = supabase.storage
+          .from("course-videos")
+          .getPublicUrl(filePath);
+
+        resolve(publicUrlData.publicUrl);
+      } else {
+        // Fallback to standard @supabase/supabase-js client method
+        try {
+          const { data, error } = await supabase.storage
+            .from("course-videos")
+            .upload(filePath, file, { cacheControl: "3600", upsert: false });
+
+          if (error) {
+            reject(new Error(error.message));
+          } else if (data) {
+            const { data: publicUrlData } = supabase.storage
+              .from("course-videos")
+              .getPublicUrl(data.path);
+            resolve(publicUrlData.publicUrl);
+          } else {
+            reject(new Error("Supabase direct video upload failed"));
+          }
+        } catch (clientErr: any) {
+          reject(new Error(clientErr.message || "Failed direct video upload to Supabase"));
+        }
+      }
+    };
+
+    xhr.onerror = async () => {
+      // Fallback to @supabase/supabase-js client method
+      try {
+        const { data, error } = await supabase.storage
+          .from("course-videos")
+          .upload(filePath, file, { cacheControl: "3600", upsert: false });
+
+        if (error) {
+          reject(new Error(error.message));
+        } else if (data) {
+          const { data: publicUrlData } = supabase.storage
+            .from("course-videos")
+            .getPublicUrl(data.path);
+          resolve(publicUrlData.publicUrl);
+        } else {
+          reject(new Error("Supabase direct video upload connection error"));
+        }
+      } catch (clientErr: any) {
+        reject(new Error(clientErr.message || "Connection error during direct video upload"));
+      }
+    };
+
+    xhr.open("POST", endpoint);
+    xhr.setRequestHeader("Authorization", `Bearer ${supabaseAnonKey}`);
+    xhr.setRequestHeader("apikey", supabaseAnonKey);
+    xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
+    xhr.setRequestHeader("x-upsert", "false");
+    xhr.setRequestHeader("cache-control", "max-age=3600");
+    xhr.send(file);
+  });
 }
 
 // XHR upload helper for granular progress tracking
@@ -126,6 +216,18 @@ export default function NewCourseBuilderPage() {
   const [isVerifyingRole, setIsVerifyingRole] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [currentUserRole, setCurrentUserRole] = useState<string>("");
+
+  // Toast notification state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 7000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   // Step 1: Basic Metadata (BRD Section 5)
   const [title, setTitle] = useState("");
@@ -428,9 +530,18 @@ export default function NewCourseBuilderPage() {
     );
   };
 
-  // Lesson MP4 video upload handler
+  // Lesson MP4 video upload handler (Direct Browser-to-Supabase Storage)
   const handleLessonVideoUpload = async (modId: string, lesId: string, file: File) => {
     if (!file) return;
+
+    // Client-side file size check: if file.size > 50 * 1024 * 1024 (50MB)
+    const MAX_VIDEO_BYTES = 50 * 1024 * 1024; // 50MB Supabase Free Tier limit
+    if (file.size > MAX_VIDEO_BYTES) {
+      setToastMessage(
+        "File exceeds Supabase Free Tier limit (50MB). Please compress the video or use a Google Drive stream link."
+      );
+      return;
+    }
 
     // Update lesson upload state
     setModules((prev) =>
@@ -449,10 +560,9 @@ export default function NewCourseBuilderPage() {
     );
 
     try {
-      const publicUrl = await uploadAssetWithProgress({
+      // 1. Direct browser-to-Supabase upload (bypassing Next.js API & Vercel 4.5MB limit)
+      const publicVideoUrl = await uploadVideoDirectToSupabase({
         file,
-        bucket: "course-videos",
-        folder: "lessons",
         onProgress: (percent) => {
           setModules((prev) =>
             prev.map((m) =>
@@ -469,7 +579,7 @@ export default function NewCourseBuilderPage() {
         },
       });
 
-      // Save public URL into lesson
+      // 2. Update local state with resulting public URL
       setModules((prev) =>
         prev.map((m) =>
           m.id === modId
@@ -479,7 +589,7 @@ export default function NewCourseBuilderPage() {
                   l.id === lesId
                     ? {
                         ...l,
-                        videoUrl: publicUrl,
+                        videoUrl: publicVideoUrl,
                         videoType: "MP4_UPLOAD",
                         isUploadingVideo: false,
                         videoUploadProgress: 100,
@@ -490,6 +600,22 @@ export default function NewCourseBuilderPage() {
             : m
         )
       );
+
+      // 3. Save URL Only in Prisma via Server Action createLesson
+      // Pass ONLY the string publicVideoUrl back to the Server Action (no File / FormData)
+      const targetLesson = modules
+        .find((m) => m.id === modId)
+        ?.lessons.find((l) => l.id === lesId);
+
+      await createLesson({
+        moduleId: modId,
+        title: targetLesson?.title || file.name,
+        durationMinutes: targetLesson?.durationMinutes || 0,
+        videoType: "MP4_UPLOAD",
+        videoUrl: publicVideoUrl,
+        pdfResourceUrl: targetLesson?.pdfResourceUrl || null,
+      });
+
     } catch (err: any) {
       setErrorMessage(`Lesson MP4 upload error: ${err.message}`);
       setModules((prev) =>
@@ -729,7 +855,27 @@ export default function NewCourseBuilderPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-white font-sans">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-white font-sans relative">
+      {/* Toast Notification for Validation Warnings */}
+      {toastMessage && (
+        <div className="fixed top-6 right-6 z-50 max-w-md p-4 bg-[#1E1E22] border border-amber-500/50 rounded-2xl shadow-2xl flex items-start gap-3 text-amber-300 font-mono text-xs animate-in fade-in slide-in-from-top-4 duration-200">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <span className="font-bold uppercase tracking-wider block text-amber-400 mb-0.5">
+              Upload Notice
+            </span>
+            <span>{toastMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="text-amber-400 hover:text-white p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Top Header */}
       <div className="border-b border-[#3E3E43] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
