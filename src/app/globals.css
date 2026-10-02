@@ -480,6 +480,213 @@
   .animate-candlelight {
     animation: candlelightFlicker 4s ease-in-out infinite;
   }
+
+  /* Authentic 1600s Parchment Roll Opening Animations */
+  @keyframes parchmentUnfurlClip {
+    0% {
+      clip-path: inset(48% 0 48% 0);
+      filter: brightness(0.88) contrast(1.08);
+    }
+    15% {
+      clip-path: inset(44% 0 44% 0);
+    }
+    45% {
+      clip-path: inset(25% 0 25% 0);
+    }
+    75% {
+      clip-path: inset(8% 0 8% 0);
+      filter: brightness(1.05) contrast(1.02);
+    }
+    92% {
+      clip-path: inset(1% 0 1% 0);
+    }
+    100% {
+      clip-path: inset(0% 0 0% 0);
+      filter: brightness(1) contrast(1);
+    }
+  }
+
+  @keyframes topRollerSlideUp {
+    0% {
+      top: 50%;
+      transform: translateY(-100%);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.95);
+    }
+    15% {
+      top: 44%;
+      transform: translateY(-100%);
+    }
+    45% {
+      top: 25%;
+      transform: translateY(-100%);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.9);
+    }
+    75% {
+      top: 8%;
+      transform: translateY(-100%);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.85);
+    }
+    92% {
+      top: 1%;
+      transform: translateY(-100%);
+    }
+    100% {
+      top: 0%;
+      transform: translateY(0%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  @keyframes bottomRollerSlideDown {
+    0% {
+      top: 50%;
+      transform: translateY(0%);
+      box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.95);
+    }
+    15% {
+      top: 56%;
+      transform: translateY(0%);
+    }
+    45% {
+      top: 75%;
+      transform: translateY(0%);
+      box-shadow: 0 -14px 26px rgba(0, 0, 0, 0.9);
+    }
+    75% {
+      top: 92%;
+      transform: translateY(0%);
+      box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.85);
+    }
+    92% {
+      top: 99%;
+      transform: translateY(0%);
+    }
+    100% {
+      top: 100%;
+      transform: translateY(-100%);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  @keyframes ribbonSnapLeft {
+    0% {
+      transform: translateX(0) scaleY(1);
+      opacity: 1;
+    }
+    35% {
+      transform: translateX(-35px) scaleY(1.15) rotate(-6deg);
+      opacity: 0.95;
+    }
+    100% {
+      transform: translateX(-180px) scaleY(0.4) rotate(-22deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes ribbonSnapRight {
+    0% {
+      transform: translateX(0) scaleY(1);
+      opacity: 1;
+    }
+    35% {
+      transform: translateX(35px) scaleY(1.15) rotate(6deg);
+      opacity: 0.95;
+    }
+    100% {
+      transform: translateX(180px) scaleY(0.4) rotate(22deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sealBreakGlow {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.8));
+      opacity: 1;
+    }
+    40% {
+      transform: translate(-50%, -50%) scale(1.35);
+      filter: drop-shadow(0 0 30px rgba(245, 158, 11, 1)) drop-shadow(0 0 50px rgba(239, 255, 79, 0.8));
+      opacity: 1;
+    }
+    75% {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 0.75;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0;
+    }
+  }
+
+  @keyframes calligraphyInkReveal {
+    0% {
+      opacity: 0;
+      filter: blur(6px) brightness(1.25);
+      transform: scale(0.97);
+    }
+    40% {
+      opacity: 0.6;
+      filter: blur(2px) brightness(1.1);
+      transform: scale(0.99);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0px) brightness(1);
+      transform: scale(1);
+    }
+  }
+
+  @keyframes unrollShimmerGlow {
+    0% {
+      opacity: 0;
+      transform: scaleX(0.2) scaleY(0.5);
+    }
+    30% {
+      opacity: 0.85;
+      transform: scaleX(0.9) scaleY(1.2);
+    }
+    70% {
+      opacity: 0.6;
+      transform: scaleX(1.2) scaleY(1.5);
+    }
+    100% {
+      opacity: 0;
+      transform: scaleX(1.5) scaleY(2);
+    }
+  }
+
+  .animate-parchment-unfurl {
+    animation: parchmentUnfurlClip 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-top-roller-unroll {
+    animation: topRollerSlideUp 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-bottom-roller-unroll {
+    animation: bottomRollerSlideDown 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-ribbon-left {
+    animation: ribbonSnapLeft 0.5s ease-out forwards;
+  }
+
+  .animate-ribbon-right {
+    animation: ribbonSnapRight 0.5s ease-out forwards;
+  }
+
+  .animate-seal-break {
+    animation: sealBreakGlow 0.6s ease-out forwards;
+  }
+
+  .animate-calligraphy-ink {
+    animation: calligraphyInkReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-unroll-shimmer {
+    animation: unrollShimmerGlow 1.2s ease-out forwards;
+  }
 }
 
 /* Print Stylesheet for 1600s Royal Certificate Scroll */

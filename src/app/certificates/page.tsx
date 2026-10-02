@@ -26,7 +26,7 @@ import { INITIAL_CREDENTIALS } from "@/lib/gamification";
 import CredentialCard from "@/components/gamification/CredentialCard";
 
 /* Web Audio Synthesizer for 1600s Parchment Unfurl & Molten Wax Seal Stamp */
-function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
+function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock" | "ribbon") {
   if (typeof window === "undefined") return;
   try {
     const AudioContextClass =
@@ -35,7 +35,20 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
     if (!AudioContextClass) return;
     const ctx = new AudioContextClass();
 
-    if (type === "stamp") {
+    if (type === "ribbon") {
+      // Snapping velvet thread + metallic resonance
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(580, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.16);
+      gain.gain.setValueAtTime(0.16, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.22);
+    } else if (type === "stamp") {
       // 1. Deep low-frequency molten wax press thud (140Hz -> 42Hz)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -76,8 +89,8 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
         osc.stop(ctx.currentTime + i * 0.07 + 0.5);
       });
     } else if (type === "unfurl") {
-      // Gentle wood roller and parchment paper slide oscillations
-      [196, 261.63, 329.63, 392].forEach((freq, i) => {
+      // Wood roller and parchment paper slide oscillations
+      [196, 261.63, 329.63, 392, 523.25].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
@@ -85,10 +98,10 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
         gain.connect(ctx.destination);
         const startTime = ctx.currentTime + i * 0.08;
         osc.frequency.setValueAtTime(freq, startTime);
-        gain.gain.setValueAtTime(0.04, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+        gain.gain.setValueAtTime(0.05, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
         osc.start(startTime);
-        osc.stop(startTime + 0.3);
+        osc.stop(startTime + 0.35);
       });
     } else if (type === "click") {
       const osc = ctx.createOscillator();
@@ -105,6 +118,44 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock") {
   } catch {
     // Autoplay fallback
   }
+}
+
+/* 3D Turned Wooden Roller Bar for Unrolling Animation */
+function WoodenRollerBar({ position }: { position: "top" | "bottom" }) {
+  const isTop = position === "top";
+  return (
+    <div
+      className={`absolute left-0 right-0 h-6 sm:h-9 md:h-11 z-30 pointer-events-none ${
+        isTop ? "animate-top-roller-unroll" : "animate-bottom-roller-unroll"
+      }`}
+    >
+      {/* 3D Cylindrical Wooden Dowel */}
+      <div
+        className={`w-full h-full relative ${
+          isTop
+            ? "bg-gradient-to-b from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-b border-[#B45309]/60 shadow-[0_18px_32px_rgba(0,0,0,0.95)]"
+            : "bg-gradient-to-t from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-t border-[#B45309]/60 shadow-[0_-18px_32px_rgba(0,0,0,0.95)]"
+        }`}
+      >
+        {/* Longitudinal Lacquer Sheen Strip */}
+        <div
+          className={`absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FDE68A]/40 to-transparent pointer-events-none ${
+            isTop ? "top-[25%]" : "bottom-[25%]"
+          }`}
+        />
+
+        {/* Left Turned Wooden Knob / Brass Finial */}
+        <div className="absolute left-[-12px] sm:left-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+        </div>
+
+        {/* Right Turned Wooden Knob / Brass Finial */}
+        <div className="absolute right-[-12px] sm:right-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-bl from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-bl from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 interface CourseCertificateConfig {
@@ -225,11 +276,52 @@ export default function CertificatesPage() {
 
   const isCourseCompleted = !!courseCompletionMap[selectedTrackId];
 
-  // Animation & UI states
-  const [isRolled, setIsRolled] = useState(false);
+  // Roll Opening Cinematic Animation Phase:
+  // "idle" | "sealed" | "snapping" | "unfurling" | "revealing" | "complete"
+  const [unrollPhase, setUnrollPhase] = useState<
+    "idle" | "sealed" | "snapping" | "unfurling" | "revealing" | "complete"
+  >("complete");
+
   const [sealClicked, setSealClicked] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [filter, setFilter] = useState<"ALL" | "CERTIFICATE" | "BADGE">("ALL");
+
+  // Trigger Full 1600s Roll Opening Cinematic Sequence
+  const triggerRollOpening = () => {
+    // Stage 1: Sealed cylindrical roll resting in spotlight
+    setUnrollPhase("sealed");
+
+    // Stage 2: Velvet ribbon snaps and golden wax seal breaks with fanfare
+    const t1 = setTimeout(() => {
+      setUnrollPhase("snapping");
+      playAntiqueSound("ribbon");
+      playAntiqueSound("unlock");
+    }, 450);
+
+    // Stage 3: Wooden rollers separate and parchment unrolls vertically
+    const t2 = setTimeout(() => {
+      setUnrollPhase("unfurling");
+      playAntiqueSound("unfurl");
+    }, 950);
+
+    // Stage 4: Parchment reaches full height, calligraphy ink emerges & wax seal stamps down
+    const t3 = setTimeout(() => {
+      setUnrollPhase("revealing");
+      playAntiqueSound("stamp");
+    }, 2350);
+
+    // Stage 5: Settle into complete, interactive state
+    const t4 = setTimeout(() => {
+      setUnrollPhase("complete");
+    }, 3200);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
+  };
 
   // Toggle completion simulation
   const handleToggleCourseCompletion = () => {
@@ -239,21 +331,29 @@ export default function CertificatesPage() {
       [selectedTrackId]: newState,
     }));
     if (newState) {
-      playAntiqueSound("unlock");
-      setIsRolled(true);
-      setTimeout(() => setIsRolled(false), 300);
+      triggerRollOpening();
     } else {
+      setUnrollPhase("idle");
       playAntiqueSound("click");
     }
   };
 
-  // Re-roll and unfurl the scroll
-  const handleReRoll = () => {
-    setIsRolled(true);
-    playAntiqueSound("unfurl");
-    setTimeout(() => {
-      setIsRolled(false);
-    }, 400);
+  // Track Selector
+  const handleSelectTrack = (trackId: string) => {
+    setSelectedTrackId(trackId);
+    const willBeCompleted = !!courseCompletionMap[trackId];
+    if (willBeCompleted) {
+      triggerRollOpening();
+    } else {
+      setUnrollPhase("idle");
+      playAntiqueSound("click");
+    }
+  };
+
+  // Replay Roll Opening Animation
+  const handleReplayRollOpening = () => {
+    if (!isCourseCompleted) return;
+    triggerRollOpening();
   };
 
   // Seal Press Interaction
@@ -315,6 +415,17 @@ export default function CertificatesPage() {
 
         {/* Global Action Buttons */}
         <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs shrink-0">
+          {isCourseCompleted && (
+            <button
+              onClick={handleReplayRollOpening}
+              className="px-3.5 py-2.5 border border-amber-500/40 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold uppercase rounded-lg transition-all flex items-center gap-1.5 hover:scale-105 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.25)]"
+              title="Watch the 1600s scroll roll opening sequence again"
+            >
+              <RotateCcw className="w-4 h-4 text-amber-400" />
+              <span>REPLAY ROLL OPENING</span>
+            </button>
+          )}
+
           <button
             onClick={handlePrint}
             disabled={!isCourseCompleted}
@@ -438,10 +549,7 @@ export default function CertificatesPage() {
               return (
                 <button
                   key={track.id}
-                  onClick={() => {
-                    setSelectedTrackId(track.id);
-                    handleReRoll();
-                  }}
+                  onClick={() => handleSelectTrack(track.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
                     selectedTrackId === track.id
                       ? "bg-gradient-to-r from-amber-400/25 to-yellow-400/20 text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
@@ -488,6 +596,53 @@ export default function CertificatesPage() {
           </div>
         </div>
       </div>
+
+      {/* Dynamic Status / Herald Banner when Unlocking or Completed */}
+      {isCourseCompleted && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-2.5 bg-[#1C1610] border border-amber-500/40 rounded-xl font-mono text-xs no-print">
+          <div className="flex items-center gap-2 text-amber-300">
+            {unrollPhase === "sealed" || unrollPhase === "snapping" ? (
+              <>
+                <Sparkles className="w-4 h-4 text-yellow-400 animate-spin" />
+                <span className="font-bold uppercase tracking-wider text-yellow-300">
+                  COURSE COMPLETED! SNAPPING VELVET RIBBON & BREAKING WAX SEAL...
+                </span>
+              </>
+            ) : unrollPhase === "unfurling" ? (
+              <>
+                <ScrollText className="w-4 h-4 text-amber-400 animate-bounce" />
+                <span className="font-bold uppercase tracking-wider text-amber-300">
+                  UNFURLING 1600s ROYAL LETTERS PATENT OF MASTERY...
+                </span>
+              </>
+            ) : unrollPhase === "revealing" ? (
+              <>
+                <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                <span className="font-bold uppercase tracking-wider text-emerald-300">
+                  INSCRIBING ROYAL CALLIGRAPHY & CONFERRING ACCREDITATION...
+                </span>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span className="font-bold uppercase tracking-wider text-emerald-300">
+                  OFFICIAL 1600s LETTERS PATENT • UNROLLED & ACCREDITED
+                </span>
+              </>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleReplayRollOpening}
+              className="px-3 py-1 bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/50 text-amber-300 font-bold uppercase rounded-lg transition-all flex items-center gap-1.5 hover:scale-105 cursor-pointer text-[11px]"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+              <span>Replay Roll Opening</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ======================================================== */}
       {/* CERTIFICATE DISPLAY: LOCKED STATE VS UNLOCKED SCROLL      */}
@@ -593,6 +748,64 @@ export default function CertificatesPage() {
               </div>
             </div>
           </div>
+        ) : unrollPhase === "sealed" || unrollPhase === "snapping" ? (
+          /* ======================================================== */
+          /* ROLL OPENING: STAGE 1 & 2 - SEALED CYLINDER & RIBBON BREAK */
+          /* ======================================================== */
+          <div
+            id="parchment-scroll-container"
+            className="relative w-full max-w-[1080px] aspect-[16/9] select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#120B06] flex items-center justify-center border-2 border-amber-950/80"
+          >
+            {/* Ambient Warm Candlelight Glow */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0704]/90 via-[#0A0704]/50 to-[#0A0704]/80 pointer-events-none" />
+
+            {/* Rolled Scroll Cylinder */}
+            <div className="relative w-[86%] sm:w-[82%] h-20 sm:h-28 md:h-32 shadow-[0_25px_60px_rgba(0,0,0,0.95)] flex items-center justify-center">
+              {/* Wooden Turned Finials on Ends */}
+              <div className="absolute left-[-14px] sm:left-[-22px] top-1/2 -translate-y-1/2 w-9 h-9 sm:w-13 sm:h-13 md:w-15 md:h-15 rounded-full bg-gradient-to-br from-[#8C532B] via-[#512D15] to-[#1C0E06] border-2 border-amber-500/80 shadow-[0_8px_20px_rgba(0,0,0,0.9)] flex items-center justify-center z-30">
+                <div className="w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br from-amber-300 to-amber-700 shadow-inner border border-amber-200/40" />
+              </div>
+              <div className="absolute right-[-14px] sm:right-[-22px] top-1/2 -translate-y-1/2 w-9 h-9 sm:w-13 sm:h-13 md:w-15 md:h-15 rounded-full bg-gradient-to-bl from-[#8C532B] via-[#512D15] to-[#1C0E06] border-2 border-amber-500/80 shadow-[0_8px_20px_rgba(0,0,0,0.9)] flex items-center justify-center z-30">
+                <div className="w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full bg-gradient-to-bl from-amber-300 to-amber-700 shadow-inner border border-amber-200/40" />
+              </div>
+
+              {/* Parchment Rolled Cylinder Body */}
+              <div className="w-full h-full rounded-md bg-gradient-to-b from-[#2E180B] via-[#8C6239] via-[#D4B58A] via-[#8C6239] to-[#241207] border-y-2 border-[#4A2911] relative overflow-hidden shadow-inner flex items-center justify-center">
+                {/* Longitudinal Cylindrical Sheen */}
+                <div className="absolute top-[28%] left-0 right-0 h-[6px] bg-gradient-to-r from-transparent via-[#FFF8E7]/35 to-transparent pointer-events-none" />
+                <div className="absolute bottom-[18%] left-0 right-0 h-[10px] bg-gradient-to-b from-transparent to-[#1F1106]/70 pointer-events-none" />
+
+                {/* Velvet Ribbon Bands */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                  {/* Left Half Ribbon */}
+                  <div
+                    className={`h-8 sm:h-11 w-1/2 bg-gradient-to-b from-[#6B1414] via-[#991B1B] to-[#450A0A] border-y-2 border-amber-400 shadow-lg ${
+                      unrollPhase === "snapping" ? "animate-ribbon-left" : ""
+                    }`}
+                  />
+                  {/* Right Half Ribbon */}
+                  <div
+                    className={`h-8 sm:h-11 w-1/2 bg-gradient-to-b from-[#6B1414] via-[#991B1B] to-[#450A0A] border-y-2 border-amber-400 shadow-lg ${
+                      unrollPhase === "snapping" ? "animate-ribbon-right" : ""
+                    }`}
+                  />
+                </div>
+
+                {/* Center Royal Wax Seal */}
+                <div
+                  className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 z-30 ${
+                    unrollPhase === "snapping" ? "animate-seal-break" : "animate-wax-seal"
+                  }`}
+                >
+                  <img
+                    src="/antique-wax-seal.jpg"
+                    alt="Royal Crimson Wax Seal"
+                    className="w-full h-full object-contain rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.95)]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         ) : (
           /* ======================================================== */
           /* UNLOCKED 1600s OLD LETTER ROLL CERTIFICATE               */
@@ -601,19 +814,36 @@ export default function CertificatesPage() {
           /* ======================================================== */
           <div
             id="parchment-scroll-container"
-            className={`relative w-full max-w-[1080px] aspect-[16/9] transition-all duration-700 select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] ${
-              isRolled ? "scale-y-0 opacity-0" : "animate-scroll-unroll"
-            }`}
+            className="relative w-full max-w-[1080px] aspect-[16/9] select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#120B06]"
           >
             {/* Authentic 1600s Unfurled Parchment Roll Background */}
-            <img
-              src="/parchment-scroll-1600s.jpg"
-              alt="1600s Antique Parchment Letter Roll Certificate"
-              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
-            />
+            <div
+              className={`absolute inset-0 w-full h-full ${
+                unrollPhase === "unfurling" ? "animate-parchment-unfurl" : ""
+              }`}
+            >
+              <img
+                src="/parchment-scroll-1600s.jpg"
+                alt="1600s Antique Parchment Letter Roll Certificate"
+                className="w-full h-full object-fill pointer-events-none"
+              />
 
-            {/* Vintage Aged Parchment Tone Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#2A1808]/15 via-transparent to-[#2A1808]/20 pointer-events-none" />
+              {/* Vintage Aged Parchment Tone Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#2A1808]/15 via-transparent to-[#2A1808]/20 pointer-events-none" />
+            </div>
+
+            {/* Active Rolling Wooden Roller Bars (Visible during unfurling phase) */}
+            {unrollPhase === "unfurling" && (
+              <>
+                <WoodenRollerBar position="top" />
+                <WoodenRollerBar position="bottom" />
+
+                {/* Golden Celestial Shimmer Light Beams from Seam */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 overflow-hidden">
+                  <div className="w-[120%] h-28 bg-gradient-to-r from-transparent via-amber-400/40 via-yellow-200/60 to-transparent blur-md animate-unroll-shimmer" />
+                </div>
+              </>
+            )}
 
             {/* ======================================================== */}
             {/* FLAT PARCHMENT PAGE AREA                                 */}
@@ -622,7 +852,11 @@ export default function CertificatesPage() {
             {/* ======================================================== */}
             <div
               className={`absolute left-[25%] right-[25%] top-[27%] bottom-[29%] flex flex-col justify-between items-center text-center text-[#241306] overflow-hidden px-2 sm:px-4 py-1 transition-opacity duration-300 ${
-                isRolled ? "opacity-0" : "opacity-100"
+                unrollPhase === "unfurling"
+                  ? "opacity-0"
+                  : unrollPhase === "revealing"
+                  ? "animate-calligraphy-ink"
+                  : "opacity-100"
               }`}
             >
               {/* 1. Top Proclamation Header */}
@@ -729,7 +963,7 @@ export default function CertificatesPage() {
                   onClick={handleSealClick}
                   className={`relative cursor-pointer transition-transform duration-200 select-none shrink-0 ${
                     sealClicked ? "scale-90" : "hover:scale-105"
-                  }`}
+                  } ${unrollPhase === "revealing" ? "animate-stamp" : ""}`}
                   title="Royal Crimson Wax Seal (Click to Stamp)"
                 >
                   <div className="w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 flex items-center justify-center animate-wax-seal rounded-full">
