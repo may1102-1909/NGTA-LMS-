@@ -121,20 +121,30 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock" | "ribbo
 }
 
 /* 3D Turned Wooden Roller Bar for Unrolling Animation */
-function WoodenRollerBar({ position }: { position: "top" | "bottom" }) {
+function WoodenRollerBar({
+  position,
+  isMovingVertical,
+}: {
+  position: "top" | "bottom";
+  isMovingVertical?: boolean;
+}) {
   const isTop = position === "top";
   return (
     <div
       className={`absolute left-0 right-0 h-6 sm:h-9 md:h-11 z-30 pointer-events-none ${
-        isTop ? "animate-top-roller-unroll" : "animate-bottom-roller-unroll"
+        isMovingVertical
+          ? "animate-roller-vertical"
+          : isTop
+          ? "top-0 shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
+          : "bottom-0 shadow-[0_-12px_24px_rgba(0,0,0,0.85)]"
       }`}
     >
       {/* 3D Cylindrical Wooden Dowel */}
       <div
         className={`w-full h-full relative ${
           isTop
-            ? "bg-gradient-to-b from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-b border-[#B45309]/60 shadow-[0_18px_32px_rgba(0,0,0,0.95)]"
-            : "bg-gradient-to-t from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-t border-[#B45309]/60 shadow-[0_-18px_32px_rgba(0,0,0,0.95)]"
+            ? "bg-gradient-to-b from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-b border-[#B45309]/60 shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
+            : "bg-gradient-to-t from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-t border-[#B45309]/60 shadow-[0_-12px_24px_rgba(0,0,0,0.85)]"
         }`}
       >
         {/* Longitudinal Lacquer Sheen Strip */}
@@ -612,7 +622,7 @@ export default function CertificatesPage() {
               <>
                 <ScrollText className="w-4 h-4 text-amber-400 animate-bounce" />
                 <span className="font-bold uppercase tracking-wider text-amber-300">
-                  UNFURLING 1600s ROYAL LETTERS PATENT OF MASTERY...
+                  UNFURLING 1600s CERTIFICATE ROLL VERTICALLY DOWNWARDS...
                 </span>
               </>
             ) : unrollPhase === "revealing" ? (
@@ -626,7 +636,7 @@ export default function CertificatesPage() {
               <>
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span className="font-bold uppercase tracking-wider text-emerald-300">
-                  OFFICIAL 1600s LETTERS PATENT • UNROLLED & ACCREDITED
+                  OFFICIAL 1600s LETTERS PATENT • UNROLLED VERTICALLY & ACCREDITED
                 </span>
               </>
             )}
@@ -750,17 +760,29 @@ export default function CertificatesPage() {
           </div>
         ) : unrollPhase === "sealed" || unrollPhase === "snapping" ? (
           /* ======================================================== */
-          /* ROLL OPENING: STAGE 1 & 2 - SEALED CYLINDER & RIBBON BREAK */
+          /* VERTICAL ROLL OPENING: STAGE 1 & 2 - SEALED CYLINDER     */
           /* ======================================================== */
           <div
             id="parchment-scroll-container"
-            className="relative w-full max-w-[1080px] aspect-[16/9] select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#120B06] flex items-center justify-center border-2 border-amber-950/80"
+            className="relative w-full max-w-[1080px] aspect-[16/9] select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#120B06] flex flex-col items-center justify-start pt-6 sm:pt-10 border-2 border-amber-950/80"
           >
             {/* Ambient Warm Candlelight Glow */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0704]/90 via-[#0A0704]/50 to-[#0A0704]/80 pointer-events-none" />
 
-            {/* Rolled Scroll Cylinder */}
-            <div className="relative w-[86%] sm:w-[82%] h-20 sm:h-28 md:h-32 shadow-[0_25px_60px_rgba(0,0,0,0.95)] flex items-center justify-center">
+            {/* Top Anchor Wooden Dowel */}
+            <div className="absolute top-0 left-0 right-0 h-6 sm:h-9 md:h-11 z-20 pointer-events-none">
+              <div className="w-full h-full relative bg-gradient-to-b from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-b border-[#B45309]/60 shadow-[0_12px_24px_rgba(0,0,0,0.85)]">
+                <div className="absolute left-[-12px] sm:left-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+                </div>
+                <div className="absolute right-[-12px] sm:right-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-bl from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-bl from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+                </div>
+              </div>
+            </div>
+
+            {/* Rolled Scroll Cylinder Positioned at Top Ready to Unroll Down */}
+            <div className="relative w-[86%] sm:w-[82%] h-24 sm:h-32 md:h-36 shadow-[0_25px_60px_rgba(0,0,0,0.95)] flex items-center justify-center mt-2 sm:mt-4 z-20">
               {/* Wooden Turned Finials on Ends */}
               <div className="absolute left-[-14px] sm:left-[-22px] top-1/2 -translate-y-1/2 w-9 h-9 sm:w-13 sm:h-13 md:w-15 md:h-15 rounded-full bg-gradient-to-br from-[#8C532B] via-[#512D15] to-[#1C0E06] border-2 border-amber-500/80 shadow-[0_8px_20px_rgba(0,0,0,0.9)] flex items-center justify-center z-30">
                 <div className="w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br from-amber-300 to-amber-700 shadow-inner border border-amber-200/40" />
@@ -771,22 +793,22 @@ export default function CertificatesPage() {
 
               {/* Parchment Rolled Cylinder Body */}
               <div className="w-full h-full rounded-md bg-gradient-to-b from-[#2E180B] via-[#8C6239] via-[#D4B58A] via-[#8C6239] to-[#241207] border-y-2 border-[#4A2911] relative overflow-hidden shadow-inner flex items-center justify-center">
-                {/* Longitudinal Cylindrical Sheen */}
+                {/* Cylindrical Sheen */}
                 <div className="absolute top-[28%] left-0 right-0 h-[6px] bg-gradient-to-r from-transparent via-[#FFF8E7]/35 to-transparent pointer-events-none" />
                 <div className="absolute bottom-[18%] left-0 right-0 h-[10px] bg-gradient-to-b from-transparent to-[#1F1106]/70 pointer-events-none" />
 
-                {/* Velvet Ribbon Bands */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                  {/* Left Half Ribbon */}
+                {/* Vertical Velvet Ribbon Bands */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
+                  {/* Top Half of Ribbon */}
                   <div
-                    className={`h-8 sm:h-11 w-1/2 bg-gradient-to-b from-[#6B1414] via-[#991B1B] to-[#450A0A] border-y-2 border-amber-400 shadow-lg ${
-                      unrollPhase === "snapping" ? "animate-ribbon-left" : ""
+                    className={`w-10 sm:w-14 h-1/2 bg-gradient-to-r from-[#6B1414] via-[#991B1B] to-[#450A0A] border-x-2 border-amber-400 shadow-lg ${
+                      unrollPhase === "snapping" ? "animate-ribbon-up" : ""
                     }`}
                   />
-                  {/* Right Half Ribbon */}
+                  {/* Bottom Half of Ribbon */}
                   <div
-                    className={`h-8 sm:h-11 w-1/2 bg-gradient-to-b from-[#6B1414] via-[#991B1B] to-[#450A0A] border-y-2 border-amber-400 shadow-lg ${
-                      unrollPhase === "snapping" ? "animate-ribbon-right" : ""
+                    className={`w-10 sm:w-14 h-1/2 bg-gradient-to-r from-[#6B1414] via-[#991B1B] to-[#450A0A] border-x-2 border-amber-400 shadow-lg ${
+                      unrollPhase === "snapping" ? "animate-ribbon-down" : ""
                     }`}
                   />
                 </div>
@@ -808,7 +830,7 @@ export default function CertificatesPage() {
           </div>
         ) : (
           /* ======================================================== */
-          /* UNLOCKED 1600s OLD LETTER ROLL CERTIFICATE               */
+          /* UNLOCKED 1600s OLD LETTER ROLL CERTIFICATE (VERTICAL UNROLL) */
           /* Text is strictly bounded within flat parchment page area */
           /* ZERO OVERLAY ON ROLLERS, BORDERS OR OUTSIDE CANVAS       */
           /* ======================================================== */
@@ -819,7 +841,7 @@ export default function CertificatesPage() {
             {/* Authentic 1600s Unfurled Parchment Roll Background */}
             <div
               className={`absolute inset-0 w-full h-full ${
-                unrollPhase === "unfurling" ? "animate-parchment-unfurl" : ""
+                unrollPhase === "unfurling" ? "animate-parchment-vertical" : ""
               }`}
             >
               <img
@@ -835,13 +857,14 @@ export default function CertificatesPage() {
             {/* Active Rolling Wooden Roller Bars (Visible during unfurling phase) */}
             {unrollPhase === "unfurling" && (
               <>
+                {/* Top stationary anchor roller */}
                 <WoodenRollerBar position="top" />
-                <WoodenRollerBar position="bottom" />
 
-                {/* Golden Celestial Shimmer Light Beams from Seam */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 overflow-hidden">
-                  <div className="w-[120%] h-28 bg-gradient-to-r from-transparent via-amber-400/40 via-yellow-200/60 to-transparent blur-md animate-unroll-shimmer" />
-                </div>
+                {/* Bottom roller dowel rolling VERTICALLY downwards */}
+                <WoodenRollerBar position="bottom" isMovingVertical={true} />
+
+                {/* Golden Celestial Shimmer Light Sweeping Vertically */}
+                <div className="absolute inset-x-0 h-28 bg-gradient-to-b from-transparent via-amber-400/40 via-yellow-200/60 to-transparent blur-md pointer-events-none z-20 animate-light-sweep-vertical" />
               </>
             )}
 

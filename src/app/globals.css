@@ -656,24 +656,144 @@
     }
   }
 
-  .animate-parchment-unfurl {
-    animation: parchmentUnfurlClip 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  /* Authentic 1600s Parchment Vertical Roll Opening Animations */
+  @keyframes parchmentUnfurlVertical {
+    0% {
+      clip-path: inset(0 0 100% 0);
+      filter: brightness(0.9) contrast(1.06);
+    }
+    12% {
+      clip-path: inset(0 0 88% 0);
+    }
+    35% {
+      clip-path: inset(0 0 65% 0);
+    }
+    65% {
+      clip-path: inset(0 0 28% 0);
+      filter: brightness(1.05) contrast(1.02);
+    }
+    88% {
+      clip-path: inset(0 0 5% 0);
+    }
+    94% {
+      clip-path: inset(0 0 0% 0);
+    }
+    100% {
+      clip-path: inset(0 0 0% 0);
+      filter: brightness(1) contrast(1);
+    }
   }
 
-  .animate-top-roller-unroll {
-    animation: topRollerSlideUp 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  @keyframes rollerRollDownVertical {
+    0% {
+      top: 0%;
+      transform: translateY(0%);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.95);
+    }
+    12% {
+      top: 12%;
+      transform: translateY(-50%);
+    }
+    35% {
+      top: 35%;
+      transform: translateY(-50%);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.95);
+    }
+    65% {
+      top: 72%;
+      transform: translateY(-50%);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.9);
+    }
+    88% {
+      top: 95%;
+      transform: translateY(-90%);
+    }
+    94% {
+      top: 100%;
+      transform: translateY(-100%) translateY(-10px);
+    }
+    100% {
+      top: 100%;
+      transform: translateY(-100%);
+      box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.75);
+    }
   }
 
-  .animate-bottom-roller-unroll {
-    animation: bottomRollerSlideDown 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  @keyframes verticalLightSweep {
+    0% {
+      top: 0%;
+      opacity: 0;
+    }
+    15% {
+      top: 15%;
+      opacity: 0.85;
+    }
+    45% {
+      top: 45%;
+      opacity: 0.75;
+    }
+    75% {
+      top: 75%;
+      opacity: 0.6;
+    }
+    95% {
+      top: 98%;
+      opacity: 0.3;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
   }
 
-  .animate-ribbon-left {
-    animation: ribbonSnapLeft 0.5s ease-out forwards;
+  @keyframes ribbonDropUp {
+    0% {
+      transform: translateY(0) scaleX(1);
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(-35px) scaleX(0.9);
+      opacity: 0.85;
+    }
+    100% {
+      transform: translateY(-120px) scaleX(0.4);
+      opacity: 0;
+    }
   }
 
-  .animate-ribbon-right {
-    animation: ribbonSnapRight 0.5s ease-out forwards;
+  @keyframes ribbonDropDown {
+    0% {
+      transform: translateY(0) scaleX(1);
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(45px) scaleX(1.1) rotate(6deg);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(180px) scaleX(0.5) rotate(18deg);
+      opacity: 0;
+    }
+  }
+
+  .animate-parchment-vertical {
+    animation: parchmentUnfurlVertical 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-roller-vertical {
+    animation: rollerRollDownVertical 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-light-sweep-vertical {
+    animation: verticalLightSweep 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+  }
+
+  .animate-ribbon-up {
+    animation: ribbonDropUp 0.5s ease-out forwards;
+  }
+
+  .animate-ribbon-down {
+    animation: ribbonDropDown 0.6s ease-out forwards;
   }
 
   .animate-seal-break {
