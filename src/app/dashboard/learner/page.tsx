@@ -125,226 +125,160 @@ export default function LearnerDashboardPage() {
         </div>
       </div>
 
-      {/* Main Grid: Learning Progress & Quick Actions */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left 2 Cols: Enrolled Courses & Learning Hub */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Enrolled Courses Card */}
-          <div className="cyber-card rounded-3xl p-7 sm:p-8 space-y-6">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-lime-400/10 border border-lime-400/20 flex items-center justify-center text-lime-400">
-                  <BookOpen className="w-4 h-4" />
-                </div>
-                <h2 className="font-mono text-xs uppercase font-bold tracking-wider text-white">
-                  My Enrolled Courses ({enrollments.length})
-                </h2>
+      {/* Main Content: Enrolled Courses & Receipts */}
+      <div className="relative z-10 space-y-8">
+        {/* Enrolled Courses Card */}
+        <div className="cyber-card rounded-3xl p-7 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-lime-400/10 border border-lime-400/20 flex items-center justify-center text-lime-400">
+                <BookOpen className="w-4 h-4" />
               </div>
-              <Link
-                href="/courses"
-                className="text-xs font-mono text-[#EFFF4F] hover:underline flex items-center gap-1 group"
-              >
-                <span>Browse All</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              <h2 className="font-mono text-xs uppercase font-bold tracking-wider text-white">
+                My Enrolled Courses ({enrollments.length})
+              </h2>
             </div>
+            <Link
+              href="/courses"
+              className="text-xs font-mono text-[#EFFF4F] hover:underline flex items-center gap-1 group"
+            >
+              <span>Browse All</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
 
-            {loading ? (
-              <div className="py-12 text-center text-xs font-mono text-zinc-500">
-                Synchronizing course progress...
+          {loading ? (
+            <div className="py-12 text-center text-xs font-mono text-zinc-500">
+              Synchronizing course progress...
+            </div>
+          ) : enrollments.length === 0 ? (
+            <div className="py-12 text-center space-y-3 font-mono">
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto text-zinc-500 shadow-inner">
+                <BookOpen className="w-7 h-7" />
               </div>
-            ) : enrollments.length === 0 ? (
-              <div className="py-12 text-center space-y-3 font-mono">
-                <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto text-zinc-500 shadow-inner">
-                  <BookOpen className="w-7 h-7" />
-                </div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  No courses enrolled yet
-                </h3>
-                <p className="text-xs text-zinc-400 max-w-sm mx-auto font-sans">
-                  Enroll in our flagship Selenium Java + AI course or workshops to start learning and unlocking verifiable credentials.
-                </p>
-                <div className="pt-2">
-                  <Link
-                    href="/courses"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase rounded-2xl shadow-[0_0_20px_rgba(239,255,79,0.35)] active:scale-95 transition-all"
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                No courses enrolled yet
+              </h3>
+              <p className="text-xs text-zinc-400 max-w-sm mx-auto font-sans">
+                Enroll in our flagship Selenium Java + AI course or workshops to start learning and unlocking verifiable credentials.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/courses"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase rounded-2xl shadow-[0_0_20px_rgba(239,255,79,0.35)] active:scale-95 transition-all"
+                >
+                  <span>Explore Course Catalog</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {enrollments.map((enr) => {
+                const progressPct =
+                  enr.total_modules > 0
+                    ? Math.round((enr.completed_modules / enr.total_modules) * 100)
+                    : 0;
+
+                return (
+                  <div
+                    key={enr.id}
+                    className="p-5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                   >
-                    <span>Explore Course Catalog</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {enrollments.map((enr) => {
-                  const progressPct =
-                    enr.total_modules > 0
-                      ? Math.round((enr.completed_modules / enr.total_modules) * 100)
-                      : 0;
-
-                  return (
-                    <div
-                      key={enr.id}
-                      className="p-5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-lime-400/15 text-lime-400 border border-lime-400/30">
-                            {enr.status}
-                          </span>
-                          <span className="text-[11px] font-mono text-zinc-500">
-                            Enrolled: {new Date(enr.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-bold text-white uppercase tracking-tight">
-                          {enr.course_id === "course-1"
-                            ? "Selenium Java + AI: Complete Automation Testing Course"
-                            : enr.course_id}
-                        </h4>
-                        <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mt-1.5">
-                          <span>
-                            {enr.completed_modules} / {enr.total_modules} Modules Completed
-                          </span>
-                          <span>•</span>
-                          <span className="text-lime-400 font-bold">{progressPct}%</span>
-                        </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-lime-400/15 text-lime-400 border border-lime-400/30">
+                          {enr.status}
+                        </span>
+                        <span className="text-[11px] font-mono text-zinc-500">
+                          Enrolled: {new Date(enr.created_at).toLocaleDateString()}
+                        </span>
                       </div>
-
-                      <Link
-                        href={`/learn/${enr.course_id}`}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase rounded-xl active:scale-95 transition-all shadow-[0_0_15px_rgba(239,255,79,0.3)] shrink-0"
-                      >
-                        <span>Continue</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
+                      <h4 className="text-sm font-bold text-white uppercase tracking-tight">
+                        {enr.course_id === "course-1"
+                          ? "Selenium Java + AI: Complete Automation Testing Course"
+                          : enr.course_id}
+                      </h4>
+                      <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mt-1.5">
+                        <span>
+                          {enr.completed_modules} / {enr.total_modules} Modules Completed
+                        </span>
+                        <span>•</span>
+                        <span className="text-lime-400 font-bold">{progressPct}%</span>
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
 
-          {/* Payment Receipts & Order History */}
-          <div className="cyber-card rounded-3xl p-7 sm:p-8 space-y-6">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400">
-                  <Receipt className="w-4 h-4" />
-                </div>
-                <h2 className="font-mono text-xs uppercase font-bold tracking-wider text-white">
-                  Payment Receipts & Invoices ({payments.length})
-                </h2>
-              </div>
+                    <Link
+                      href={`/learn/${enr.course_id}`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase rounded-xl active:scale-95 transition-all shadow-[0_0_15px_rgba(239,255,79,0.3)] shrink-0"
+                    >
+                      <span>Continue</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
-
-            {loading ? (
-              <div className="py-8 text-center text-xs font-mono text-zinc-500">
-                Loading receipts...
-              </div>
-            ) : payments.length === 0 ? (
-              <div className="py-8 text-center font-mono text-xs text-zinc-500">
-                No payment receipts on file yet.
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-xs">
-                  <thead>
-                    <tr className="border-b border-white/[0.08] text-zinc-500 text-[10px] uppercase">
-                      <th className="pb-3">Transaction ID</th>
-                      <th className="pb-3">Course</th>
-                      <th className="pb-3">Amount</th>
-                      <th className="pb-3">Status</th>
-                      <th className="pb-3 text-right">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/[0.06]">
-                    {payments.map((p) => (
-                      <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
-                        <td className="py-3 text-lime-400 truncate max-w-[140px]">
-                          {p.transaction_id}
-                        </td>
-                        <td className="py-3 text-white">{p.course_id}</td>
-                        <td className="py-3 font-bold text-white">
-                          ₹{Number(p.amount).toLocaleString()}
-                        </td>
-                        <td className="py-3">
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
-                            {p.status}
-                          </span>
-                        </td>
-                        <td className="py-3 text-right text-zinc-500">
-                          {new Date(p.created_at).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Right Col: Streak Telemetry, 30-Day Challenge & Quick Links */}
-        <div className="space-y-8">
-          {/* Active Learning Streak Card */}
-          <div className="cyber-card rounded-3xl p-7 space-y-4">
-            <h3 className="font-mono text-xs uppercase font-bold tracking-wider text-zinc-400 flex items-center justify-between">
-              <span>Learning Telemetry</span>
-              <span className="text-amber-400">STREAK LOG</span>
-            </h3>
-            <StreakGrid currentStreakDays={currentStreak} streakActive={currentStreak > 0} />
+        {/* Payment Receipts & Order History */}
+        <div className="cyber-card rounded-3xl p-7 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400">
+                <Receipt className="w-4 h-4" />
+              </div>
+              <h2 className="font-mono text-xs uppercase font-bold tracking-wider text-white">
+                Payment Receipts & Invoices ({payments.length})
+              </h2>
+            </div>
           </div>
 
-          {/* Quick Shortcuts */}
-          <div className="cyber-card rounded-3xl p-7 space-y-3 font-mono text-xs">
-            <h3 className="text-xs uppercase font-bold tracking-wider text-zinc-400 mb-3">
-              Action Hub
-            </h3>
-
-            <Link
-              href="/live"
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 hover:bg-[#13141c] hover:shadow-[0_0_20px_rgba(163,230,53,0.06)] active:scale-95 transition-all group"
-            >
-              <div className="flex items-center gap-2.5">
-                <Radio className="w-4 h-4 text-lime-400 animate-pulse" />
-                <span className="font-bold text-white">Live Classes & Recordings</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </Link>
-
-            <Link
-              href="/challenge"
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 hover:bg-[#13141c] hover:shadow-[0_0_20px_rgba(163,230,53,0.06)] active:scale-95 transition-all group"
-            >
-              <div className="flex items-center gap-2.5">
-                <Flame className="w-4 h-4 text-amber-400" />
-                <span className="font-bold text-white">30-Day SDET Challenge</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </Link>
-
-            <Link
-              href="/community/feed"
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 hover:bg-[#13141c] hover:shadow-[0_0_20px_rgba(163,230,53,0.06)] active:scale-95 transition-all group"
-            >
-              <div className="flex items-center gap-2.5">
-                <Compass className="w-4 h-4 text-cyan-400" />
-                <span className="font-bold text-white">Community Tribe Feed</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </Link>
-
-            <Link
-              href="/leaderboard"
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-[#070709]/70 border border-white/[0.06] hover:border-lime-400/40 hover:bg-[#13141c] hover:shadow-[0_0_20px_rgba(163,230,53,0.06)] active:scale-95 transition-all group"
-            >
-              <div className="flex items-center gap-2.5">
-                <Award className="w-4 h-4 text-lime-400" />
-                <span className="font-bold text-white">Engineering Leaderboard</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </Link>
-          </div>
+          {loading ? (
+            <div className="py-8 text-center text-xs font-mono text-zinc-500">
+              Loading receipts...
+            </div>
+          ) : payments.length === 0 ? (
+            <div className="py-8 text-center font-mono text-xs text-zinc-500">
+              No payment receipts on file yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr className="border-b border-white/[0.08] text-zinc-500 text-[10px] uppercase">
+                    <th className="pb-3">Transaction ID</th>
+                    <th className="pb-3">Course</th>
+                    <th className="pb-3">Amount</th>
+                    <th className="pb-3">Status</th>
+                    <th className="pb-3 text-right">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.06]">
+                  {payments.map((p) => (
+                    <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 text-lime-400 truncate max-w-[140px]">
+                        {p.transaction_id}
+                      </td>
+                      <td className="py-3 text-white">{p.course_id}</td>
+                      <td className="py-3 font-bold text-white">
+                        ₹{Number(p.amount).toLocaleString()}
+                      </td>
+                      <td className="py-3">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                          {p.status}
+                        </span>
+                      </td>
+                      <td className="py-3 text-right text-zinc-500">
+                        {new Date(p.created_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
