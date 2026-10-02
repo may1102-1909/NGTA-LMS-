@@ -140,8 +140,6 @@ export async function GET(request: Request) {
       SUPER_ADMIN: 0,
       ADMIN: 0,
       INSTRUCTOR: 0,
-      CONTENT_MANAGER: 0,
-      SUPPORT_STAFF: 0,
       LEARNER: 0,
       GUEST: 0,
     };
@@ -228,8 +226,6 @@ export async function PATCH(request: Request) {
       "SUPER_ADMIN",
       "ADMIN",
       "INSTRUCTOR",
-      "CONTENT_MANAGER",
-      "SUPPORT_STAFF",
       "LEARNER",
       "GUEST",
     ];

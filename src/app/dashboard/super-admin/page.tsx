@@ -28,8 +28,6 @@ const ROLES = [
   "SUPER_ADMIN",
   "ADMIN",
   "INSTRUCTOR",
-  "CONTENT_MANAGER",
-  "SUPPORT_STAFF",
   "LEARNER",
   "GUEST",
 ];

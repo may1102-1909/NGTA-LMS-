@@ -5,8 +5,6 @@ const VALID_ROLES = [
   "SUPER_ADMIN",
   "ADMIN",
   "INSTRUCTOR",
-  "CONTENT_MANAGER",
-  "SUPPORT_STAFF",
   "LEARNER",
   "GUEST",
 ];
@@ -19,10 +17,6 @@ function getDashboardForRole(role: string): string {
       return "/dashboard/admin";
     case "INSTRUCTOR":
       return "/dashboard/instructor";
-    case "CONTENT_MANAGER":
-      return "/dashboard/content";
-    case "SUPPORT_STAFF":
-      return "/dashboard/support";
     case "LEARNER":
     case "GUEST":
     default:
@@ -101,24 +95,6 @@ export async function middleware(request: NextRequest) {
     } else if (pathname.startsWith("/dashboard/instructor")) {
       if (
         currentRole !== "INSTRUCTOR" &&
-        currentRole !== "ADMIN" &&
-        currentRole !== "SUPER_ADMIN"
-      ) {
-        const fallback = getDashboardForRole(currentRole);
-        return NextResponse.redirect(new URL(fallback, request.url));
-      }
-    } else if (pathname.startsWith("/dashboard/content")) {
-      if (
-        currentRole !== "CONTENT_MANAGER" &&
-        currentRole !== "ADMIN" &&
-        currentRole !== "SUPER_ADMIN"
-      ) {
-        const fallback = getDashboardForRole(currentRole);
-        return NextResponse.redirect(new URL(fallback, request.url));
-      }
-    } else if (pathname.startsWith("/dashboard/support")) {
-      if (
-        currentRole !== "SUPPORT_STAFF" &&
         currentRole !== "ADMIN" &&
         currentRole !== "SUPER_ADMIN"
       ) {

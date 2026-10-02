@@ -10,8 +10,6 @@ const VALID_ROLES: UserRole[] = [
   "SUPER_ADMIN",
   "ADMIN",
   "INSTRUCTOR",
-  "CONTENT_MANAGER",
-  "SUPPORT_STAFF",
   "LEARNER",
   "GUEST",
 ];
@@ -24,10 +22,6 @@ function getDashboardRouteForRole(role: UserRole): string {
       return "/dashboard/admin";
     case "INSTRUCTOR":
       return "/dashboard/instructor";
-    case "CONTENT_MANAGER":
-      return "/dashboard/content";
-    case "SUPPORT_STAFF":
-      return "/dashboard/support";
     case "LEARNER":
     case "GUEST":
     default:

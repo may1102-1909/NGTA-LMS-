@@ -20,10 +20,9 @@ import {
 export type RoleOption =
   | "LEARNER"
   | "INSTRUCTOR"
-  | "CONTENT_MANAGER"
-  | "SUPPORT_STAFF"
   | "ADMIN"
-  | "SUPER_ADMIN";
+  | "SUPER_ADMIN"
+  | "GUEST";
 
 interface RoleConfig {
   id: RoleOption;
@@ -55,28 +54,10 @@ const ROLES: RoleConfig[] = [
     targetDashboard: "/dashboard/instructor",
   },
   {
-    id: "CONTENT_MANAGER",
-    label: "Content Manager",
-    badge: "Curriculum Ops",
-    description: "Manage video lessons, syllabus sequencing, media assets & publishing queues.",
-    icon: Layers,
-    accentColor: "#EFFF4F",
-    targetDashboard: "/dashboard/content",
-  },
-  {
-    id: "SUPPORT_STAFF",
-    label: "Support Staff",
-    badge: "Helpdesk & CRM",
-    description: "Troubleshoot student access, verify orders, and resolve learner support tickets.",
-    icon: Headphones,
-    accentColor: "#EFFF4F",
-    targetDashboard: "/dashboard/support",
-  },
-  {
     id: "ADMIN",
     label: "Administrator",
     badge: "Operations Hub",
-    description: "Oversee platform analytics, user rosters, revenue reports & financial auditing.",
+    description: "Oversee content queues, student support desk, revenue reports & approvals.",
     icon: ShieldCheck,
     accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/admin",
@@ -85,10 +66,19 @@ const ROLES: RoleConfig[] = [
     id: "SUPER_ADMIN",
     label: "Super Admin",
     badge: "Root Governance",
-    description: "Master system control: 7-role RBAC governance, payment gateways & security.",
+    description: "Master system control: 5-role RBAC governance, payment gateways & security.",
     icon: Key,
     accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/super-admin",
+  },
+  {
+    id: "GUEST",
+    label: "Guest / Explorer",
+    badge: "Public Catalog",
+    description: "Browse the academy course catalog, interactive curriculum syllabus & preview lessons.",
+    icon: Sparkles,
+    accentColor: "#EFFF4F",
+    targetDashboard: "/lms",
   },
 ];
 
@@ -219,6 +209,8 @@ export default function RoleSelectionModal({
             const isSelected = selectedRole === role.id;
             const Icon = role.icon;
 
+            const isGuest = role.id === "GUEST";
+
             return (
               <button
                 key={role.id}
@@ -226,6 +218,8 @@ export default function RoleSelectionModal({
                 onClick={() => setSelectedRole(role.id)}
                 disabled={loading}
                 className={`relative p-5 rounded-2xl text-left transition-all duration-200 ease-out flex flex-col justify-between cursor-pointer focus:outline-none group ${
+                  isGuest ? "md:col-span-2" : "md:col-span-1"
+                } ${
                   isSelected
                     ? "bg-[#EFFF4F]/10 border-2 border-[#EFFF4F] shadow-[0_0_25px_rgba(239,255,79,0.15)] -translate-y-0.5"
                     : "bg-[#121318]/60 hover:bg-[#181920]/80 border border-white/5 hover:border-white/20 hover:-translate-y-0.5"

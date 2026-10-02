@@ -39,12 +39,6 @@ export default function DashboardRouterPage() {
               case "INSTRUCTOR":
                 router.replace("/dashboard/instructor");
                 return;
-              case "CONTENT_MANAGER":
-                router.replace("/dashboard/content");
-                return;
-              case "SUPPORT_STAFF":
-                router.replace("/dashboard/support");
-                return;
               case "LEARNER":
               case "GUEST":
               default:

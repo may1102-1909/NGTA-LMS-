@@ -65,7 +65,7 @@ export default function StudentOnboardingModal({
         }
 
         // STAGE 5: ONLY trigger avatar modal for LEARNER and GUEST.
-        // Automatically BYPASS and hide modal for INSTRUCTOR, CONTENT_MANAGER, SUPPORT_STAFF, ADMIN, and SUPER_ADMIN.
+        // Automatically BYPASS and hide modal for INSTRUCTOR, ADMIN, and SUPER_ADMIN.
         const isLearnerOrGuest = role === "LEARNER" || role === "GUEST" || role === "STUDENT";
         if (!isLearnerOrGuest) {
           if (isMounted) {
