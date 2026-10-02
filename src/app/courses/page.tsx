@@ -36,8 +36,8 @@ export default function CoursesPage() {
           const pubData = await pubRes.json();
           if (Array.isArray(pubData.courses)) {
             const mapped = pubData.courses.map((pc: any) => ({
-              id: pc.slug || pc.id,
-              slug: pc.slug,
+              id: pc.id || pc.slug,
+              slug: pc.slug || pc.id,
               title: pc.title,
               subtitle: pc.description.slice(0, 120),
               description: pc.description,
@@ -242,7 +242,7 @@ export default function CoursesPage() {
                   </div>
 
                   <h3 className="text-xl font-bold text-white tracking-tight leading-snug">
-                    <Link href={`/courses/${course.slug}`} className="hover:text-[#EFFF4F] transition-colors">
+                    <Link href={`/courses/${course.slug || course.id}`} className="hover:text-[#EFFF4F] transition-colors">
                       {course.title}
                     </Link>
                   </h3>
@@ -334,7 +334,7 @@ export default function CoursesPage() {
                       <span>LOCKED</span>
                     </span>
                     <Link
-                      href={`/courses/${course.slug}`}
+                      href={`/courses/${course.slug || course.id}`}
                       className="px-4 py-2.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1.5 shadow-lemon-sm"
                     >
                       <span>CURRICULUM</span>

@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { INITIAL_COURSES } from "@/lib/mockData";
+import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   CheckCircle2,
@@ -26,16 +25,58 @@ import CredentialCard from "@/components/gamification/CredentialCard";
 import { INITIAL_CREDENTIALS } from "@/lib/gamification";
 import RazorpayCheckoutButton from "@/components/RazorpayCheckoutButton";
 
-export default function CourseDetailPage() {
-  const params = useParams();
+export interface CourseDetailData {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  category: string;
+  difficultyLevel: string;
+  updatedAt: string;
+  instructorName: string;
+  instructorTitle: string;
+  instructorBio: string;
+  instructorAvatarUrl: string;
+  thumbnailUrl: string;
+  bannerUrl: string;
+  priceINR: number;
+  discountPriceINR: number;
+  durationHours: number | string;
+  objectives: string[];
+  prerequisites: string[];
+  targetAudience: string[];
+  modules: Array<{
+    id: string;
+    title: string;
+    chapters: Array<{
+      id: string;
+      title: string;
+      lessons: Array<{
+        id: string;
+        title: string;
+        type: string;
+        durationMinutes: number;
+        videoUrl?: string;
+        pdfResourceUrl?: string | null;
+      }>;
+    }>;
+  }>;
+}
+
+interface CourseDetailClientProps {
+  course: CourseDetailData;
+}
+
+export default function CourseDetailClient({ course }: CourseDetailClientProps) {
   const router = useRouter();
-  const slug = params?.slug as string;
 
-  const course = INITIAL_COURSES.find((c) => c.slug === slug) || INITIAL_COURSES[0];
-
-  const [openModules, setOpenModules] = useState<{ [key: string]: boolean }>({
-    "mod-1": true,
-    "mod-2": true,
+  // Initialize first module or two as open
+  const [openModules, setOpenModules] = useState<{ [key: string]: boolean }>(() => {
+    const initial: { [key: string]: boolean } = {};
+    if (course.modules?.[0]?.id) initial[course.modules[0].id] = true;
+    if (course.modules?.[1]?.id) initial[course.modules[1].id] = true;
+    return initial;
   });
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -47,7 +88,6 @@ export default function CourseDetailPage() {
 
   // Fetch existing successful payments for the logged-in user via Prisma endpoint
   useEffect(() => {
-    // Clear legacy mock storage to prevent cross-account enrollment leaks
     if (typeof window !== "undefined") {
       localStorage.removeItem("ngta_enrollments");
     }
@@ -111,7 +151,7 @@ export default function CourseDetailPage() {
         await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: `${window.location.origin}/auth/callback?next=/courses/${course.slug}`,
+            redirectTo: `${window.location.origin}/auth/callback?next=/courses/${course.slug || course.id}`,
           },
         });
         return;
@@ -208,12 +248,16 @@ export default function CourseDetailPage() {
                   <span className="text-3xl font-black font-mono text-white">
                     ₹{course.discountPriceINR.toLocaleString()}
                   </span>
-                  <span className="text-sm line-through text-[#5A5F70] font-mono">
-                    ₹{course.priceINR.toLocaleString()}
-                  </span>
-                  <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#EFFF4F]/10 text-[#EFFF4F] border border-[#EFFF4F]/30 font-bold">
-                    50% OFF
-                  </span>
+                  {course.priceINR > course.discountPriceINR && (
+                    <>
+                      <span className="text-sm line-through text-[#5A5F70] font-mono">
+                        ₹{course.priceINR.toLocaleString()}
+                      </span>
+                      <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#EFFF4F]/10 text-[#EFFF4F] border border-[#EFFF4F]/30 font-bold">
+                        {Math.round(((course.priceINR - course.discountPriceINR) / course.priceINR) * 100)}% OFF
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -396,19 +440,19 @@ export default function CourseDetailPage() {
                   <div className="flex flex-wrap items-baseline gap-2">
                     <h4 className="text-xl font-bold text-white">{course.instructorName}</h4>
                     <span className="text-xs text-[#EFFF4F] font-mono font-bold bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 px-2 py-0.5">
-                      17+ Years Experience
+                      Expert Instructor
                     </span>
                   </div>
                   <p className="text-xs text-[#A0A5B5] font-mono">{course.instructorTitle}</p>
                   <p className="text-sm text-[#A0A5B5] font-sans leading-relaxed">
-                    {course.instructorBio || "Founder and Lead SDET Instructor at NextGen Testing Academy (NGTA)."}
+                    {course.instructorBio || "Lead Instructor at NextGen Testing Academy (NGTA)."}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-1 font-mono text-xs text-[#5A5F70]">
-                    <span>★ 4.9 Instructor Rating</span>
+                    <span>★ 5.0 Rating</span>
                     <span>•</span>
-                    <span>10,000+ Students Mentored</span>
+                    <span>Verified Instructor</span>
                     <span>•</span>
-                    <span>1,840+ Reviews</span>
+                    <span>Direct Mentorship</span>
                   </div>
                 </div>
               </div>
