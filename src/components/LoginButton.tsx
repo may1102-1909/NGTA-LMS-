@@ -5,8 +5,8 @@ import { ArrowRight } from "lucide-react";
 import RoleSelectionModal, { RoleOption } from "@/components/auth/RoleSelectionModal";
 
 export default function LoginButton({
-  className = "inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 font-mono font-bold text-xs uppercase tracking-wider rounded transition-all hover:scale-[1.02] shadow-lemon-glow border border-[#EFFF4F]/40 group cursor-pointer",
-  label = "ENTER LMS PLATFORM ->",
+  className = "inline-flex items-center gap-3 px-8 py-4 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/95 font-mono font-bold text-xs uppercase tracking-wider rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(239,255,79,0.35)] hover:shadow-[0_0_45px_rgba(239,255,79,0.5)] border border-[#EFFF4F]/50 group cursor-pointer",
+  label = "ENTER THE ARENA ->",
   defaultRole = "LEARNER",
 }: {
   className?: string;

@@ -66,6 +66,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "Helvetica Neue", "Arial", "sans-serif"],
+        display: ["var(--font-display)", "'Plus Jakarta Sans'", "'Syne'", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "SFMono-Regular", "Menlo", "monospace"],
       },
       letterSpacing: {
@@ -76,10 +77,14 @@ const config: Config = {
       },
       borderRadius: {
         none: "0px",
-        sm: "2px",
-        DEFAULT: "3px",
-        md: "4px",
-        lg: "6px",
+        sm: "4px",
+        DEFAULT: "6px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        "2xl": "20px",
+        "3xl": "28px",
+        full: "9999px",
       },
       boxShadow: {
         'lemon-sm': '0 0 12px rgba(239, 255, 79, 0.12)',

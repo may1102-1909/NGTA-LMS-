@@ -126,10 +126,13 @@ function MembershipsContent() {
   const isManager = userRole === "SUPER_ADMIN" || userRole === "INSTRUCTOR";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12 text-white font-sans">
+    <div className="relative min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 space-y-16 text-white font-sans">
+      {/* Background Subtle Noise Texture */}
+      <div className="fixed inset-0 bg-noise opacity-20 pointer-events-none z-0" />
+
       {/* 403 Forbidden Alert */}
       {errorParam === "403" && (
-        <div className="p-4 bg-red-500/15 border border-red-500/40 rounded-2xl flex items-center gap-3 text-red-400 font-mono text-xs">
+        <div className="relative z-10 p-4 bg-red-500/15 border border-red-500/40 rounded-2xl flex items-center gap-3 text-red-400 font-mono text-xs">
           <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
           <span>
             Access Denied: Only <strong>SUPER_ADMIN</strong> and <strong>INSTRUCTOR</strong> roles are authorized to access the membership management dashboard.
@@ -139,7 +142,7 @@ function MembershipsContent() {
 
       {/* Success Banner */}
       {successToast && (
-        <div className="p-4 bg-[#EFFF4F]/10 border border-[#EFFF4F]/40 rounded-2xl flex items-center justify-between text-[#EFFF4F] font-mono text-xs shadow-lemon-sm">
+        <div className="relative z-10 p-4 bg-[#EFFF4F]/10 border border-[#EFFF4F]/40 rounded-2xl flex items-center justify-between text-[#EFFF4F] font-mono text-xs shadow-lemon-sm">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 shrink-0" />
             <span className="font-bold">{successToast}</span>
@@ -154,18 +157,18 @@ function MembershipsContent() {
       )}
 
       {/* Hero Header */}
-      <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 text-[#EFFF4F] font-mono text-xs font-bold uppercase tracking-wider">
+      <div className="relative z-10 text-center space-y-5 max-w-3xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-400/10 border border-lime-400/30 text-lime-400 font-mono text-xs font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(163,230,53,0.12)]">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>RECURRING ACADEMY PASS</span>
+          <span>BUILT FOR BUILDERS • ALL-ACCESS PASS</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-white">
-          Level Up With All-Access Memberships
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          Lock In. Execute.
         </h1>
 
-        <p className="text-[#A0A5B5] text-sm sm:text-base font-sans leading-relaxed">
-          From community discussion to 1-on-1 SDET coaching. Select the tier that matches your career trajectory with flexible monthly or annual commitments.
+        <p className="text-zinc-400 text-sm sm:text-base font-sans leading-relaxed max-w-2xl mx-auto">
+          No corporate fluff. Gain full-spectrum access to battle-tested automation infrastructure, live SDET architecture reviews, and 1-on-1 code mentorship.
         </p>
 
         {/* Manager shortcut */}
@@ -173,7 +176,7 @@ function MembershipsContent() {
           <div className="pt-2">
             <Link
               href="/dashboard/memberships/manage"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#28282B] border border-[#3E3E43] hover:border-[#EFFF4F]/50 text-[#EFFF4F] font-mono text-xs font-bold uppercase rounded-xl transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0e0f14]/80 border border-white/10 hover:border-lime-400/50 text-[#EFFF4F] font-mono text-xs font-bold uppercase rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-sm"
             >
               <span>Manage Membership Plans & Instructor Payouts</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -183,14 +186,14 @@ function MembershipsContent() {
       </div>
 
       {/* Billing Switcher (Monthly vs Annual) */}
-      <div className="flex items-center justify-center gap-4 font-mono text-xs">
-        <span className={billingCycle === "monthly" ? "text-white font-bold" : "text-[#5A5F70]"}>
+      <div className="relative z-10 flex items-center justify-center gap-4 font-mono text-xs">
+        <span className={billingCycle === "monthly" ? "text-white font-bold" : "text-zinc-500"}>
           Monthly Billing
         </span>
         <button
           type="button"
           onClick={() => setBillingCycle(billingCycle === "monthly" ? "annual" : "monthly")}
-          className="w-14 h-7 bg-[#28282B] border border-[#3E3E43] rounded-full p-1 transition-colors relative"
+          className="w-14 h-7 bg-[#0e0f14] border border-white/15 rounded-full p-1 transition-colors relative hover:border-white/30"
           aria-label="Toggle billing cycle"
         >
           <div
@@ -200,10 +203,10 @@ function MembershipsContent() {
           />
         </button>
         <div className="flex items-center gap-1.5">
-          <span className={billingCycle === "annual" ? "text-white font-bold" : "text-[#5A5F70]"}>
+          <span className={billingCycle === "annual" ? "text-white font-bold" : "text-zinc-500"}>
             Annual Billing
           </span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#EFFF4F]/15 border border-[#EFFF4F]/30 text-[#EFFF4F] font-bold">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-lime-400/15 border border-lime-400/30 text-lime-400 font-bold">
             Save ~17%
           </span>
         </div>
@@ -211,147 +214,174 @@ function MembershipsContent() {
 
       {/* Active User Subscription Banner if Subscribed */}
       {activeSub && (
-        <div className="max-w-2xl mx-auto p-4 bg-[#0d0d0d]/90 border border-white/10 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
+        <div className="relative z-10 max-w-2xl mx-auto p-5 bg-[#0e0f14]/90 border border-white/10 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs backdrop-blur-xl shadow-xl">
           <div>
-            <div className="text-[10px] text-[#5A5F70] uppercase">CURRENT ACTIVE PLAN</div>
+            <div className="text-[10px] text-zinc-500 uppercase tracking-wider">CURRENT ACTIVE PLAN</div>
             <div className="text-white font-bold text-sm flex items-center gap-2 mt-0.5">
               <span>{activeSub.membership?.name || "Active Membership"}</span>
-              <span className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded text-[10px]">
+              <span className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full text-[10px]">
                 {activeSub.state}
               </span>
             </div>
-            <div className="text-[#A0A5B5] text-[11px] mt-1">
+            <div className="text-zinc-400 text-[11px] mt-1">
               Active through: {new Date(activeSub.current_period_end).toLocaleDateString()}
             </div>
           </div>
           <Link
             href="/dashboard/learner"
-            className="px-4 py-2 bg-[#EFFF4F] text-[#28282B] font-bold uppercase rounded-lg shadow-lemon-sm hover:bg-[#EFFF4F]/90 transition-all text-center"
+            className="px-5 py-2.5 bg-[#EFFF4F] text-[#070709] font-bold uppercase rounded-2xl shadow-lemon-sm hover:bg-[#EFFF4F]/90 transition-all text-center active:scale-95"
           >
             My Workspace
           </Link>
         </div>
       )}
 
-      {/* Membership Tiers Grid (Matte-Black Glassmorphism Cards) */}
+      {/* Asymmetric Bento Grid for Membership Tiers */}
       {loading ? (
-        <div className="py-20 text-center font-mono text-xs text-[#5A5F70] flex items-center justify-center gap-2">
+        <div className="py-24 text-center font-mono text-xs text-zinc-500 flex items-center justify-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin text-[#EFFF4F]" />
-          <span>Loading membership options...</span>
+          <span>Synchronizing membership tiers...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-stretch">
           {plans.map((plan) => {
             const isFree = plan.tier === "FREE" || Number(plan.monthly_price) === 0;
             const price = billingCycle === "annual" ? plan.annual_price : plan.monthly_price;
             const isSubscribing = subscribingId === plan.id;
             const isCurrentPlan = activeSub?.membership_id === plan.id;
             const isHighlighted = plan.tier === "PRO";
+            const isPremium = plan.tier === "PREMIUM";
 
-            return (
+            // Asymmetric Bento Card Span
+            const bentoSpan = isHighlighted
+              ? "lg:col-span-7"
+              : isPremium
+              ? "lg:col-span-7"
+              : "lg:col-span-5";
+
+            const cardContent = (
               <div
-                key={plan.id}
-                className={`relative flex flex-col justify-between rounded-3xl p-6 transition-all duration-300 ${
+                className={`relative flex flex-col justify-between rounded-3xl p-7 sm:p-8 h-full transition-all duration-300 ${
                   isHighlighted
-                    ? "bg-[#0d0d0d]/95 border-2 border-[#EFFF4F]/50 shadow-lemon-md scale-[1.02]"
-                    : "bg-[#0d0d0d]/90 border border-white/10 hover:border-white/20 shadow-xl"
-                } backdrop-blur-xl`}
+                    ? "bg-[#0e0f14]/95 shadow-[0_0_35px_rgba(163,230,53,0.12)]"
+                    : isPremium
+                    ? "bg-[#0e0f14]/95 shadow-[0_0_30px_rgba(6,182,212,0.1)]"
+                    : "border border-white/[0.08] bg-[#0e0f14]/80 hover:border-lime-400/40 hover:bg-[#13141c] hover:shadow-[0_0_30px_rgba(163,230,53,0.08)] backdrop-blur-xl"
+                }`}
               >
                 {/* Popular Badge for PRO tier */}
                 {isHighlighted && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#EFFF4F] text-[#28282B] font-mono text-[10px] font-black uppercase tracking-wider rounded-full shadow-lemon-sm flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-[#28282B]" />
-                    <span>MOST POPULAR CHOICE</span>
+                  <div className="absolute -top-3.5 left-8 px-3.5 py-1 bg-[#EFFF4F] text-[#070709] font-mono text-[10px] font-black uppercase tracking-wider rounded-full shadow-[0_0_15px_rgba(239,255,79,0.4)] flex items-center gap-1.5">
+                    <Star className="w-3 h-3 fill-[#070709]" />
+                    <span>FLAGSHIP SDET SUITE</span>
+                  </div>
+                )}
+
+                {/* Elite Badge for PREMIUM tier */}
+                {isPremium && (
+                  <div className="absolute -top-3.5 left-8 px-3.5 py-1 bg-cyan-400 text-[#070709] font-mono text-[10px] font-black uppercase tracking-wider rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)] flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 fill-[#070709]" />
+                    <span>EXECUTIVE 1-ON-1 TIER</span>
                   </div>
                 )}
 
                 <div className="space-y-6">
                   {/* Card Header */}
                   <div>
-                    <div className="font-mono text-[11px] text-[#A0A5B5] uppercase font-bold tracking-wider mb-1">
-                      {plan.tier} TIER
+                    <div className="font-mono text-[11px] text-zinc-400 uppercase font-bold tracking-wider mb-1 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400" />
+                      <span>{plan.tier} TIER</span>
                     </div>
-                    <h3 className="text-xl font-black uppercase text-white tracking-tight">
+                    <h3 className="text-2xl font-black uppercase text-white tracking-tight">
                       {plan.name}
                     </h3>
-                    <p className="text-xs text-[#A0A5B5] mt-1 line-clamp-2 font-sans">
+                    <p className="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                       {plan.description}
                     </p>
                   </div>
 
                   {/* Pricing Display */}
-                  <div className="font-mono border-t border-b border-white/5 py-4">
+                  <div className="font-mono border-t border-b border-white/[0.08] py-4">
                     {isFree ? (
-                      <div className="text-3xl font-black text-white">FREE</div>
+                      <div className="text-4xl font-black text-white">FREE</div>
                     ) : (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl sm:text-4xl font-black text-white">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
                           ₹{Number(price).toLocaleString()}
                         </span>
-                        <span className="text-xs text-[#5A5F70]">
+                        <span className="text-xs text-zinc-400 font-bold">
                           /{billingCycle === "annual" ? "year" : "mo"}
                         </span>
                       </div>
                     )}
                     {plan.trial_period_days > 0 && !isFree && (
-                      <div className="text-[11px] text-[#EFFF4F] font-bold mt-1">
-                        ★ {plan.trial_period_days}-Day Free Trial Included
+                      <div className="text-[11px] text-lime-400 font-bold mt-1.5 flex items-center gap-1">
+                        <span>★</span>
+                        <span>{plan.trial_period_days}-Day Full-Access Free Trial</span>
                       </div>
                     )}
                   </div>
 
-                  {/* Core Permissions Flags */}
-                  <div className="space-y-2 font-mono text-[11px]">
-                    <div className="flex items-center gap-2 text-white">
-                      <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
+                  {/* Core Permissions Flags with Layered Icons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-[11px]">
+                    <div className="flex items-center gap-2.5 text-white">
+                      <div className="w-7 h-7 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 shrink-0">
+                        <Layers className="w-3.5 h-3.5" />
+                      </div>
                       <span>
                         {plan.included_course_ids?.length || 0} Courses Included
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Radio
-                        className={`w-3.5 h-3.5 ${
-                          plan.live_session_access ? "text-[#EFFF4F]" : "text-[#5A5F70]"
-                        }`}
-                      />
-                      <span className={plan.live_session_access ? "text-white" : "text-[#5A5F70] line-through"}>
-                        Live Session Broadcasts
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                        plan.live_session_access
+                          ? "bg-lime-400/10 border border-lime-400/20 text-lime-400"
+                          : "bg-white/[0.03] border border-white/[0.06] text-zinc-600"
+                      }`}>
+                        <Radio className="w-3.5 h-3.5" />
+                      </div>
+                      <span className={plan.live_session_access ? "text-white" : "text-zinc-600 line-through"}>
+                        Live Architecture Labs
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Download
-                        className={`w-3.5 h-3.5 ${
-                          plan.downloads_access ? "text-[#06B6D4]" : "text-[#5A5F70]"
-                        }`}
-                      />
-                      <span className={plan.downloads_access ? "text-white" : "text-[#5A5F70] line-through"}>
-                        Downloadable Framework Templates
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                        plan.downloads_access
+                          ? "bg-blue-400/10 border border-blue-400/20 text-blue-400"
+                          : "bg-white/[0.03] border border-white/[0.06] text-zinc-600"
+                      }`}>
+                        <Download className="w-3.5 h-3.5" />
+                      </div>
+                      <span className={plan.downloads_access ? "text-white" : "text-zinc-600 line-through"}>
+                        Framework Repositories
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Headphones
-                        className={`w-3.5 h-3.5 ${
-                          plan.priority_support ? "text-amber-400" : "text-[#5A5F70]"
-                        }`}
-                      />
-                      <span className={plan.priority_support ? "text-white" : "text-[#5A5F70] line-through"}>
-                        Priority 1-on-1 Support
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                        plan.priority_support
+                          ? "bg-amber-400/10 border border-amber-400/20 text-amber-400"
+                          : "bg-white/[0.03] border border-white/[0.06] text-zinc-600"
+                      }`}>
+                        <Headphones className="w-3.5 h-3.5" />
+                      </div>
+                      <span className={plan.priority_support ? "text-white" : "text-zinc-600 line-through"}>
+                        1-on-1 SDET Support
                       </span>
                     </div>
                   </div>
 
                   {/* Benefits Bullet Points */}
                   <div className="space-y-2.5 pt-2">
-                    <div className="font-mono text-[10px] text-[#5A5F70] uppercase font-bold tracking-wider">
+                    <div className="font-mono text-[10px] text-zinc-400 uppercase font-bold tracking-wider">
                       Included In This Plan:
                     </div>
-                    <ul className="space-y-2 font-sans text-xs text-[#A0A5B5]">
+                    <ul className="space-y-2 font-sans text-xs text-zinc-300">
                       {plan.benefits.map((b, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-[#EFFF4F] shrink-0 mt-0.5 stroke-[2.5]" />
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <Check className="w-4 h-4 text-lime-400 shrink-0 mt-0.5 stroke-[2.5]" />
                           <span>{b}</span>
                         </li>
                       ))}
@@ -359,13 +389,13 @@ function MembershipsContent() {
                   </div>
                 </div>
 
-                {/* Call-to-Action Button */}
+                {/* Call-to-Action Button with Tactile Feedback */}
                 <div className="pt-8">
                   {isCurrentPlan ? (
                     <button
                       type="button"
                       disabled
-                      className="w-full py-3 bg-[#28282B] border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold uppercase rounded-xl flex items-center justify-center gap-1.5"
+                      className="w-full py-4 bg-[#1a1b24] border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold uppercase rounded-2xl flex items-center justify-center gap-2 cursor-default"
                     >
                       <CheckCircle2 className="w-4 h-4" />
                       <span>Active Plan</span>
@@ -375,9 +405,11 @@ function MembershipsContent() {
                       type="button"
                       onClick={() => handleSubscribe(plan)}
                       disabled={isSubscribing}
-                      className={`w-full py-3.5 font-mono text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`w-full py-4 font-mono text-xs font-bold uppercase tracking-wider rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 duration-200 ${
                         isHighlighted
-                          ? "bg-[#EFFF4F] text-[#28282B] hover:bg-[#EFFF4F]/90 shadow-lemon-sm"
+                          ? "bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 shadow-[0_0_25px_rgba(239,255,79,0.3)] hover:shadow-[0_0_35px_rgba(239,255,79,0.5)]"
+                          : isPremium
+                          ? "bg-cyan-400 text-[#070709] hover:bg-cyan-300 shadow-[0_0_25px_rgba(6,182,212,0.3)]"
                           : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
                       } disabled:opacity-50`}
                     >
@@ -391,17 +423,46 @@ function MembershipsContent() {
                       ) : plan.trial_period_days > 0 ? (
                         <>
                           <span>Start {plan.trial_period_days}-Day Trial</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-4 h-4" />
                         </>
                       ) : (
                         <>
                           <span>Subscribe Now</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-4 h-4" />
                         </>
                       )}
                     </button>
                   )}
                 </div>
+              </div>
+            );
+
+            // Wrap highlighted or premium in radial spotlight container
+            if (isHighlighted) {
+              return (
+                <div
+                  key={plan.id}
+                  className={`${bentoSpan} bg-gradient-to-b from-lime-400/40 via-zinc-800/40 to-transparent p-[1px] rounded-3xl`}
+                >
+                  {cardContent}
+                </div>
+              );
+            }
+
+            if (isPremium) {
+              return (
+                <div
+                  key={plan.id}
+                  className={`${bentoSpan} bg-gradient-to-b from-cyan-400/40 via-zinc-800/40 to-transparent p-[1px] rounded-3xl`}
+                >
+                  {cardContent}
+                </div>
+              );
+            }
+
+            return (
+              <div key={plan.id} className={bentoSpan}>
+                {cardContent}
               </div>
             );
           })}
