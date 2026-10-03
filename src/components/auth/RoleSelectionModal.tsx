@@ -48,7 +48,7 @@ const ROLES: RoleConfig[] = [
     id: "INSTRUCTOR",
     label: "Instructor",
     badge: "Creator Studio",
-    description: "TagMango-style creator suite: live classes, curriculum editor & cohort grading.",
+    description: "Creator suite: live classes, curriculum editor & cohort grading.",
     icon: Award,
     accentColor: "#EFFF4F",
     targetDashboard: "/dashboard/instructor",

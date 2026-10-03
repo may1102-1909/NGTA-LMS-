@@ -90,7 +90,7 @@ export default function InstructorDashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-white font-sans">
-      {/* Top Banner (TagMango Creator Studio Style) */}
+      {/* Top Banner (Instructor Studio) */}
       <div className="border-b border-[#3E3E43] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1 flex items-center gap-2">
@@ -101,7 +101,7 @@ export default function InstructorDashboardPage() {
             <span className="text-[#A0A5B5]">INSTRUCTOR CONSOLE</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <span>Instructor Studio • TagMango Suite</span>
+            <span>Instructor Studio</span>
             <Sparkles className="w-6 h-6 text-[#EFFF4F]" />
           </h1>
           <p className="text-xs sm:text-sm text-[#A0A5B5] mt-1">
