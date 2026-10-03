@@ -78,9 +78,7 @@ export default function MentorshipPage() {
             <span>1-ON-1 MENTORSHIP & ARCHITECTURE CLINIC</span>
             <Calendar className="w-8 h-8 text-[#EFFF4F] shrink-0" />
           </h1>
-          <p className="text-sm text-[#A0A5B5] mt-2 max-w-3xl">
-            Book focused, private 1-on-1 sessions directly with lead automation architects to review your test code, prepare for high-tier SDET interviews, and unblock complex pipeline challenges.
-          </p>
+
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">

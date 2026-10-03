@@ -147,9 +147,7 @@ export default function SettingsPage() {
             <span>SETTINGS & PERSONA</span>
             <Settings className="w-7 h-7 text-[#EFFF4F] shrink-0 animate-spin-slow" />
           </h1>
-          <p className="text-sm text-[#A0A5B5] mt-1.5 max-w-2xl font-sans">
-            Customize your credentials, engineering track, and live 3D gamer persona. Changes sync across all SDET leaderboards, code reviews, and community channels.
-          </p>
+
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">

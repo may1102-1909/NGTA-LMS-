@@ -418,9 +418,7 @@ export default function CertificatesPage() {
             <Award className="w-8 h-8 text-amber-400 shrink-0" />
           </h1>
 
-          <p className="text-sm text-[#A0A5B5] max-w-3xl leading-relaxed">
-            Styled as an authentic 17th-century European Letters Patent. Unrolled parchment scroll with authentic wooden roller rods, royal crimson wax seal, and cryptographic SHA-256 verification.
-          </p>
+
         </div>
 
         {/* Global Action Buttons */}
