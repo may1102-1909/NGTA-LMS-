@@ -45,12 +45,25 @@ export default function LearnPlayerPage() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (!user?.id) {
+        let activeUserId = user?.id;
+        if (!activeUserId) {
+          try {
+            const profRes = await fetch("/api/student-profile");
+            if (profRes.ok) {
+              const profData = await profRes.json();
+              if (profData.profile?.user_id || profData.profile?.id) {
+                activeUserId = profData.profile.user_id || profData.profile.id;
+              }
+            }
+          } catch {}
+        }
+
+        if (!activeUserId) {
           if (isMounted) router.replace("/courses");
           return;
         }
 
-        if (isMounted) setCurrentUserId(user.id);
+        if (isMounted) setCurrentUserId(activeUserId);
 
         // 1. Fetch dynamic course record from database
         let loadedCourse: any = null;
@@ -128,45 +141,57 @@ export default function LearnPlayerPage() {
           setIsLoadingCourse(false);
         }
 
-        // 2. Query database to check if user has active enrollment for this course
-        const actualCourseId = loadedCourse.id;
-        const res = await fetch(
-          `/api/payments/verify?courseId=${actualCourseId}&userId=${user.id}`
-        );
+        // 2. Query database to check if user has active enrollment for this course (check UUID, slug, courseId)
+        const checkIds = Array.from(new Set([loadedCourse.id, loadedCourse.slug, courseId].filter(Boolean)));
+        let verifiedEnrolled = false;
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data.isEnrolled) {
-            try {
-              const profRes = await fetch(`/api/student-profile?userId=${user.id}`);
-              if (profRes.ok) {
-                const profData = await profRes.json();
-                if (isMounted) {
-                  setUserPoints(profData.profile?.xp_points ?? profData.xp_points ?? 0);
-                }
+        for (const cid of checkIds) {
+          try {
+            const res = await fetch(
+              `/api/payments/verify?courseId=${cid}&userId=${activeUserId}`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              if (data.isEnrolled) {
+                verifiedEnrolled = true;
+                break;
               }
-            } catch {}
-
-            try {
-              const progRes = await fetch(
-                `/api/learn/progress?courseId=${actualCourseId}&userId=${user.id}`
-              );
-              if (progRes.ok) {
-                const progData = await progRes.json();
-                if (isMounted && Array.isArray(progData.completedLessonIds)) {
-                  setCompletedLessonIds(progData.completedLessonIds);
-                }
-              }
-            } catch (progErr) {
-              console.warn("Could not fetch course progress:", progErr);
             }
-
-            if (isMounted) {
-              setIsEnrolled(true);
-              setIsVerifyingEnrollment(false);
-            }
-            return;
+          } catch (e) {
+            console.warn(`Could not verify enrollment for ${cid}:`, e);
           }
+        }
+
+        if (verifiedEnrolled) {
+          try {
+            const profRes = await fetch(`/api/student-profile?userId=${activeUserId}`);
+            if (profRes.ok) {
+              const profData = await profRes.json();
+              if (isMounted) {
+                setUserPoints(profData.profile?.xp_points ?? profData.xp_points ?? 0);
+              }
+            }
+          } catch {}
+
+          try {
+            const progRes = await fetch(
+              `/api/learn/progress?courseId=${loadedCourse.id}&userId=${activeUserId}`
+            );
+            if (progRes.ok) {
+              const progData = await progRes.json();
+              if (isMounted && Array.isArray(progData.completedLessonIds)) {
+                setCompletedLessonIds(progData.completedLessonIds);
+              }
+            }
+          } catch (progErr) {
+            console.warn("Could not fetch course progress:", progErr);
+          }
+
+          if (isMounted) {
+            setIsEnrolled(true);
+            setIsVerifyingEnrollment(false);
+          }
+          return;
         }
 
         // User hasn't purchased the course -> redirect to /courses

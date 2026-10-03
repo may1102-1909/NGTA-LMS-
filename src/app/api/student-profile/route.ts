@@ -98,16 +98,22 @@ export async function GET(request: Request) {
     const finalRole = profileRecord?.role || (userRole ? userRole.toUpperCase() : "LEARNER");
     const isLearnerOrGuest = finalRole === "LEARNER" || finalRole === "GUEST";
 
+    const candidateUserIds = [userId];
+    if (profileRecord?.id) candidateUserIds.push(profileRecord.id);
+    if (profileRecord?.user_id) candidateUserIds.push(profileRecord.user_id);
+    if (authUser.id) candidateUserIds.push(authUser.id);
+    const uniqueCandidates = Array.from(new Set(candidateUserIds.filter(Boolean)));
+
     // Query student_profiles table
-    const profile = await prisma.student_profiles.findUnique({
-      where: { user_id: userId },
+    const profile = await prisma.student_profiles.findFirst({
+      where: { user_id: { in: uniqueCandidates } },
     });
 
     const safeProfile = profile
       ? {
           ...profile,
           full_name: profileRecord?.full_name || profile.username,
-          email: profileRecord?.email || "",
+          email: profileRecord?.email || authUser?.email || "",
           xp_points: profile.xp_points ?? 0,
           current_streak: profile.current_streak ?? 0,
         }
@@ -116,7 +122,7 @@ export async function GET(request: Request) {
           id: profileRecord.id,
           user_id: profileRecord.user_id,
           username: profileRecord.full_name?.replace(/\s+/g, "_") || profileRecord.email?.split("@")[0] || "Learner",
-          avatar_url: profileRecord.avatar_url || "/avatars/avatar-1.png",
+          avatar_url: profileRecord.avatar_url || "/avatars/avatar-15.png",
           full_name: profileRecord.full_name,
           email: profileRecord.email,
           xp_points: 0,
@@ -187,13 +193,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Role check: Only STUDENT role needs custom student onboarding persona
-    if (targetRole === "INSTRUCTOR" || targetRole === "ADMIN") {
-      return NextResponse.json(
-        { error: `Onboarding skipped for ${targetRole} account.` },
-        { status: 400 }
-      );
-    }
+    const profileRecord = await prisma.profiles.findFirst({
+      where: { OR: [{ id: targetUserId }, { user_id: targetUserId }] },
+    });
+
+    const primaryUserId = profileRecord?.user_id || profileRecord?.id || targetUserId;
 
     // Check username uniqueness
     const existingWithUsername = await prisma.student_profiles.findFirst({
@@ -203,7 +207,7 @@ export async function POST(request: Request) {
           mode: "insensitive",
         },
         NOT: {
-          user_id: targetUserId,
+          user_id: primaryUserId,
         },
       },
     });
@@ -217,14 +221,14 @@ export async function POST(request: Request) {
 
     // Upsert student_profiles record
     const studentProfile = await prisma.student_profiles.upsert({
-      where: { user_id: targetUserId },
+      where: { user_id: primaryUserId },
       update: {
         username: trimmedUsername,
         avatar_url,
         updated_at: new Date(),
       },
       create: {
-        user_id: targetUserId,
+        user_id: primaryUserId,
         username: trimmedUsername,
         avatar_url,
       },

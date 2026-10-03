@@ -4,6 +4,8 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
+import { INITIAL_COURSES } from "@/lib/mockData";
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -23,15 +25,7 @@ export async function GET(request: Request) {
               getAll() {
                 return cookieStore.getAll();
               },
-              setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
-                try {
-                  cookiesToSet.forEach(({ name, value, options }) =>
-                    cookieStore.set(name, value, options)
-                  );
-                } catch {
-                  // Route handler
-                }
-              },
+              setAll() {},
             },
           });
           const {
@@ -50,18 +44,83 @@ export async function GET(request: Request) {
       return NextResponse.json({
         isEnrolled: false,
         enrolledCourseIds: [],
+        enrollments: [],
         payment: null,
       });
     }
 
+    // Resolve all user candidate IDs
+    const profileRecord = await prisma.profiles.findFirst({
+      where: {
+        OR: [{ id: userId }, { user_id: userId }],
+      },
+    }).catch(() => null);
+
+    const userCandidateIds = Array.from(
+      new Set([userId, profileRecord?.id, profileRecord?.user_id].filter(Boolean) as string[])
+    );
+
     if (courseId) {
-      // Query Database for Enrollment: Check actual entries in the enrollments table (and fallback payments)
-      let enrollment = await prisma.enrollments.findUnique({
+      // Find candidate course IDs (UUID, slug, title)
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(courseId);
+      const decodedCourseId = decodeURIComponent(courseId);
+      const titleSearch = decodedCourseId.replace(/-/g, " ");
+
+      const candidateCourseIds = new Set<string>([courseId, decodedCourseId]);
+
+      const pub = await prisma.published_courses.findFirst({
+        where: isUuid
+          ? { OR: [{ id: courseId }, { slug: courseId }] }
+          : {
+              OR: [
+                { id: courseId },
+                { slug: courseId },
+                { slug: { startsWith: courseId } },
+                { title: { equals: courseId, mode: "insensitive" } },
+                { title: { equals: decodedCourseId, mode: "insensitive" } },
+                { title: { equals: titleSearch, mode: "insensitive" } },
+                { title: { contains: titleSearch, mode: "insensitive" } },
+              ],
+            },
+      }).catch(() => null);
+
+      if (pub?.id) candidateCourseIds.add(pub.id);
+      if (pub?.slug) candidateCourseIds.add(pub.slug);
+
+      const norm = await prisma.courses.findFirst({
+        where: isUuid
+          ? { id: courseId }
+          : {
+              OR: [
+                { id: courseId },
+                { title: { equals: courseId, mode: "insensitive" } },
+                { title: { equals: decodedCourseId, mode: "insensitive" } },
+                { title: { equals: titleSearch, mode: "insensitive" } },
+                { title: { contains: titleSearch, mode: "insensitive" } },
+              ],
+            },
+      }).catch(() => null);
+
+      if (norm?.id) candidateCourseIds.add(norm.id);
+
+      const mock = INITIAL_COURSES.find(
+        (c) =>
+          c.id === courseId ||
+          c.slug === courseId ||
+          c.title?.toLowerCase() === courseId.toLowerCase() ||
+          c.title?.toLowerCase().includes(titleSearch.toLowerCase())
+      );
+      if (mock?.id) candidateCourseIds.add(mock.id);
+      if (mock?.slug) candidateCourseIds.add(mock.slug);
+
+      const searchCourseIds = Array.from(candidateCourseIds);
+
+      // Query Database for Enrollment
+      let enrollment = await prisma.enrollments.findFirst({
         where: {
-          user_id_course_id: {
-            user_id: userId,
-            course_id: courseId,
-          },
+          user_id: { in: userCandidateIds },
+          course_id: { in: searchCourseIds },
+          status: "ACTIVE",
         },
       });
 
@@ -69,8 +128,8 @@ export async function GET(request: Request) {
       if (!enrollment) {
         payment = await prisma.payments.findFirst({
           where: {
-            user_id: userId,
-            course_id: courseId,
+            user_id: { in: userCandidateIds },
+            course_id: { in: searchCourseIds },
             status: "SUCCESS",
           },
           orderBy: { created_at: "desc" },
@@ -118,13 +177,13 @@ export async function GET(request: Request) {
     const [userEnrollments, userPayments] = await Promise.all([
       prisma.enrollments.findMany({
         where: {
-          user_id: userId,
+          user_id: { in: userCandidateIds },
           status: "ACTIVE",
         },
       }),
       prisma.payments.findMany({
         where: {
-          user_id: userId,
+          user_id: { in: userCandidateIds },
           status: "SUCCESS",
         },
         select: {
@@ -133,25 +192,88 @@ export async function GET(request: Request) {
       }),
     ]);
 
-    // Ensure any paid course is in enrollments
-    const enrolledIdsSet = new Set<string>([
-      ...userEnrollments.map((e: any) => e.course_id),
-      ...userPayments.map((p: any) => p.course_id),
+    const rawEnrolledIds = Array.from(
+      new Set([
+        ...userEnrollments.map((e: any) => e.course_id),
+        ...userPayments.map((p: any) => p.course_id),
+      ])
+    );
+
+    const [allPublished, allCourses] = await Promise.all([
+      prisma.published_courses.findMany({
+        select: { id: true, slug: true, title: true },
+      }).catch(() => []),
+      prisma.courses.findMany({
+        select: { id: true, title: true },
+      }).catch(() => []),
     ]);
+
+    const enrolledIdsSet = new Set<string>(rawEnrolledIds);
+
+    for (const rawId of rawEnrolledIds) {
+      for (const pub of allPublished) {
+        if (
+          pub.id === rawId ||
+          pub.slug === rawId ||
+          (pub.title && pub.title.toLowerCase() === rawId.toLowerCase())
+        ) {
+          if (pub.id) enrolledIdsSet.add(pub.id);
+          if (pub.slug) enrolledIdsSet.add(pub.slug);
+        }
+      }
+      for (const c of allCourses) {
+        if (c.id === rawId || (c.title && c.title.toLowerCase() === rawId.toLowerCase())) {
+          if (c.id) enrolledIdsSet.add(c.id);
+          const matchedPub = allPublished.find(
+            (p: any) => p.id === c.id || (p.title && p.title.toLowerCase() === c.title.toLowerCase())
+          );
+          if (matchedPub?.slug) enrolledIdsSet.add(matchedPub.slug);
+        }
+      }
+      for (const ic of INITIAL_COURSES) {
+        if (
+          ic.id === rawId ||
+          ic.slug === rawId ||
+          (ic.title && ic.title.toLowerCase() === rawId.toLowerCase())
+        ) {
+          if (ic.id) enrolledIdsSet.add(ic.id);
+          if (ic.slug) enrolledIdsSet.add(ic.slug);
+        }
+      }
+    }
 
     const enrolledCourseIds = Array.from(enrolledIdsSet);
 
-    const detailedEnrollments = enrolledCourseIds.map((cid) => {
-      const match = userEnrollments.find((e: any) => e.course_id === cid);
-      const completed = match?.completed_modules ?? 0;
-      const total = match?.total_modules ?? 10;
+    const detailedEnrollments: any[] = [];
+    userEnrollments.forEach((e: any) => {
+      const completed = e.completed_modules ?? 0;
+      const total = e.total_modules ?? 10;
       const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
-      return {
-        course_id: cid,
+      detailedEnrollments.push({
+        course_id: e.course_id,
         completed_modules: completed,
         total_modules: total,
         progress_percent: progress,
-      };
+      });
+
+      const matchedPub = allPublished.find((p: any) => p.id === e.course_id || p.slug === e.course_id);
+      if (matchedPub?.slug && matchedPub.slug !== e.course_id) {
+        detailedEnrollments.push({
+          course_id: matchedPub.slug,
+          completed_modules: completed,
+          total_modules: total,
+          progress_percent: progress,
+        });
+      }
+      const matchedMock = INITIAL_COURSES.find((c: any) => c.id === e.course_id || c.slug === e.course_id);
+      if (matchedMock?.slug && matchedMock.slug !== e.course_id) {
+        detailedEnrollments.push({
+          course_id: matchedMock.slug,
+          completed_modules: completed,
+          total_modules: total,
+          progress_percent: progress,
+        });
+      }
     });
 
     return NextResponse.json({

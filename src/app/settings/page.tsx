@@ -52,6 +52,8 @@ export default function SettingsPage() {
           data: { user },
         } = await supabase.auth.getUser();
 
+        let activeUserId = user?.id;
+
         if (user && isMounted) {
           setUserId(user.id);
           if (user.email) setEmail(user.email);
@@ -68,23 +70,25 @@ export default function SettingsPage() {
           if (user.user_metadata?.avatar_url) {
             setAvatarUrl(user.user_metadata.avatar_url);
           }
+        }
 
-          try {
-            const res = await fetch(`/api/student-profile?userId=${user.id}`);
-            if (res.ok && isMounted) {
-              const data = await res.json();
-              if (data.profile) {
-                if (data.profile.full_name) setName(data.profile.full_name);
-                if (data.profile.username) setHandle(data.profile.username);
-                if (data.profile.avatar_url) setAvatarUrl(data.profile.avatar_url);
-                if (data.profile.email) setEmail(data.profile.email);
-                if (data.profile.bio) setBio(data.profile.bio);
-                if (data.profile.track) setTrack(data.profile.track);
-              }
+        try {
+          const endpoint = activeUserId ? `/api/student-profile?userId=${activeUserId}` : "/api/student-profile";
+          const res = await fetch(endpoint);
+          if (res.ok && isMounted) {
+            const data = await res.json();
+            if (data.profile) {
+              setUserId(data.profile.user_id || activeUserId || null);
+              if (data.profile.full_name) setName(data.profile.full_name);
+              if (data.profile.username) setHandle(data.profile.username);
+              if (data.profile.avatar_url) setAvatarUrl(data.profile.avatar_url);
+              if (data.profile.email) setEmail(data.profile.email);
+              if (data.profile.bio) setBio(data.profile.bio);
+              if (data.profile.track) setTrack(data.profile.track);
             }
-          } catch (fetchErr) {
-            console.warn("Could not fetch student profile from API:", fetchErr);
           }
+        } catch (fetchErr) {
+          console.warn("Could not fetch student profile from API:", fetchErr);
         }
       } catch (err) {
         console.warn("Could not load student profile in settings:", err);
@@ -133,16 +137,22 @@ export default function SettingsPage() {
     setIsSaving(true);
 
     try {
-      if (userId) {
-        await fetch("/api/student-profile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId,
-            username: handle,
-            avatar_url: avatarUrl,
-          }),
-        });
+      const res = await fetch("/api/student-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: userId || undefined,
+          username: handle,
+          avatar_url: avatarUrl,
+        }),
+      });
+
+      if (res.ok) {
+        window.dispatchEvent(
+          new CustomEvent("student-profile-updated", {
+            detail: { avatar_url: avatarUrl, username: handle, full_name: name },
+          })
+        );
       }
     } catch (err) {
       console.warn("Error persisting student profile:", err);

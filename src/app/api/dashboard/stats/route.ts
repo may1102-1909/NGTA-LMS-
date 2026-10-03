@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { UserRole } from "@/types/roles";
+import { INITIAL_COURSES } from "@/lib/mockData";
 
 export const dynamic = "force-dynamic";
 
@@ -67,25 +68,29 @@ export async function GET(request: Request) {
 
     const currentRole = (currentUserProfile?.role as UserRole) || "LEARNER";
 
+    const effectiveUserId = targetUserId || currentUserProfile?.user_id || currentUserProfile?.id;
+    const userIds = [effectiveUserId, targetUserId, currentUserProfile?.user_id, currentUserProfile?.id, authUser?.id].filter(Boolean) as string[];
+    const uniqueUserIds = Array.from(new Set(userIds));
+
     // 1. Fetch real student gamification profile for target user
-    const studentProfile = targetUserId
-      ? await prisma.student_profiles.findUnique({
-          where: { user_id: targetUserId },
+    const studentProfile = uniqueUserIds.length > 0
+      ? await prisma.student_profiles.findFirst({
+          where: { user_id: { in: uniqueUserIds } },
         })
       : null;
 
     // 2. Fetch real enrollments for target user
-    const userEnrollments = targetUserId
+    const userEnrollments = uniqueUserIds.length > 0
       ? await prisma.enrollments.findMany({
-          where: { user_id: targetUserId },
+          where: { user_id: { in: uniqueUserIds }, status: "ACTIVE" },
           orderBy: { created_at: "desc" },
         })
       : [];
 
     // 3. Fetch real payments for target user
-    const userPayments = targetUserId
+    const userPayments = uniqueUserIds.length > 0
       ? await prisma.payments.findMany({
-          where: { user_id: targetUserId },
+          where: { user_id: { in: uniqueUserIds } },
           orderBy: { created_at: "desc" },
         })
       : [];
@@ -149,20 +154,61 @@ export async function GET(request: Request) {
       roleCounts[r] = (roleCounts[r] || 0) + 1;
     });
 
+    const [allPublishedCourses, allBaseCourses] = await Promise.all([
+      prisma.published_courses.findMany({
+        select: { id: true, slug: true, title: true },
+      }).catch(() => []),
+      prisma.courses.findMany({
+        select: { id: true, title: true },
+      }).catch(() => []),
+    ]);
+
+    const enrichedEnrollments = userEnrollments.map((enr: any) => {
+      let title = enr.course_id;
+      let slug = enr.course_id;
+
+      const pub = allPublishedCourses.find(
+        (p: any) => p.id === enr.course_id || p.slug === enr.course_id
+      );
+      if (pub) {
+        title = pub.title;
+        slug = pub.slug || pub.id;
+      } else {
+        const norm = allBaseCourses.find((c: any) => c.id === enr.course_id);
+        if (norm) {
+          title = norm.title;
+        } else {
+          const mock = INITIAL_COURSES.find(
+            (c: any) => c.id === enr.course_id || c.slug === enr.course_id
+          );
+          if (mock) {
+            title = mock.title;
+            slug = mock.slug;
+          }
+        }
+      }
+
+      return {
+        ...enr,
+        course_title: title,
+        course_slug: slug,
+      };
+    });
+
     return NextResponse.json({
       success: true,
       currentUser: {
-        id: targetUserId || currentUserProfile?.id,
-        email: currentUserProfile?.email,
-        full_name: currentUserProfile?.full_name,
-        avatar_url: currentUserProfile?.avatar_url,
+        id: effectiveUserId,
+        email: currentUserProfile?.email || authUser?.email,
+        full_name: currentUserProfile?.full_name || studentProfile?.username || "Learner",
+        avatar_url: studentProfile?.avatar_url || currentUserProfile?.avatar_url || "/avatars/avatar-15.png",
         role: currentRole,
         xp_points: studentProfile?.xp_points ?? 0,
         current_streak: studentProfile?.current_streak ?? 0,
-        username: studentProfile?.username || currentUserProfile?.full_name || "Member",
+        username: studentProfile?.username || currentUserProfile?.full_name || "Learner",
       },
       learner: {
-        enrollments: userEnrollments,
+        enrollments: enrichedEnrollments,
         payments: userPayments,
         completedModules: userEnrollments.reduce((sum: number, e: any) => sum + e.completed_modules, 0),
         totalModules: userEnrollments.reduce((sum: number, e: any) => sum + e.total_modules, 0),

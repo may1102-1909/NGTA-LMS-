@@ -28,6 +28,8 @@ export default function CoursesPage() {
   const [publishedDbCourses, setPublishedDbCourses] = useState<any[]>([]);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function loadData() {
       // 1. Fetch published courses from Supabase database
       try {
@@ -89,24 +91,23 @@ export default function CoursesPage() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user?.id) {
-          const res = await fetch(`/api/payments/verify?userId=${user.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            const ids: string[] = data.enrolledCourseIds || [];
-            setEnrolledCourseIds(ids);
+        const endpoint = user?.id ? `/api/payments/verify?userId=${user.id}` : "/api/payments/verify";
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          const ids: string[] = data.enrolledCourseIds || [];
+          if (isMounted) setEnrolledCourseIds(ids);
 
-            const map: Record<string, { completed: number; total: number; percent: number }> = {};
-            if (Array.isArray(data.enrollments)) {
-              data.enrollments.forEach((e: any) => {
-                const completed = Number(e.completed_modules ?? 0);
-                const total = Number(e.total_modules ?? 10);
-                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-                map[e.course_id] = { completed, total, percent };
-              });
-            }
-            setCourseProgressMap(map);
+          const map: Record<string, { completed: number; total: number; percent: number }> = {};
+          if (Array.isArray(data.enrollments)) {
+            data.enrollments.forEach((e: any) => {
+              const completed = Number(e.completed_modules ?? 0);
+              const total = Number(e.total_modules ?? 10);
+              const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+              map[e.course_id] = { completed, total, percent };
+            });
           }
+          if (isMounted) setCourseProgressMap(map);
         }
       } catch (err) {
         console.error("Error loading course enrollments:", err);
@@ -114,6 +115,19 @@ export default function CoursesPage() {
     }
 
     loadData();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      if (isMounted) {
+        loadData();
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const levels = ["ALL", "Beginner", "Intermediate", "Advanced"];
@@ -221,8 +235,12 @@ export default function CoursesPage() {
       {/* Courses Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {filteredCourses.map((course, idx) => {
-          const isEnrolled = enrolledCourseIds.includes(course.id);
-          const progress = courseProgressMap[course.id];
+          const isEnrolled =
+            enrolledCourseIds.includes(course.id) ||
+            Boolean(course.slug && enrolledCourseIds.includes(course.slug));
+          const progress =
+            courseProgressMap[course.id] ||
+            (course.slug ? courseProgressMap[course.slug] : undefined);
 
           return (
             <div
@@ -341,7 +359,7 @@ export default function CoursesPage() {
                   </div>
 
                   <Link
-                    href={`/learn/${course.id}`}
+                    href={`/learn/${course.slug || course.id}`}
                     className="px-5 py-2.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-colors flex items-center gap-1.5 shadow-sm"
                   >
                     <span>RESUME LEARNING</span>

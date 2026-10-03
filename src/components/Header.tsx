@@ -35,20 +35,21 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user?.id) {
-          const res = await fetch(`/api/student-profile?userId=${user.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (isMounted) {
-              setStudentProfile({
-                username: data.profile?.username || "",
-                avatar_url: data.profile?.avatar_url || "",
-                xp_points: data.profile?.xp_points ?? data.xp_points ?? 0,
-                current_streak: data.profile?.current_streak ?? data.current_streak ?? 0,
-              });
-            }
+        const endpoint = user?.id ? `/api/student-profile?userId=${user.id}` : "/api/student-profile";
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && data.profile) {
+            setStudentProfile({
+              username: data.profile?.username || "",
+              avatar_url: data.profile?.avatar_url || "",
+              xp_points: data.profile?.xp_points ?? data.xp_points ?? 0,
+              current_streak: data.profile?.current_streak ?? data.current_streak ?? 0,
+            });
+            return;
           }
-        } else if (isMounted) {
+        }
+        if (isMounted && !user?.id) {
           setStudentProfile({
             username: "",
             avatar_url: "",
@@ -62,6 +63,14 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
     }
 
     loadStudentProfile();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      if (isMounted) {
+        loadStudentProfile();
+      }
+    });
 
     // Listen to real-time persona updates from onboarding modal
     const handleProfileUpdate = (e: any) => {
@@ -78,6 +87,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
     window.addEventListener("student-profile-updated", handleProfileUpdate);
     return () => {
       isMounted = false;
+      subscription?.unsubscribe();
       window.removeEventListener("student-profile-updated", handleProfileUpdate);
     };
   }, []);

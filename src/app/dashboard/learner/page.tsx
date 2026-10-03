@@ -22,6 +22,8 @@ import StreakGrid from "@/components/gamification/StreakGrid";
 interface EnrollmentItem {
   id: string;
   course_id: string;
+  course_title?: string;
+  course_slug?: string;
   completed_modules: number;
   total_modules: number;
   status: string;
@@ -193,9 +195,9 @@ export default function LearnerDashboardPage() {
                         </span>
                       </div>
                       <h4 className="text-sm font-bold text-white uppercase tracking-tight">
-                        {enr.course_id === "course-1"
+                        {enr.course_title || (enr.course_id === "course-1"
                           ? "Selenium Java + AI: Complete Automation Testing Course"
-                          : enr.course_id}
+                          : enr.course_id)}
                       </h4>
                       <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mt-1.5">
                         <span>
@@ -207,7 +209,7 @@ export default function LearnerDashboardPage() {
                     </div>
 
                     <Link
-                      href={`/learn/${enr.course_id}`}
+                      href={`/learn/${enr.course_slug || enr.course_id}`}
                       className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EFFF4F] text-[#070709] hover:bg-[#EFFF4F]/90 text-xs font-mono font-bold uppercase rounded-xl active:scale-95 transition-all shadow-[0_0_15px_rgba(239,255,79,0.3)] shrink-0"
                     >
                       <span>Continue</span>

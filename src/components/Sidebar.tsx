@@ -39,15 +39,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user?.id) {
-          const res = await fetch(`/api/student-profile?userId=${user.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (isMounted) {
-              setStreak(data.profile?.current_streak ?? data.current_streak ?? 0);
-            }
+        const endpoint = user?.id ? `/api/student-profile?userId=${user.id}` : "/api/student-profile";
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) {
+            setStreak(data.profile?.current_streak ?? data.current_streak ?? 0);
           }
-        } else if (isMounted) {
+        } else if (isMounted && !user?.id) {
           setStreak(0);
         }
       } catch (err) {
@@ -56,6 +55,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     }
 
     loadUserStreak();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      if (isMounted) {
+        loadUserStreak();
+      }
+    });
 
     const handleProfileUpdate = (e: any) => {
       if (e.detail && isMounted) {
@@ -68,6 +75,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     window.addEventListener("student-profile-updated", handleProfileUpdate);
     return () => {
       isMounted = false;
+      subscription?.unsubscribe();
       window.removeEventListener("student-profile-updated", handleProfileUpdate);
     };
   }, []);

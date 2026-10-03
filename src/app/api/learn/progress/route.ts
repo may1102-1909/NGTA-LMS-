@@ -50,10 +50,21 @@ export async function GET(request: Request) {
       );
     }
 
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(courseId);
+    const pub = await prisma.published_courses.findFirst({
+      where: isUuid
+        ? { OR: [{ id: courseId }, { slug: courseId }] }
+        : { OR: [{ id: courseId }, { slug: courseId }, { title: { equals: courseId, mode: "insensitive" } }] },
+    }).catch(() => null);
+
+    const candidateCourseIds = [courseId];
+    if (pub?.id) candidateCourseIds.push(pub.id);
+    if (pub?.slug) candidateCourseIds.push(pub.slug);
+
     const progressRecords = await prisma.course_progress.findMany({
       where: {
         user_id: userId,
-        course_id: courseId,
+        course_id: { in: Array.from(new Set(candidateCourseIds)) },
         completed: true,
       },
       select: {

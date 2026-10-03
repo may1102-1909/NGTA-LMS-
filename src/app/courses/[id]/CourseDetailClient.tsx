@@ -117,14 +117,11 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (!user?.id) {
-          setIsEnrolled(false);
-          return;
-        }
+        const endpoint = user?.id
+          ? `/api/payments/verify?courseId=${course?.id}&userId=${user.id}`
+          : `/api/payments/verify?courseId=${course?.id}`;
 
-        const res = await fetch(
-          `/api/payments/verify?courseId=${course?.id}&userId=${user.id}`
-        );
+        const res = await fetch(endpoint);
         if (res.ok) {
           const data = await res.json();
           setIsEnrolled(Boolean(data.isEnrolled));
@@ -138,6 +135,16 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
     }
 
     checkExistingPayment();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      checkExistingPayment();
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [course?.id]);
 
   const toggleModule = (id: string) => {
@@ -285,7 +292,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                     <span>ENROLLED IN COURSE</span>
                   </div>
                   <Link
-                    href={`/learn/${course?.id}`}
+                    href={`/learn/${course?.slug || course?.id}`}
                     className="w-full py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
                   >
                     <span>RESUME LEARNING</span>
