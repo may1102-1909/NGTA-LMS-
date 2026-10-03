@@ -33,9 +33,7 @@ export default function CommunityWelcomePage() {
             <span>THE TRIBE WHERE EVERYONE COOKS</span>
             <Zap className="w-8 h-8 text-[#EFFF4F] shrink-0" />
           </h1>
-          <p className="text-sm text-[#A0A5B5] mt-2 max-w-2xl">
-            Stop being an NPC. Lock in with real builders and level up your skills.
-          </p>
+
         </div>
       </div>
 
@@ -231,9 +229,7 @@ export default function CommunityWelcomePage() {
           <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
             The Tribe Where Everyone Cooks
           </h2>
-          <p className="text-sm text-[#A0A5B5] max-w-md mx-auto leading-relaxed">
-            Stop being an NPC. Lock in with real builders and level up your skills.
-          </p>
+
 
           {/* Primary Action Button: "Get Started" */}
           <div className="pt-2 flex items-center justify-center">

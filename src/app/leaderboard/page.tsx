@@ -116,9 +116,7 @@ export default function LeaderboardPage() {
             <span>GLOBAL SDET LEADERBOARD</span>
             <Zap className="w-8 h-8 text-[#EFFF4F] shrink-0" />
           </h1>
-          <p className="text-sm text-[#A0A5B5] mt-2 max-w-3xl">
-            Rankings are updated dynamically based on completed course modules, peer code reviews, challenge sprint submissions, and quiz passing scores.
-          </p>
+
         </div>
 
         {/* Timeframe Filter matching screenshot */}

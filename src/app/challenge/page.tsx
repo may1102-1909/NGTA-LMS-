@@ -283,9 +283,7 @@ export default function ChallengePage() {
             <Trophy className="w-8 h-8 text-amber-400 shrink-0" />
           </h1>
 
-          <p className="text-sm text-[#A0A5B5] max-w-3xl leading-relaxed">
-            Curated by Rahul Kamat to build production-grade SDET competencies through daily hands-on implementation challenges, TestNG architecture, and CI/CD pipelines.
-          </p>
+
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs shrink-0">

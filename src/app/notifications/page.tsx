@@ -178,14 +178,7 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="border-b border-[#3E3E43] pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <div className="font-mono text-xs text-[#5A5F70] uppercase tracking-widest mb-1 flex items-center gap-2">
-            <span>NOTIFICATION CENTER</span>
-            {unreadCount > 0 && (
-              <span className="px-2 py-0.5 bg-[#EFFF4F] text-[#28282B] font-bold text-[10px] rounded-full">
-                {unreadCount} NEW
-              </span>
-            )}
-          </div>
+
           <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
             NOTIFICATIONS & ALERTS
           </h1>
