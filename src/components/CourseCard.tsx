@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Course } from "@/types";
 import { Star, ArrowUpRight, ArrowRight, CheckCircle2, Loader2, Lock } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 import RazorpayCheckoutButton from "@/components/RazorpayCheckoutButton";
 
 interface CourseCardProps {
@@ -41,11 +41,6 @@ export default function CourseCard({
 
     async function syncSessionAndEnrollment() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!supabaseUrl || !supabaseAnonKey) return;
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -82,14 +77,6 @@ export default function CourseCard({
   const handleEnrollNow = async () => {
     setIsProcessing(true);
     try {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (!supabaseUrl || !supabaseAnonKey) {
-        alert("Supabase authentication configuration is missing.");
-        return;
-      }
-
-      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
       const {
         data: { user },
       } = await supabase.auth.getUser();

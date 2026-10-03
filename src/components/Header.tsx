@@ -10,7 +10,7 @@ import {
   Flame,
   Zap,
 } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 
 interface HeaderProps {
   onToggleSidebar?: () => void;
@@ -31,11 +31,6 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
     async function loadStudentProfile() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!supabaseUrl || !supabaseAnonKey) return;
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();

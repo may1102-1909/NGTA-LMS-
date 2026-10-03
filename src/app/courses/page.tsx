@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { INITIAL_COURSES } from "@/lib/mockData";
 import {
@@ -14,7 +14,7 @@ import {
   CheckCircle2,
   ArrowRight,
 } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,33 +35,47 @@ export default function CoursesPage() {
         if (pubRes.ok) {
           const pubData = await pubRes.json();
           if (Array.isArray(pubData.courses)) {
-            const mapped = pubData.courses.map((pc: any) => ({
-              id: pc.id || pc.slug,
-              slug: pc.slug || pc.id,
-              title: pc.title,
-              subtitle: pc.description.slice(0, 120),
-              description: pc.description,
-              instructorId: pc.instructor_id,
-              instructorName: pc.instructor?.full_name || pc.instructor_name || "Lead SDET",
-              instructorTitle: "Lead Instructor",
-              category: pc.category || "Automation Testing",
-              tags: [pc.category, pc.level, "Accredited"],
-              thumbnailUrl: "/courses/selenium-java-ai.jpg",
-              bannerUrl: "/courses/selenium-java-ai.jpg",
-              difficultyLevel: pc.level || "Intermediate",
-              durationHours: 20,
-              priceINR: Math.round(Number(pc.price) * 1.5),
-              discountPriceINR: Number(pc.price),
-              status: "PUBLISHED",
-              rating: 5.0,
-              ratingsCount: 12,
-              studentsCount: 35,
-              updatedAt: new Date(pc.updated_at || pc.created_at).toISOString().split("T")[0],
-              objectives: ["Master full-stack automation architecture"],
-              prerequisites: ["Basic computer literacy"],
-              targetAudience: ["SDETs and QA Engineers"],
-              modules: Array.isArray(pc.modules) ? pc.modules : [],
-            }));
+            const mapped = pubData.courses.map((pc: any) => {
+              const description = pc.description || pc.subtitle || "";
+              const subtitle = description ? description.slice(0, 120) : "Master full-stack automation architecture";
+              const rawPrice = Number(pc.price) || 0;
+              const tags = [pc.category, pc.level, "Accredited"].filter(Boolean).map(String);
+
+              let formattedDate = new Date().toISOString().split("T")[0];
+              try {
+                if (pc.updated_at || pc.created_at) {
+                  formattedDate = new Date(pc.updated_at || pc.created_at).toISOString().split("T")[0];
+                }
+              } catch {}
+
+              return {
+                id: pc.id || pc.slug,
+                slug: pc.slug || pc.id,
+                title: pc.title || "Untitled Course",
+                subtitle,
+                description,
+                instructorId: pc.instructor_id,
+                instructorName: pc.instructor?.full_name || pc.instructor_name || "Lead SDET",
+                instructorTitle: "Lead Instructor",
+                category: pc.category || "Automation Testing",
+                tags,
+                thumbnailUrl: pc.thumbnail_url || pc.thumbnailUrl || "/courses/selenium-java-ai.jpg",
+                bannerUrl: pc.banner_url || pc.bannerUrl || "/courses/selenium-java-ai.jpg",
+                difficultyLevel: pc.level || "Intermediate",
+                durationHours: Number(pc.duration_hours || pc.durationHours) || 20,
+                priceINR: Math.round(rawPrice * 1.5) || 4999,
+                discountPriceINR: rawPrice || 1999,
+                status: "PUBLISHED",
+                rating: 5.0,
+                ratingsCount: 12,
+                studentsCount: 35,
+                updatedAt: formattedDate,
+                objectives: ["Master full-stack automation architecture"],
+                prerequisites: ["Basic computer literacy"],
+                targetAudience: ["SDETs and QA Engineers"],
+                modules: Array.isArray(pc.modules) ? pc.modules : [],
+              };
+            });
             setPublishedDbCourses(mapped);
           }
         }
@@ -71,11 +85,6 @@ export default function CoursesPage() {
 
       // 2. Fetch user enrollments
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!supabaseUrl || !supabaseAnonKey) return;
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -107,22 +116,49 @@ export default function CoursesPage() {
     loadData();
   }, []);
 
-  const categories = ["ALL", "Automation Testing", "Modern Web Testing", "Performance", "Security"];
   const levels = ["ALL", "Beginner", "Intermediate", "Advanced"];
 
-  const combinedCourses = [...INITIAL_COURSES, ...publishedDbCourses];
+  // Deduplicate courses by id and slug
+  const combinedCourses = useMemo(() => {
+    const map = new Map<string, any>();
+    INITIAL_COURSES.forEach((c) => {
+      map.set(c.id, c);
+      if (c.slug) map.set(c.slug, c);
+    });
+    publishedDbCourses.forEach((c) => {
+      map.set(c.id, c);
+      if (c.slug) map.set(c.slug, c);
+    });
+    return Array.from(new Set(map.values()));
+  }, [publishedDbCourses]);
 
-  const filteredCourses = combinedCourses.filter((course) => {
-    const matchesSearch =
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.tags.some((t: string) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory =
-      selectedCategory === "ALL" || course.category === selectedCategory;
-    const matchesLevel =
-      selectedLevel === "ALL" || course.difficultyLevel === selectedLevel;
+  const categories = useMemo(() => {
+    const set = new Set<string>(["ALL", "Automation Testing", "Modern Web Testing", "Performance", "Security"]);
+    combinedCourses.forEach((c) => {
+      if (c.category) set.add(c.category);
+    });
+    return Array.from(set);
+  }, [combinedCourses]);
 
-    return matchesSearch && matchesCategory && matchesLevel;
-  });
+  const filteredCourses = useMemo(() => {
+    return combinedCourses.filter((course) => {
+      const title = (course?.title || "").toLowerCase();
+      const query = searchQuery.toLowerCase().trim();
+      const matchesTitle = title.includes(query);
+      const matchesTags = Array.isArray(course?.tags) && course.tags.some((t: any) => typeof t === "string" && t.toLowerCase().includes(query));
+      const matchesSearch = !query || matchesTitle || matchesTags;
+
+      const matchesCategory =
+        selectedCategory === "ALL" ||
+        (course?.category || "").toLowerCase() === selectedCategory.toLowerCase();
+
+      const matchesLevel =
+        selectedLevel === "ALL" ||
+        (course?.difficultyLevel || "").toLowerCase() === selectedLevel.toLowerCase();
+
+      return matchesSearch && matchesCategory && matchesLevel;
+    });
+  }, [combinedCourses, searchQuery, selectedCategory, selectedLevel]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -228,20 +264,20 @@ export default function CoursesPage() {
                   <div className="flex items-center gap-3 font-mono text-xs text-[#5A5F70]">
                     <span className="flex items-center gap-1">
                       <BarChart2 className="w-3.5 h-3.5" />
-                      {course.difficultyLevel}
+                      {course.difficultyLevel || "All Levels"}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
-                      {course.durationHours} HOURS
+                      {course.durationHours || 20} HOURS
                     </span>
                     <span>•</span>
-                    <span>{course.studentsCount.toLocaleString()} STUDENTS</span>
+                    <span>{(course.studentsCount ?? 0).toLocaleString()} STUDENTS</span>
                   </div>
 
                   <h3 className="text-xl font-bold text-white tracking-tight leading-snug">
                     <Link href={`/courses/${course.slug || course.id}`} className="hover:text-[#EFFF4F] transition-colors">
-                      {course.title}
+                      {course.title || "Untitled Course"}
                     </Link>
                   </h3>
 
@@ -250,14 +286,14 @@ export default function CoursesPage() {
                   <div className="flex items-center gap-2 pt-1 text-xs font-mono text-[#A0A5B5]">
                     <img
                       src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
-                      alt={course.instructorName}
+                      alt={course.instructorName || "Instructor"}
                       className="w-5 h-5 rounded-full object-cover border border-[#3E3E43]"
                     />
-                    <span>Instructor: <strong className="text-white">{course.instructorName}</strong></span>
+                    <span>Instructor: <strong className="text-white">{course.instructorName || "Lead SDET"}</strong></span>
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {course.tags.map((tag: string) => (
+                    {(course.tags || []).map((tag: string) => (
                       <span
                         key={tag}
                         className="font-mono text-[10px] px-2 py-0.5 border border-[#3E3E43] text-[#5A5F70] bg-[#28282B]"
@@ -318,10 +354,10 @@ export default function CoursesPage() {
                     <div className="font-mono text-[10px] text-[#5A5F70] uppercase">FEE</div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl font-black text-white font-mono">
-                        ₹{course.discountPriceINR.toLocaleString()}
+                        ₹{(course.discountPriceINR ?? 0).toLocaleString()}
                       </span>
                       <span className="text-xs line-through text-[#5A5F70] font-mono">
-                        ₹{course.priceINR.toLocaleString()}
+                        ₹{(course.priceINR ?? 0).toLocaleString()}
                       </span>
                     </div>
                   </div>
