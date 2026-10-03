@@ -33,19 +33,6 @@ export default function LandingPage() {
 
       {/* ── MAIN FULL-FOCUS CRT TERMINAL STAGE ── */}
       <main className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-28 sm:pb-36 text-center flex flex-col items-center justify-center flex-1">
-        {/* Punchy SaaS Pre-Heading Tag */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md text-xs font-mono tracking-widest uppercase text-zinc-400 mb-6 shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
-          <span>NEXTGEN TESTING ACADEMY • PRO SDET SUITE</span>
-        </div>
-
-        {/* High-Contrast Gradient Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent mb-4 uppercase">
-          Built For Builders.
-        </h1>
-        <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-10 tracking-tight">
-          Lock in and execute. Master modern test automation, CI/CD pipelines, and AI test engineering.
-        </p>
 
         {/* Centerpiece High-Resolution ThreeUI Zion Mainframe CRT Terminal */}
         <div className="w-full max-w-5xl relative">
