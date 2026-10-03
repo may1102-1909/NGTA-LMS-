@@ -104,9 +104,7 @@ export default function LearnerDashboardPage() {
             <span>Welcome back, {user?.username || "Learner"}</span>
             <Sparkles className="w-6 h-6 text-[#EFFF4F] shrink-0" />
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-400 mt-2 font-sans">
-            Execute drills, benchmark progress, and verify credentials in real-time.
-          </p>
+
         </div>
 
         {/* Profile Stats Pills */}

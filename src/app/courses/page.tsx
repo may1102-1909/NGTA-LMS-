@@ -134,9 +134,7 @@ export default function CoursesPage() {
         <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase">
           SDET & TEST AUTOMATION CURRICULA
         </h1>
-        <p className="text-[#A0A5B5] mt-2 text-base font-normal max-w-2xl">
-          Comprehensive, production-validated syllabi covering architecture, enterprise frameworks, CI/CD integration, and performance benchmarks.
-        </p>
+
       </div>
 
       {/* Filter Grid Toolbar */}

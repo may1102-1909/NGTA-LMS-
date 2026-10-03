@@ -167,9 +167,7 @@ function MembershipsContent() {
           Lock In. Execute.
         </h1>
 
-        <p className="text-zinc-400 text-sm sm:text-base font-sans leading-relaxed max-w-2xl mx-auto">
-          No corporate fluff. Gain full-spectrum access to battle-tested automation infrastructure, live SDET architecture reviews, and 1-on-1 code mentorship.
-        </p>
+
 
         {/* Manager shortcut */}
         {isManager && (
