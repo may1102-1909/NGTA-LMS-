@@ -135,7 +135,7 @@ export default function InstructorDashboardPage() {
       {/* Creator KPI Tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
-          <div className="flex items-center justify-between text-[#5A5F70] text-xs font-mono">
+          <div className="flex items-center justify-between text-[#A0A5B5] text-sm font-mono font-bold tracking-wide">
             <span>ACTIVE STUDENTS</span>
             <Users className="w-4 h-4 text-[#EFFF4F]" />
           </div>
@@ -145,7 +145,7 @@ export default function InstructorDashboardPage() {
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
-          <div className="flex items-center justify-between text-[#5A5F70] text-xs font-mono">
+          <div className="flex items-center justify-between text-[#A0A5B5] text-sm font-mono font-bold tracking-wide">
             <span>COURSE REVENUE</span>
             <DollarSign className="w-4 h-4 text-emerald-400" />
           </div>
@@ -155,7 +155,7 @@ export default function InstructorDashboardPage() {
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
-          <div className="flex items-center justify-between text-[#5A5F70] text-xs font-mono">
+          <div className="flex items-center justify-between text-[#A0A5B5] text-sm font-mono font-bold tracking-wide">
             <span>FLAGSHIP CURRICULUM</span>
             <BookOpen className="w-4 h-4 text-[#06B6D4]" />
           </div>
@@ -165,7 +165,7 @@ export default function InstructorDashboardPage() {
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
-          <div className="flex items-center justify-between text-[#5A5F70] text-xs font-mono">
+          <div className="flex items-center justify-between text-[#A0A5B5] text-sm font-mono font-bold tracking-wide">
             <span>LIVE TRAINING</span>
             <Video className="w-4 h-4 text-[#F59E0B]" />
           </div>
