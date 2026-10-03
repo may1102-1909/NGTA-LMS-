@@ -104,9 +104,6 @@ export default function InstructorDashboardPage() {
             <span>Instructor Studio</span>
             <Sparkles className="w-6 h-6 text-[#EFFF4F]" />
           </h1>
-          <p className="text-xs sm:text-sm text-[#A0A5B5] mt-1">
-            Manage your courses, broadcast live masterclasses, inspect enrolled cohorts, and review student progress.
-          </p>
         </div>
 
         {/* Creator Actions */}
