@@ -18,43 +18,69 @@ export default async function CourseDetailPage({ params }: PageProps) {
   // Check if identifier is a valid UUID
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
 
+  const decodedId = decodeURIComponent(id);
+  const titleSearch = decodedId.replace(/-/g, " ");
+
   let dbPublishedCourse: any = null;
   let dbNormalizedCourse: any = null;
 
   try {
-    // 1. Fetch exact course by ID or Slug dynamically from Supabase/Prisma
-    try {
-      dbPublishedCourse = await prisma.published_courses.findFirst({
-        where: isUuid
-          ? { OR: [{ id: id }, { slug: id }] }
-          : { slug: id },
-        include: {
-          instructor: true,
-        },
-      });
-    } catch {
-      dbPublishedCourse = await prisma.published_courses.findFirst({
-        where: { slug: id },
-        include: {
-          instructor: true,
-        },
-      }).catch(() => null);
-    }
+    // 1. Fetch exact course by ID, Slug, Slug prefix, or Title dynamically from Supabase/Prisma
+    const publishedWhere: any = isUuid
+      ? {
+          OR: [
+            { id: id },
+            { slug: id },
+          ],
+        }
+      : {
+          OR: [
+            { slug: id },
+            { slug: { startsWith: id } },
+            { title: { equals: id, mode: "insensitive" } },
+            { title: { equals: decodedId, mode: "insensitive" } },
+            { title: { equals: titleSearch, mode: "insensitive" } },
+            { title: { contains: titleSearch, mode: "insensitive" } },
+          ],
+        };
 
-    const resolvedCourseId = dbPublishedCourse?.id || (isUuid ? id : null);
-    if (resolvedCourseId) {
-      dbNormalizedCourse = await prisma.courses.findFirst({
-        where: { id: resolvedCourseId },
-        include: {
-          modules: {
-            orderBy: { order_index: "asc" },
-            include: {
-              lessons: true,
-            },
+    dbPublishedCourse = await prisma.published_courses.findFirst({
+      where: publishedWhere,
+      include: {
+        instructor: true,
+      },
+    });
+
+    const normalizedWhere: any = isUuid
+      ? { id: id }
+      : {
+          OR: [
+            ...(dbPublishedCourse?.id ? [{ id: dbPublishedCourse.id }] : []),
+            { title: { equals: id, mode: "insensitive" } },
+            { title: { equals: decodedId, mode: "insensitive" } },
+            { title: { equals: titleSearch, mode: "insensitive" } },
+            { title: { contains: titleSearch, mode: "insensitive" } },
+          ],
+        };
+
+    dbNormalizedCourse = await prisma.courses.findFirst({
+      where: normalizedWhere,
+      include: {
+        modules: {
+          orderBy: { order_index: "asc" },
+          include: {
+            lessons: true,
           },
-          instructor: true,
         },
-      });
+        instructor: true,
+      },
+    });
+
+    if (dbNormalizedCourse?.id && !dbPublishedCourse) {
+      dbPublishedCourse = await prisma.published_courses.findFirst({
+        where: { id: dbNormalizedCourse.id },
+        include: { instructor: true },
+      }).catch(() => null);
     }
   } catch (err) {
     console.error("Error fetching course dynamically from Supabase/Prisma:", err);
@@ -62,12 +88,18 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   // Fallback to mock data ONLY if completely absent in database
   const mockCourse = (!dbPublishedCourse && !dbNormalizedCourse)
-    ? INITIAL_COURSES.find((c) => c.slug === id || c.id === id)
+    ? INITIAL_COURSES.find((c) => c.slug === id || c.id === id || c.title?.toLowerCase() === titleSearch.toLowerCase())
     : null;
 
-  // 2. Return 404 if course ID/Slug does not exist in DB or mock catalog
+  // Safe Guard Clause: Return clean Course Not Found UI instead of fatal crash
   if (!dbPublishedCourse && !dbNormalizedCourse && !mockCourse) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center justify-center p-6 font-sans">
+        <h1 className="text-2xl font-bold mb-2">Course Not Found</h1>
+        <p className="text-zinc-400 text-sm mb-6">The requested course does not exist or is still pending publication.</p>
+        <a href="/courses" className="px-5 py-2.5 bg-lime-400 text-black font-bold rounded-xl hover:bg-lime-300 transition-colors">Back to Courses</a>
+      </div>
+    );
   }
 
   // 3. Bind UI components dynamically to course record
@@ -178,46 +210,66 @@ export default async function CourseDetailPage({ params }: PageProps) {
   let modules: CourseDetailData["modules"] = [];
   if (dbNormalizedCourse?.modules && dbNormalizedCourse.modules.length > 0) {
     modules = dbNormalizedCourse.modules.map((m: any, mIdx: number) => ({
-      id: m.id,
-      title: m.title || `Module ${mIdx + 1}`,
+      id: m?.id || `mod-${mIdx + 1}`,
+      title: m?.title || `Module ${mIdx + 1}`,
       chapters: [
         {
-          id: `${m.id}-ch1`,
+          id: `${m?.id || mIdx}-ch1`,
           title: "Curriculum & Lessons",
-          lessons: (m.lessons || []).map((l: any, lIdx: number) => ({
-            id: l.id,
-            title: l.title || `Lesson ${lIdx + 1}`,
-            type: l.video_type ? "video" : (l.type || "video"),
-            durationMinutes: l.duration_minutes || l.durationMinutes || 15,
-            videoUrl: l.video_url || "",
-            pdfResourceUrl: l.pdf_resource_url || null,
+          lessons: (m?.lessons || []).map((l: any, lIdx: number) => ({
+            id: l?.id || `les-${lIdx + 1}`,
+            title: l?.title || `Lesson ${lIdx + 1}`,
+            type: l?.video_type ? "video" : (l?.type || "video"),
+            durationMinutes: Number(l?.duration_minutes || l?.durationMinutes || l?.duration) || 15,
+            videoUrl: (l?.video_url || l?.videoUrl || "").trim(),
+            video_url: (l?.video_url || l?.videoUrl || "").trim(),
+            videoType: l?.video_type || l?.videoType || "MP4_UPLOAD",
+            video_type: l?.video_type || l?.videoType || "MP4_UPLOAD",
+            pdfResourceUrl: l?.pdf_resource_url || l?.pdfResourceUrl || null,
           })),
         },
       ],
     }));
   } else if (Array.isArray(dbPublishedCourse?.modules) && dbPublishedCourse.modules.length > 0) {
     modules = dbPublishedCourse.modules.map((m: any, mIdx: number) => {
-      if (Array.isArray(m.chapters) && m.chapters.length > 0) {
+      if (Array.isArray(m?.chapters) && m.chapters.length > 0) {
         return {
-          id: m.id || `mod-${mIdx + 1}`,
-          title: m.title || `Module ${mIdx + 1}`,
-          chapters: m.chapters,
+          id: m?.id || `mod-${mIdx + 1}`,
+          title: m?.title || `Module ${mIdx + 1}`,
+          chapters: m.chapters.map((chap: any, cIdx: number) => ({
+            id: chap?.id || `chap-${mIdx + 1}-${cIdx + 1}`,
+            title: chap?.title || `Chapter ${cIdx + 1}`,
+            lessons: (chap?.lessons || []).map((l: any, lIdx: number) => ({
+              id: l?.id || `les-${lIdx + 1}`,
+              title: l?.title || `Lesson ${lIdx + 1}`,
+              type: l?.videoType || l?.video_type ? "video" : (l?.type || "video"),
+              durationMinutes: Number(l?.durationMinutes || l?.duration_minutes || l?.duration) || 15,
+              videoUrl: (l?.videoUrl || l?.video_url || "").trim(),
+              video_url: (l?.video_url || l?.videoUrl || "").trim(),
+              videoType: l?.video_type || l?.videoType || "MP4_UPLOAD",
+              video_type: l?.video_type || l?.videoType || "MP4_UPLOAD",
+              pdfResourceUrl: l?.pdfResourceUrl || l?.pdf_resource_url || null,
+            })),
+          })),
         };
       }
       return {
-        id: m.id || `mod-${mIdx + 1}`,
-        title: m.title || `Module ${mIdx + 1}`,
+        id: m?.id || `mod-${mIdx + 1}`,
+        title: m?.title || `Module ${mIdx + 1}`,
         chapters: [
           {
-            id: `${m.id || mIdx}-ch1`,
+            id: `${m?.id || mIdx}-ch1`,
             title: "Curriculum & Lessons",
-            lessons: (Array.isArray(m.lessons) ? m.lessons : []).map((l: any, lIdx: number) => ({
-              id: l.id || `les-${lIdx + 1}`,
-              title: l.title || `Lesson ${lIdx + 1}`,
-              type: l.videoType ? "video" : (l.type || "video"),
-              durationMinutes: l.durationMinutes || 15,
-              videoUrl: l.videoUrl || "",
-              pdfResourceUrl: l.pdfResourceUrl || null,
+            lessons: (Array.isArray(m?.lessons) ? m.lessons : []).map((l: any, lIdx: number) => ({
+              id: l?.id || `les-${lIdx + 1}`,
+              title: l?.title || `Lesson ${lIdx + 1}`,
+              type: l?.videoType || l?.video_type ? "video" : (l?.type || "video"),
+              durationMinutes: Number(l?.durationMinutes || l?.duration_minutes || l?.duration) || 15,
+              videoUrl: (l?.video_url || l?.videoUrl || "").trim(),
+              video_url: (l?.video_url || l?.videoUrl || "").trim(),
+              videoType: l?.video_type || l?.videoType || "MP4_UPLOAD",
+              video_type: l?.video_type || l?.videoType || "MP4_UPLOAD",
+              pdfResourceUrl: l?.pdfResourceUrl || l?.pdf_resource_url || null,
             })),
           },
         ],

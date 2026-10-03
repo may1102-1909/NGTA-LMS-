@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 import {
   CheckCircle2,
   PlayCircle,
@@ -70,17 +70,28 @@ export interface CourseDetailData {
 }
 
 interface CourseDetailClientProps {
-  course: CourseDetailData;
+  course?: CourseDetailData | null;
 }
 
 export default function CourseDetailClient({ course }: CourseDetailClientProps) {
   const router = useRouter();
 
-  // Initialize first module or two as open
+  // Safe Guard Clause: Render clean Course Not Found UI if course object is missing or null
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center justify-center p-6 font-sans">
+        <h1 className="text-2xl font-bold mb-2">Course Not Found</h1>
+        <p className="text-zinc-400 text-sm mb-6">The requested course does not exist or is still pending publication.</p>
+        <a href="/courses" className="px-5 py-2.5 bg-lime-400 text-black font-bold rounded-xl hover:bg-lime-300 transition-colors">Back to Courses</a>
+      </div>
+    );
+  }
+
+  // Initialize first module or two as open safely
   const [openModules, setOpenModules] = useState<{ [key: string]: boolean }>(() => {
     const initial: { [key: string]: boolean } = {};
-    if (course.modules?.[0]?.id) initial[course.modules[0].id] = true;
-    if (course.modules?.[1]?.id) initial[course.modules[1].id] = true;
+    if (course?.modules?.[0]?.id) initial[course.modules[0].id] = true;
+    if (course?.modules?.[1]?.id) initial[course.modules[1].id] = true;
     return initial;
   });
 
@@ -92,7 +103,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [previewLesson, setPreviewLesson] = useState<any | null>(null);
 
-  const firstVideoLesson = course.modules?.flatMap((m) => m.chapters.flatMap((c) => c.lessons)).find((l) => l.videoUrl || (l as any).video_url);
+  const firstVideoLesson = course?.modules?.flatMap((m) => m?.chapters?.flatMap((c) => c?.lessons) ?? []).find((l) => l?.videoUrl || (l as any)?.video_url);
 
   // Fetch existing successful payments for the logged-in user via Prisma endpoint
   useEffect(() => {
@@ -102,14 +113,6 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
 
     async function checkExistingPayment() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!supabaseUrl || !supabaseAnonKey) {
-          setIsEnrolled(false);
-          return;
-        }
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -120,7 +123,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
         }
 
         const res = await fetch(
-          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+          `/api/payments/verify?courseId=${course?.id}&userId=${user.id}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -133,8 +136,9 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
         setIsEnrolled(false);
       }
     }
+
     checkExistingPayment();
-  }, [course.id]);
+  }, [course?.id]);
 
   const toggleModule = (id: string) => {
     setOpenModules((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -143,13 +147,6 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
   const handleSimulatePayment = async () => {
     setIsProcessing(true);
     try {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error("Supabase credentials missing");
-      }
-
-      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -159,7 +156,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
         await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: `${window.location.origin}/auth/callback?next=/courses/${course.slug || course.id}`,
+            redirectTo: `${window.location.origin}/auth/callback?next=/courses/${course?.slug || course?.id}`,
           },
         });
         return;
@@ -210,30 +207,30 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
             <div className="lg:col-span-8 space-y-4">
               <div className="flex items-center gap-2 font-mono text-xs text-[#5A5F70] uppercase">
                 <span className="px-2 py-0.5 border border-[#3E3E43] bg-[#333336] font-bold text-[#EFFF4F]">
-                  {course.category}
+                  {course?.category}
                 </span>
                 <span>•</span>
-                <span>LEVEL: {course.difficultyLevel}</span>
+                <span>LEVEL: {course?.difficultyLevel}</span>
                 <span>•</span>
-                <span>UPDATED: {course.updatedAt}</span>
+                <span>UPDATED: {course?.updatedAt}</span>
               </div>
 
               <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight leading-tight">
-                {course.title}
+                {course?.title}
               </h1>
 
               <p className="text-base sm:text-lg text-[#A0A5B5] leading-relaxed font-normal">
-                {course.subtitle}
+                {course?.subtitle}
               </p>
 
               <div className="flex items-center gap-3 pt-2">
                 <img
-                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
-                  alt={course.instructorName}
+                  src={course?.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
+                  alt={course?.instructorName || "Instructor"}
                   className="w-9 h-9 rounded-full object-cover border border-[#3E3E43]"
                 />
                 <div className="font-mono text-xs text-[#A0A5B5]">
-                  INSTRUCTOR: <strong className="text-white">{course.instructorName}</strong> • {course.instructorTitle}
+                  INSTRUCTOR: <strong className="text-white">{course?.instructorName}</strong> • {course?.instructorTitle}
                 </div>
               </div>
             </div>
@@ -242,8 +239,8 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
             <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
               <div className="relative aspect-video overflow-hidden border border-[#3E3E43] bg-[#28282B] -mx-6 -mt-6 mb-2 group">
                 <img
-                  src={course.thumbnailUrl}
-                  alt={course.title}
+                  src={course?.thumbnailUrl}
+                  alt={course?.title || "Course thumbnail"}
                   className="w-full h-full object-cover"
                 />
                 {firstVideoLesson && (
@@ -266,15 +263,15 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                 </div>
                 <div className="flex items-baseline gap-3">
                   <span className="text-3xl font-black font-mono text-white">
-                    ₹{course.discountPriceINR.toLocaleString()}
+                    ₹{(course?.discountPriceINR ?? 0).toLocaleString()}
                   </span>
-                  {course.priceINR > course.discountPriceINR && (
+                  {(course?.priceINR ?? 0) > (course?.discountPriceINR ?? 0) && (
                     <>
                       <span className="text-sm line-through text-[#5A5F70] font-mono">
-                        ₹{course.priceINR.toLocaleString()}
+                        ₹{(course?.priceINR ?? 0).toLocaleString()}
                       </span>
                       <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#EFFF4F]/10 text-[#EFFF4F] border border-[#EFFF4F]/30 font-bold">
-                        {Math.round(((course.priceINR - course.discountPriceINR) / course.priceINR) * 100)}% OFF
+                        {Math.round((((course?.priceINR ?? 0) - (course?.discountPriceINR ?? 0)) / (course?.priceINR || 1)) * 100)}% OFF
                       </span>
                     </>
                   )}
@@ -288,7 +285,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                     <span>ENROLLED IN COURSE</span>
                   </div>
                   <Link
-                    href={`/learn/${course.id}`}
+                    href={`/learn/${course?.id}`}
                     className="w-full py-3.5 bg-cyan-400 text-[#10131A] font-mono text-xs uppercase font-bold hover:bg-cyan-300 transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
                   >
                     <span>RESUME LEARNING</span>
@@ -302,9 +299,9 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                     <span>STATUS: LOCKED (NOT ENROLLED)</span>
                   </div>
                   <RazorpayCheckoutButton
-                    courseId={course.id}
-                    courseTitle={course.title}
-                    amountINR={course.discountPriceINR}
+                    courseId={course?.id || ""}
+                    courseTitle={course?.title || "Course Enrollment"}
+                    amountINR={course?.discountPriceINR ?? 0}
                     className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
                     buttonText="ENROLL VIA UPI / CARDS"
                     onSuccess={() => setIsEnrolled(true)}
@@ -315,7 +312,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
               <div className="space-y-2 border-t border-[#3E3E43] pt-4 font-mono text-xs text-[#A0A5B5]">
                 <div className="flex items-center gap-2">
                   <Clock className="w-3.5 h-3.5 text-[#5A5F70]" />
-                  <span>{course.durationHours} Hours Self-Paced Learning</span>
+                  <span>{course?.durationHours} Hours Self-Paced Learning</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#5A5F70]" />
@@ -344,7 +341,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                 WHAT YOU WILL ARCHITECT
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                {course.objectives.map((obj, i) => (
+                {(course?.objectives || []).map((obj, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-[#A0A5B5] font-sans">
                     <CheckCircle2 className="w-4 h-4 text-[#EFFF4F] shrink-0 mt-0.5" />
                     <span>{obj}</span>
@@ -365,57 +362,57 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                 {isEnrolled ? (
                   <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{course.modules.length} MODULES • ALL LESSONS ENROLLED & UNLOCKED</span>
+                    <span>{course?.modules?.length || 0} MODULES • ALL LESSONS ENROLLED & UNLOCKED</span>
                   </span>
                 ) : (
                   <span className="font-mono text-xs text-[#A0A5B5] flex items-center gap-1.5 font-bold">
                     <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
-                    <span>{course.modules.length} MODULES • ENROLL TO UNLOCK</span>
+                    <span>{course?.modules?.length || 0} MODULES • ENROLL TO UNLOCK</span>
                   </span>
                 )}
               </div>
 
               <div className="space-y-3">
-                {course.modules.map((mod, modIdx) => (
+                {(course?.modules || []).map((mod, modIdx) => (
                   <div
-                    key={mod.id}
+                    key={mod?.id || `mod-${modIdx}`}
                     className="border border-[#3E3E43] bg-[#333336] shadow-card"
                   >
                     <button
-                      onClick={() => toggleModule(mod.id)}
+                      onClick={() => mod?.id && toggleModule(mod.id)}
                       className="w-full px-5 py-4 flex items-center justify-between text-left font-mono text-sm font-bold bg-[#28282B] hover:bg-[#3E3E43] transition-colors border-b border-[#3E3E43]"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-[#EFFF4F]">0{modIdx + 1}.</span>
-                        <span className="text-white">{mod.title}</span>
+                        <span className="text-white">{mod?.title}</span>
                       </div>
-                      {openModules[mod.id] ? (
+                      {mod?.id && openModules[mod.id] ? (
                         <ChevronDown className="w-4 h-4 text-[#5A5F70]" />
                       ) : (
                         <ChevronRight className="w-4 h-4 text-[#5A5F70]" />
                       )}
                     </button>
 
-                    {openModules[mod.id] && (
+                    {mod?.id && openModules[mod.id] && (
                       <div className="divide-y divide-[#3E3E43]">
-                        {mod.chapters.map((chap) => (
-                          <div key={chap.id} className="p-4 bg-[#333336] space-y-2">
+                        {(mod?.chapters || []).map((chap) => (
+                          <div key={chap?.id} className="p-4 bg-[#333336] space-y-2">
                             <div className="font-mono text-[11px] uppercase font-bold text-[#5A5F70]">
-                              CHAPTER: {chap.title}
+                              CHAPTER: {chap?.title}
                             </div>
                             <div className="space-y-1.5 pl-2">
-                              {chap.lessons.map((les) => (
+                              {(chap?.lessons || []).map((les) => (
                                 <div
-                                  key={les.id}
+                                  key={les?.id}
                                   onClick={() => {
                                     if (isEnrolled) {
-                                      router.push(`/learn/${course.id}`);
-                                    } else if (les.videoUrl || les.video_url) {
+                                      router.push(`/learn/${course?.id}`);
+                                    } else if (les?.videoUrl || les?.video_url) {
                                       setPreviewLesson(les);
                                     }
                                   }}
                                   className={`flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs ${
-                                    isEnrolled || les.videoUrl || les.video_url ? "cursor-pointer" : ""
+                                    isEnrolled || les?.videoUrl || les?.video_url ? "cursor-pointer" : ""
                                   }`}
                                 >
                                   <div className="flex items-center gap-2 text-[#A0A5B5]">
@@ -472,20 +469,20 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
               </div>
               <div className="flex flex-col sm:flex-row gap-5 items-start">
                 <img
-                  src={course.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
-                  alt={course.instructorName}
+                  src={course?.instructorAvatarUrl || "/instructor/rahul-kamat.png"}
+                  alt={course?.instructorName || "Instructor"}
                   className="w-24 h-24 rounded-lg object-cover border border-[#3E3E43] shrink-0"
                 />
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-baseline gap-2">
-                    <h4 className="text-xl font-bold text-white">{course.instructorName}</h4>
+                    <h4 className="text-xl font-bold text-white">{course?.instructorName}</h4>
                     <span className="text-xs text-[#EFFF4F] font-mono font-bold bg-[#EFFF4F]/10 border border-[#EFFF4F]/30 px-2 py-0.5">
                       Expert Instructor
                     </span>
                   </div>
-                  <p className="text-xs text-[#A0A5B5] font-mono">{course.instructorTitle}</p>
+                  <p className="text-xs text-[#A0A5B5] font-mono">{course?.instructorTitle}</p>
                   <p className="text-sm text-[#A0A5B5] font-sans leading-relaxed">
-                    {course.instructorBio || "Lead Instructor at NextGen Testing Academy (NGTA)."}
+                    {course?.instructorBio || "Lead Instructor at NextGen Testing Academy (NGTA)."}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-1 font-mono text-xs text-[#5A5F70]">
                     <span>★ 5.0 Rating</span>
@@ -506,7 +503,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                 PREREQUISITES
               </div>
               <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
-                {course.prerequisites.map((p, idx) => (
+                {(course?.prerequisites || []).map((p, idx) => (
                   <li key={idx}>{p}</li>
                 ))}
               </ul>
@@ -517,7 +514,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                 TARGET AUDIENCE
               </div>
               <ul className="space-y-2 text-[#A0A5B5] list-disc pl-4 font-sans text-xs">
-                {course.targetAudience.map((t, idx) => (
+                {(course?.targetAudience || []).map((t, idx) => (
                   <li key={idx}>{t}</li>
                 ))}
               </ul>
@@ -560,10 +557,10 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
             </div>
 
             <div className="p-3 bg-[#28282B] border border-[#3E3E43] space-y-1 font-mono text-xs">
-              <div className="text-[#5A5F70]">ITEM: {course.title}</div>
+              <div className="text-[#5A5F70]">ITEM: {course?.title}</div>
               <div className="flex justify-between font-bold text-white text-sm pt-1 border-t border-[#3E3E43]">
                 <span>TOTAL PAYABLE:</span>
-                <span>₹{course.discountPriceINR.toLocaleString()} INR</span>
+                <span>₹{(course?.discountPriceINR ?? 0).toLocaleString()} INR</span>
               </div>
             </div>
 
@@ -647,11 +644,11 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
               </div>
             ) : (
               <RazorpayCheckoutButton
-                courseId={course.id}
-                courseTitle={course.title}
-                amountINR={course.discountPriceINR}
+                courseId={course?.id || ""}
+                courseTitle={course?.title || "Course Enrollment"}
+                amountINR={course?.discountPriceINR ?? 0}
                 className="w-full py-3.5 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm flex items-center justify-center gap-2 cursor-pointer"
-                buttonText={`PAY ₹${course.discountPriceINR.toLocaleString()} & START LEARNING`}
+                buttonText={`PAY ₹${(course?.discountPriceINR ?? 0).toLocaleString()} & START LEARNING`}
                 onSuccess={() => {
                   setPaymentSuccess(true);
                   setIsEnrolled(true);
@@ -676,7 +673,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
             <div className="flex items-center justify-between border-b border-[#3E3E43] pb-3">
               <div className="space-y-0.5">
                 <span className="font-mono text-[10px] text-[#EFFF4F] uppercase tracking-wider">Lesson Preview</span>
-                <h3 className="text-white font-bold text-sm sm:text-base font-mono">{previewLesson.title}</h3>
+                <h3 className="text-white font-bold text-sm sm:text-base font-mono">{previewLesson?.title || "Lesson"}</h3>
               </div>
               <button
                 type="button"
@@ -689,7 +686,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
 
             <div className="relative aspect-video w-full bg-black rounded-2xl overflow-hidden border border-[#3E3E43] flex items-center justify-center">
               {(() => {
-                const url = (previewLesson.videoUrl || previewLesson.video_url || "").trim();
+                const url = (previewLesson?.videoUrl || previewLesson?.video_url || "").trim();
 
                 if (!url) {
                   return (
@@ -717,7 +714,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                       className="w-full h-full border-0"
                       allow="autoplay; encrypted-media; fullscreen"
                       allowFullScreen
-                      title={previewLesson.title}
+                      title={previewLesson?.title || "Lesson Video"}
                     />
                   );
                 }
@@ -735,7 +732,7 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                       className="w-full h-full border-0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      title={previewLesson.title}
+                      title={previewLesson?.title || "Lesson Video"}
                     />
                   );
                 }

@@ -20,7 +20,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import RankTag from "@/components/gamification/RankTag";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function LearnPlayerPage() {
   const params = useParams();
@@ -41,15 +41,6 @@ export default function LearnPlayerPage() {
 
     async function loadCourseAndCheckAccess() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-        if (!supabaseUrl || !supabaseAnonKey) {
-          if (isMounted) router.replace("/courses");
-          return;
-        }
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -241,7 +232,7 @@ export default function LearnPlayerPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            courseId: course.id,
+            courseId: course?.id || courseId,
             lessonId,
             completed: true,
             totalLessons: totalLessonsCount,
@@ -268,7 +259,7 @@ export default function LearnPlayerPage() {
               Verifying Enrollment Access
             </h2>
             <p className="text-xs text-[#A0A5B5]">
-              Confirming course credentials for {course.title}...
+              Confirming course credentials for {course?.title || "course"}...
             </p>
           </div>
           <div className="flex items-center justify-center gap-2 text-[11px] text-[#5A5F70]">
@@ -282,6 +273,17 @@ export default function LearnPlayerPage() {
 
   if (!isEnrolled) {
     return null;
+  }
+
+  // Safe Guard Clause: Render clean Course Not Found UI if course object is missing or null
+  if (!course && !isLoadingCourse) {
+    return (
+      <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center justify-center p-6 font-sans">
+        <h1 className="text-2xl font-bold mb-2">Course Not Found</h1>
+        <p className="text-zinc-400 text-sm mb-6">The requested course does not exist or is still pending publication.</p>
+        <Link href="/courses" className="px-5 py-2.5 bg-lime-400 text-black font-bold rounded-xl hover:bg-lime-300 transition-colors">Back to Courses</Link>
+      </div>
+    );
   }
 
   return (
@@ -298,7 +300,7 @@ export default function LearnPlayerPage() {
           </Link>
           <span className="text-[#3E3E43]">|</span>
           <span className="text-white font-bold uppercase truncate max-w-xs sm:max-w-md">
-            {course.title}
+            {course?.title || "Course Player"}
           </span>
         </div>
 
@@ -329,7 +331,7 @@ export default function LearnPlayerPage() {
 
           {isEligibleForCertificate && (
             <Link
-              href={`/learn/${course.id}/quiz`}
+              href={`/learn/${course?.id || courseId}/quiz`}
               className="px-2.5 py-1 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center gap-1 text-[11px] shadow-lemon-sm"
             >
               <Award className="w-3.5 h-3.5" />
@@ -423,7 +425,7 @@ export default function LearnPlayerPage() {
                   Evaluate your architecture knowledge to validate competency and unlock your accredited certificate.
                 </p>
                 <Link
-                  href={`/learn/${course.id}/quiz`}
+                  href={`/learn/${course?.id || courseId}/quiz`}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#EFFF4F] text-[#28282B] font-mono text-xs uppercase font-bold hover:bg-[#EFFF4F]/90 transition-colors shadow-lemon-sm"
                 >
                   <span>START TIMED QUIZ</span>
@@ -497,7 +499,7 @@ export default function LearnPlayerPage() {
           </div>
 
           <div className="overflow-y-auto divide-y divide-[#3E3E43] flex-1">
-            {course.modules.map((mod: any, modIdx: number) => {
+            {(course?.modules || []).map((mod: any, modIdx: number) => {
               const modLessons = (mod.chapters || []).flatMap((c: any) => c.lessons || []);
               const modCompleted = modLessons.filter((l: any) =>
                 completedLessonIds.includes(l.id)
@@ -553,7 +555,7 @@ export default function LearnPlayerPage() {
 
           <div className="p-4 border-t border-[#3E3E43] bg-[#0C0E14] font-mono text-xs">
             <Link
-              href={`/learn/${course.id}/quiz`}
+              href={`/learn/${course?.id || courseId}/quiz`}
               className="w-full py-2.5 bg-[#EFFF4F] text-[#28282B] font-bold hover:bg-[#EFFF4F]/90 transition-colors flex items-center justify-center gap-2 shadow-lemon-sm"
             >
               <HelpCircle className="w-4 h-4" />

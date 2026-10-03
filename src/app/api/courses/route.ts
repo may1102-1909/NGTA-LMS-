@@ -57,8 +57,11 @@ export async function GET(request: Request) {
 
     // Single course lookup by ID or Slug
     if (id || slug) {
+      // Single course lookup by ID, Slug, or Title
       const identifier = id || slug || "";
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
+      const decodedId = decodeURIComponent(identifier);
+      const titleSearch = decodedId.replace(/-/g, " ");
 
       let pc: any = null;
       let nc: any = null;
@@ -77,17 +80,40 @@ export async function GET(request: Request) {
         });
       } else {
         pc = await prisma.published_courses.findFirst({
-          where: { slug: identifier },
+          where: {
+            OR: [
+              { slug: identifier },
+              { slug: { startsWith: identifier } },
+              { title: { equals: identifier, mode: "insensitive" } },
+              { title: { equals: decodedId, mode: "insensitive" } },
+              { title: { equals: titleSearch, mode: "insensitive" } },
+              { title: { contains: titleSearch, mode: "insensitive" } },
+            ],
+          },
           include: { instructor: true },
         });
-        if (pc?.id) {
-          nc = await prisma.courses.findFirst({
-            where: { id: pc.id },
-            include: {
-              modules: { orderBy: { order_index: "asc" }, include: { lessons: true } },
-              instructor: true,
-            },
-          });
+
+        nc = await prisma.courses.findFirst({
+          where: {
+            OR: [
+              ...(pc?.id ? [{ id: pc.id }] : []),
+              { title: { equals: identifier, mode: "insensitive" } },
+              { title: { equals: decodedId, mode: "insensitive" } },
+              { title: { equals: titleSearch, mode: "insensitive" } },
+              { title: { contains: titleSearch, mode: "insensitive" } },
+            ],
+          },
+          include: {
+            modules: { orderBy: { order_index: "asc" }, include: { lessons: true } },
+            instructor: true,
+          },
+        });
+
+        if (nc?.id && !pc) {
+          pc = await prisma.published_courses.findFirst({
+            where: { id: nc.id },
+            include: { instructor: true },
+          }).catch(() => null);
         }
       }
 

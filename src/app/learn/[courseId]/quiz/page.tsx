@@ -17,14 +17,15 @@ import {
   Lock,
   Loader2,
 } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function QuizAssessmentPage() {
   const params = useParams();
   const router = useRouter();
   const courseId = params?.courseId as string;
 
-  const course = INITIAL_COURSES.find((c) => c.id === courseId) || INITIAL_COURSES[0];
+  const [course, setCourse] = useState<any>(null);
+  const [isLoadingCourse, setIsLoadingCourse] = useState(true);
   const quiz = INITIAL_QUIZ;
 
   const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
@@ -38,15 +39,6 @@ export default function QuizAssessmentPage() {
 
     async function checkEnrollmentAccess() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-        if (!supabaseUrl || !supabaseAnonKey) {
-          if (isMounted) router.replace("/courses");
-          return;
-        }
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -58,8 +50,37 @@ export default function QuizAssessmentPage() {
 
         if (isMounted) setCurrentUserId(user.id);
 
+        // Fetch course dynamically
+        let loadedCourse: any = null;
+        try {
+          const cRes = await fetch(`/api/courses?id=${courseId}&source=normalized`);
+          if (cRes.ok) {
+            const cData = await cRes.json();
+            const raw = cData.course || cData.normalizedCourse || cData.publishedCourse;
+            if (raw) {
+              loadedCourse = {
+                id: raw.id,
+                title: raw.title,
+                slug: raw.slug || raw.id,
+              };
+            }
+          }
+        } catch (fetchErr) {
+          console.warn("Could not load dynamic course for quiz:", fetchErr);
+        }
+
+        if (!loadedCourse) {
+          loadedCourse = INITIAL_COURSES.find((c) => c.id === courseId || c.slug === courseId) || INITIAL_COURSES[0];
+        }
+
+        if (isMounted) {
+          setCourse(loadedCourse);
+          setIsLoadingCourse(false);
+        }
+
+        const actualCourseId = loadedCourse?.id || courseId;
         const res = await fetch(
-          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+          `/api/payments/verify?courseId=${actualCourseId}&userId=${user.id}`
         );
 
         if (res.ok) {
@@ -88,7 +109,7 @@ export default function QuizAssessmentPage() {
     return () => {
       isMounted = false;
     };
-  }, [course.id, router]);
+  }, [courseId, router]);
 
   const [selectedAnswers, setSelectedAnswers] = useState<{ [questionId: string]: string }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -114,7 +135,7 @@ export default function QuizAssessmentPage() {
 
   const percentageScore = Math.round((correctCount / totalQuestions) * 100);
   const isPassed = percentageScore >= quiz.passingPercentage;
-  const certificateId = issuedCertId || `NGTA-CERT-${course.id}-2026-8910`;
+  const certificateId = issuedCertId || `NGTA-CERT-${course?.id || courseId}-2026-8910`;
 
   const handleSubmitEvaluation = async () => {
     setIsSubmitting(true);
@@ -126,8 +147,8 @@ export default function QuizAssessmentPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            courseId: course.id,
-            courseTitle: course.title,
+            courseId: course?.id || courseId,
+            courseTitle: course?.title || "Course Quiz",
             score: percentageScore,
             passingThreshold: quiz.passingPercentage,
             userId: currentUserId,
@@ -166,7 +187,7 @@ export default function QuizAssessmentPage() {
               Verifying Enrollment Access
             </h2>
             <p className="text-xs text-[#A0A5B5]">
-              Confirming course credentials for {course.title}...
+              Confirming course credentials for {course?.title || "course"}...
             </p>
           </div>
           <div className="flex items-center justify-center gap-2 text-[11px] text-[#5A5F70]">
@@ -182,13 +203,24 @@ export default function QuizAssessmentPage() {
     return null;
   }
 
+  // Safe Guard Clause: Render clean Course Not Found UI if course object is missing or null
+  if (!course && !isLoadingCourse) {
+    return (
+      <div className="min-h-screen bg-[#070709] text-white flex flex-col items-center justify-center p-6 font-sans">
+        <h1 className="text-2xl font-bold mb-2">Course Not Found</h1>
+        <p className="text-zinc-400 text-sm mb-6">The requested course does not exist or is still pending publication.</p>
+        <Link href="/courses" className="px-5 py-2.5 bg-lime-400 text-black font-bold rounded-xl hover:bg-lime-300 transition-colors">Back to Courses</Link>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#28282B] text-white font-sans py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Top Navigation */}
         <div className="flex items-center justify-between border-b border-[#3E3E43] pb-4 font-mono text-xs">
           <Link
-            href={`/learn/${course.id}`}
+            href={`/learn/${course?.id || courseId}`}
             className="flex items-center gap-1 text-[#5A5F70] hover:text-[#EFFF4F] transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -212,7 +244,7 @@ export default function QuizAssessmentPage() {
             {quiz.title}
           </h1>
           <p className="text-[#A0A5B5] text-xs sm:text-sm font-sans">
-            Validating core SDET competency, W3C WebDriver architecture, and thread isolation principles for {course.title}.
+            Validating core SDET competency, W3C WebDriver architecture, and thread isolation principles for {course?.title || "this course"}.
           </p>
         </div>
 
