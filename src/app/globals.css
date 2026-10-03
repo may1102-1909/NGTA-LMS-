@@ -660,62 +660,97 @@
   @keyframes parchmentUnfurlVertical {
     0% {
       clip-path: inset(0 0 100% 0);
-      filter: brightness(0.9) contrast(1.06);
+      filter: brightness(0.85) contrast(1.1);
+      transform: perspective(1200px) rotateX(4deg);
     }
-    12% {
-      clip-path: inset(0 0 88% 0);
+    15% {
+      clip-path: inset(0 0 85% 0);
+      transform: perspective(1200px) rotateX(2.5deg);
     }
-    35% {
-      clip-path: inset(0 0 65% 0);
+    40% {
+      clip-path: inset(0 0 60% 0);
+      transform: perspective(1200px) rotateX(1.5deg);
     }
-    65% {
-      clip-path: inset(0 0 28% 0);
-      filter: brightness(1.05) contrast(1.02);
+    70% {
+      clip-path: inset(0 0 25% 0);
+      filter: brightness(1.04) contrast(1.02);
+      transform: perspective(1200px) rotateX(0.5deg);
     }
-    88% {
-      clip-path: inset(0 0 5% 0);
+    90% {
+      clip-path: inset(0 0 3% 0);
+      transform: perspective(1200px) rotateX(0deg);
     }
-    94% {
+    96% {
       clip-path: inset(0 0 0% 0);
+      transform: perspective(1200px) translateY(1.5px);
     }
     100% {
       clip-path: inset(0 0 0% 0);
       filter: brightness(1) contrast(1);
+      transform: perspective(1200px) translateY(0);
     }
   }
 
   @keyframes rollerRollDownVertical {
     0% {
       top: 0%;
-      transform: translateY(0%);
-      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.95);
+      transform: translateY(0%) rotateX(0deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.98), 0 0 30px rgba(245, 158, 11, 0.4);
     }
-    12% {
-      top: 12%;
-      transform: translateY(-50%);
+    15% {
+      top: 15%;
+      transform: translateY(-50%) rotateX(180deg);
     }
     35% {
-      top: 35%;
-      transform: translateY(-50%);
-      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.95);
+      top: 38%;
+      transform: translateY(-50%) rotateX(450deg);
+      box-shadow: 0 26px 48px rgba(0, 0, 0, 0.95), 0 0 45px rgba(245, 158, 11, 0.5);
     }
     65% {
       top: 72%;
-      transform: translateY(-50%);
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.9);
+      transform: translateY(-50%) rotateX(810deg);
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.92);
     }
     88% {
-      top: 95%;
-      transform: translateY(-90%);
+      top: 96%;
+      transform: translateY(-90%) rotateX(1020deg);
     }
-    94% {
+    95% {
       top: 100%;
-      transform: translateY(-100%) translateY(-10px);
+      transform: translateY(-100%) translateY(-8px) rotateX(1090deg);
     }
     100% {
       top: 100%;
-      transform: translateY(-100%);
-      box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.75);
+      transform: translateY(-100%) rotateX(1080deg);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.85);
+    }
+  }
+
+  @keyframes paperCurlTravel {
+    0% {
+      top: 0%;
+      height: 38px;
+      opacity: 0.95;
+    }
+    35% {
+      top: 38%;
+      height: 32px;
+      opacity: 0.9;
+    }
+    70% {
+      top: 72%;
+      height: 24px;
+      opacity: 0.85;
+    }
+    95% {
+      top: 98%;
+      height: 18px;
+      opacity: 0.5;
+    }
+    100% {
+      top: 100%;
+      height: 0px;
+      opacity: 0;
     }
   }
 
@@ -723,22 +758,25 @@
     0% {
       top: 0%;
       opacity: 0;
+      transform: scaleY(0.4);
     }
     15% {
       top: 15%;
-      opacity: 0.85;
+      opacity: 0.9;
+      transform: scaleY(1);
     }
     45% {
       top: 45%;
-      opacity: 0.75;
+      opacity: 0.85;
+      transform: scaleY(1.2);
     }
     75% {
       top: 75%;
-      opacity: 0.6;
+      opacity: 0.7;
     }
     95% {
       top: 98%;
-      opacity: 0.3;
+      opacity: 0.35;
     }
     100% {
       top: 100%;
@@ -748,64 +786,127 @@
 
   @keyframes ribbonDropUp {
     0% {
-      transform: translateY(0) scaleX(1);
+      transform: translateY(0) scaleX(1) rotate(0deg);
       opacity: 1;
     }
     40% {
-      transform: translateY(-35px) scaleX(0.9);
+      transform: translateY(-40px) scaleX(0.85) rotate(-8deg);
       opacity: 0.85;
     }
     100% {
-      transform: translateY(-120px) scaleX(0.4);
+      transform: translateY(-140px) scaleX(0.3) rotate(-22deg);
       opacity: 0;
     }
   }
 
   @keyframes ribbonDropDown {
     0% {
-      transform: translateY(0) scaleX(1);
+      transform: translateY(0) scaleX(1) rotate(0deg);
       opacity: 1;
     }
     40% {
-      transform: translateY(45px) scaleX(1.1) rotate(6deg);
+      transform: translateY(50px) scaleX(1.1) rotate(8deg);
       opacity: 0.9;
     }
     100% {
-      transform: translateY(180px) scaleX(0.5) rotate(18deg);
+      transform: translateY(200px) scaleX(0.4) rotate(26deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sealBreakGlow {
+    0% {
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0));
+      opacity: 1;
+    }
+    30% {
+      transform: translate(-50%, -50%) scale(1.25) rotate(-6deg);
+      filter: drop-shadow(0 0 35px rgba(254, 240, 138, 0.95)) brightness(1.4);
+      opacity: 1;
+    }
+    70% {
+      transform: translate(-50%, -50%) scale(1.1) rotate(12deg);
+      filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.8)) brightness(1.2);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(-50%, 80px) scale(0.6) rotate(35deg);
+      filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0));
+      opacity: 0;
+    }
+  }
+
+  @keyframes calligraphyInkReveal {
+    0% {
+      opacity: 0;
+      filter: blur(4px) brightness(0.6);
+      transform: translateY(6px);
+    }
+    60% {
+      opacity: 0.85;
+      filter: blur(1px) brightness(1.1);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0px) brightness(1);
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes goldSheenSweep {
+    0% {
+      transform: translateX(-150%) skewX(-25deg);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.65;
+    }
+    100% {
+      transform: translateX(250%) skewX(-25deg);
       opacity: 0;
     }
   }
 
   .animate-parchment-vertical {
-    animation: parchmentUnfurlVertical 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+    animation: parchmentUnfurlVertical 1.6s cubic-bezier(0.25, 0.9, 0.25, 1) forwards;
   }
 
   .animate-roller-vertical {
-    animation: rollerRollDownVertical 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+    animation: rollerRollDownVertical 1.6s cubic-bezier(0.25, 0.9, 0.25, 1) forwards;
+    transform-style: preserve-3d;
+  }
+
+  .animate-paper-curl {
+    animation: paperCurlTravel 1.6s cubic-bezier(0.25, 0.9, 0.25, 1) forwards;
   }
 
   .animate-light-sweep-vertical {
-    animation: verticalLightSweep 1.4s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
+    animation: verticalLightSweep 1.6s cubic-bezier(0.25, 0.9, 0.25, 1) forwards;
+  }
+
+  .animate-gold-sheen {
+    animation: goldSheenSweep 1.4s ease-in-out forwards;
   }
 
   .animate-ribbon-up {
-    animation: ribbonDropUp 0.5s ease-out forwards;
+    animation: ribbonDropUp 0.55s ease-out forwards;
   }
 
   .animate-ribbon-down {
-    animation: ribbonDropDown 0.6s ease-out forwards;
+    animation: ribbonDropDown 0.65s ease-out forwards;
   }
 
   .animate-seal-break {
-    animation: sealBreakGlow 0.6s ease-out forwards;
+    animation: sealBreakGlow 0.65s ease-out forwards;
   }
 
   .animate-calligraphy-ink {
-    animation: calligraphyInkReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: calligraphyInkReveal 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .animate-unroll-shimmer {
-    animation: unrollShimmerGlow 1.2s ease-out forwards;
+    animation: goldSheenSweep 1.4s ease-out forwards;
   }
 }
 

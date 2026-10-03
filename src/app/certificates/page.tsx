@@ -26,7 +26,7 @@ import { INITIAL_CREDENTIALS } from "@/lib/gamification";
 import CredentialCard from "@/components/gamification/CredentialCard";
 
 /* Web Audio Synthesizer for 1600s Parchment Unfurl & Molten Wax Seal Stamp */
-function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock" | "ribbon") {
+function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock" | "ribbon" | "fanfare") {
   if (typeof window === "undefined") return;
   try {
     const AudioContextClass =
@@ -103,6 +103,21 @@ function playAntiqueSound(type: "stamp" | "unfurl" | "click" | "unlock" | "ribbo
         osc.start(startTime);
         osc.stop(startTime + 0.35);
       });
+    } else if (type === "fanfare") {
+      // Grand royal fanfare chord on certificate roll revelation (D-F#-A-D-F#)
+      [293.66, 369.99, 440, 587.33, 739.99].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const startTime = ctx.currentTime + i * 0.08;
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(0.08, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.65);
+        osc.start(startTime);
+        osc.stop(startTime + 0.65);
+      });
     } else if (type === "click") {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -131,37 +146,47 @@ function WoodenRollerBar({
   const isTop = position === "top";
   return (
     <div
-      className={`absolute left-0 right-0 h-6 sm:h-9 md:h-11 z-30 pointer-events-none ${
+      className={`absolute left-0 right-0 h-7 sm:h-10 md:h-12 z-30 pointer-events-none ${
         isMovingVertical
           ? "animate-roller-vertical"
           : isTop
-          ? "top-0 shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
-          : "bottom-0 shadow-[0_-12px_24px_rgba(0,0,0,0.85)]"
+          ? "top-0 shadow-[0_16px_32px_rgba(0,0,0,0.95)]"
+          : "bottom-0 shadow-[0_-16px_32px_rgba(0,0,0,0.95)]"
       }`}
+      style={{ transformStyle: "preserve-3d" }}
     >
-      {/* 3D Cylindrical Wooden Dowel */}
+      {/* 3D Cylindrical Wooden Dowel Body */}
       <div
         className={`w-full h-full relative ${
           isTop
-            ? "bg-gradient-to-b from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-b border-[#B45309]/60 shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
-            : "bg-gradient-to-t from-[#251207] via-[#5A3116] via-[#7D4620] via-[#48240F] to-[#1A0B04] border-t border-[#B45309]/60 shadow-[0_-12px_24px_rgba(0,0,0,0.85)]"
+            ? "bg-gradient-to-b from-[#1C0D05] via-[#48240F] via-[#7D4620] via-[#A86432] via-[#48240F] to-[#120703] border-b-2 border-[#B45309]/80 shadow-[0_16px_32px_rgba(0,0,0,0.95)]"
+            : "bg-gradient-to-t from-[#1C0D05] via-[#48240F] via-[#7D4620] via-[#A86432] via-[#48240F] to-[#120703] border-t-2 border-[#B45309]/80 shadow-[0_-16px_32px_rgba(0,0,0,0.95)]"
         }`}
       >
-        {/* Longitudinal Lacquer Sheen Strip */}
+        {/* Longitudinal Lacquer Highlights */}
         <div
-          className={`absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FDE68A]/40 to-transparent pointer-events-none ${
-            isTop ? "top-[25%]" : "bottom-[25%]"
+          className={`absolute left-0 right-0 h-[2.5px] bg-gradient-to-r from-transparent via-[#FFF8E7]/60 to-transparent pointer-events-none ${
+            isTop ? "top-[26%]" : "bottom-[26%]"
+          }`}
+        />
+        <div
+          className={`absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-200/40 to-transparent pointer-events-none ${
+            isTop ? "top-[42%]" : "bottom-[42%]"
           }`}
         />
 
-        {/* Left Turned Wooden Knob / Brass Finial */}
-        <div className="absolute left-[-12px] sm:left-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+        {/* Left Turned Urn Finial with Polished Brass Sphere */}
+        <div className="absolute left-[-16px] sm:left-[-24px] top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-[#8C532B] via-[#512D15] via-[#2E1408] to-[#120602] border-2 border-amber-400 shadow-[0_8px_24px_rgba(0,0,0,0.95)] flex items-center justify-center">
+          <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-yellow-200 via-amber-400 to-amber-800 shadow-inner border border-amber-100 flex items-center justify-center">
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-100 shadow-sm" />
+          </div>
         </div>
 
-        {/* Right Turned Wooden Knob / Brass Finial */}
-        <div className="absolute right-[-12px] sm:right-[-20px] top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-gradient-to-bl from-[#7D4620] via-[#48240F] to-[#1A0B04] border-2 border-amber-500/80 shadow-[0_4px_16px_rgba(0,0,0,0.9)] flex items-center justify-center">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-bl from-amber-300 via-amber-500 to-amber-800 shadow-inner border border-amber-300/50" />
+        {/* Right Turned Urn Finial with Polished Brass Sphere */}
+        <div className="absolute right-[-16px] sm:right-[-24px] top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-bl from-[#8C532B] via-[#512D15] via-[#2E1408] to-[#120602] border-2 border-amber-400 shadow-[0_8px_24px_rgba(0,0,0,0.95)] flex items-center justify-center">
+          <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-gradient-to-bl from-yellow-200 via-amber-400 to-amber-800 shadow-inner border border-amber-100 flex items-center justify-center">
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-100 shadow-sm" />
+          </div>
         </div>
       </div>
     </div>
@@ -292,12 +317,33 @@ export default function CertificatesPage() {
     "idle" | "sealed" | "snapping" | "unfurling" | "revealing" | "complete"
   >("complete");
 
+  // 3D Parallax Mouse Tilt state for complete certificate inspection
+  const [scrollTilt, setScrollTilt] = useState({ rotateX: 0, rotateY: 0 });
+
+  const handleScrollMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (unrollPhase !== "complete") return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    // Gentle 3D perspective tilt (max ~4.5 degrees)
+    const rotY = (x / (rect.width / 2)) * 4.5;
+    const rotX = -(y / (rect.height / 2)) * 4.5;
+    setScrollTilt({ rotateX: rotX, rotateY: rotY });
+  };
+
+  const handleScrollMouseLeave = () => {
+    setScrollTilt({ rotateX: 0, rotateY: 0 });
+  };
+
   const [sealClicked, setSealClicked] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [filter, setFilter] = useState<"ALL" | "CERTIFICATE" | "BADGE">("ALL");
 
   // Trigger Full 1600s Roll Opening Cinematic Sequence
   const triggerRollOpening = () => {
+    // Reset tilt for clean animation
+    setScrollTilt({ rotateX: 0, rotateY: 0 });
+
     // Stage 1: Sealed cylindrical roll resting in spotlight
     setUnrollPhase("sealed");
 
@@ -308,22 +354,23 @@ export default function CertificatesPage() {
       playAntiqueSound("unlock");
     }, 450);
 
-    // Stage 3: Wooden rollers separate and parchment unrolls vertically
+    // Stage 3: Wooden rollers separate and parchment unrolls vertically with 3D paper curl
     const t2 = setTimeout(() => {
       setUnrollPhase("unfurling");
       playAntiqueSound("unfurl");
     }, 950);
 
-    // Stage 4: Parchment reaches full height, calligraphy ink emerges & wax seal stamps down
+    // Stage 4: Parchment reaches full height, calligraphy ink emerges, fanfare plays & wax seal stamps down
     const t3 = setTimeout(() => {
       setUnrollPhase("revealing");
       playAntiqueSound("stamp");
-    }, 2350);
+      playAntiqueSound("fanfare");
+    }, 2550);
 
-    // Stage 5: Settle into complete, interactive state
+    // Stage 5: Settle into complete, interactive state with 3D mouse parallax
     const t4 = setTimeout(() => {
       setUnrollPhase("complete");
-    }, 3200);
+    }, 3800);
 
     return () => {
       clearTimeout(t1);
@@ -834,6 +881,13 @@ export default function CertificatesPage() {
           /* ======================================================== */
           <div
             id="parchment-scroll-container"
+            onMouseMove={handleScrollMouseMove}
+            onMouseLeave={handleScrollMouseLeave}
+            style={{
+              transform: `perspective(1200px) rotateX(${scrollTilt.rotateX}deg) rotateY(${scrollTilt.rotateY}deg)`,
+              transition: unrollPhase === "complete" ? "transform 0.15s ease-out" : "none",
+              transformStyle: "preserve-3d",
+            }}
             className="relative w-full max-w-[1080px] aspect-[16/9] select-none overflow-hidden rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#120B06]"
           >
             {/* Authentic 1600s Unfurled Parchment Roll Background */}
@@ -858,6 +912,9 @@ export default function CertificatesPage() {
                 {/* Top stationary anchor roller */}
                 <WoodenRollerBar position="top" />
 
+                {/* 3D Cylindrical Paper Curl Lip that travels down with the bottom roller */}
+                <div className="absolute left-0 right-0 z-25 pointer-events-none animate-paper-curl bg-gradient-to-t from-[#B38753] via-[#E2CEAA] to-[#7A4B1D] shadow-[0_16px_30px_rgba(0,0,0,0.9)] border-t border-amber-300/40" />
+
                 {/* Bottom roller dowel rolling VERTICALLY downwards */}
                 <WoodenRollerBar position="bottom" isMovingVertical={true} />
 
@@ -880,6 +937,10 @@ export default function CertificatesPage() {
                   : "opacity-100"
               }`}
             >
+              {/* Golden metallic specular sheen sweeping across certificate text */}
+              {unrollPhase === "revealing" && (
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent animate-gold-sheen z-20" />
+              )}
               {/* 1. Top Proclamation Header */}
               <div className="w-full space-y-0.5">
                 <div className="flex items-center justify-center gap-2 text-[#6B3D14] text-[8px] sm:text-[9px] md:text-[10px] font-serif tracking-[0.22em] uppercase font-bold">
