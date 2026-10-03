@@ -142,7 +142,6 @@ export default function InstructorDashboardPage() {
           <div className="text-3xl font-black text-white font-mono">
             {loading ? "..." : totalStudents.toLocaleString()}
           </div>
-          <p className="text-[11px] text-[#A0A5B5]">Across all active course cohorts</p>
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
@@ -153,7 +152,6 @@ export default function InstructorDashboardPage() {
           <div className="text-3xl font-black text-emerald-400 font-mono">
             {loading ? "..." : `₹${totalRevenue.toLocaleString()}`}
           </div>
-          <p className="text-[11px] text-[#A0A5B5]">Verified gross Razorpay receipts</p>
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
@@ -164,7 +162,6 @@ export default function InstructorDashboardPage() {
           <div className="text-lg font-black text-white font-mono truncate">
             Selenium Java + AI
           </div>
-          <p className="text-[11px] text-[#A0A5B5]">10 Core Modules • 25.5 Hours</p>
         </div>
 
         <div className="bg-[#333336] border border-[#3E3E43] rounded-2xl p-5 space-y-2 shadow-lg">
@@ -175,7 +172,6 @@ export default function InstructorDashboardPage() {
           <div className="text-lg font-black text-[#F59E0B] font-mono">
             Weekend Masterclasses
           </div>
-          <p className="text-[11px] text-[#A0A5B5]">Interactive live Zoom/Labs</p>
         </div>
       </div>
 
