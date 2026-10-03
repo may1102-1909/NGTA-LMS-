@@ -6,9 +6,7 @@ import Image from "next/image";
 import {
   Settings,
   User,
-  Shield,
   Bell,
-  Code,
   Save,
   CheckCircle2,
   Key,
@@ -17,7 +15,6 @@ import {
   Sparkles,
   Zap,
   Globe,
-  Lock,
   Layers,
   Award,
   RefreshCw,
@@ -27,7 +24,7 @@ import GamerPersona3D from "@/components/GamerPersona3D";
 import { AVATAR_OPTIONS } from "@/lib/avatars";
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES" | "SECURITY">("PROFILE");
+  const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES">("PROFILE");
   const [name, setName] = useState("Alex Vance");
   const [handle, setHandle] = useState("alex_sdet");
   const [avatarUrl, setAvatarUrl] = useState("/avatars/avatar-1.png");
@@ -40,7 +37,6 @@ export default function SettingsPage() {
   const [workshopAlerts, setWorkshopAlerts] = useState(true);
   const [communityMentions, setCommunityMentions] = useState(true);
   const [leaderboardVisible, setLeaderboardVisible] = useState(true);
-  const [githubToken, setGithubToken] = useState("ghp_************************************");
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -187,17 +183,6 @@ export default function SettingsPage() {
             >
               <Bell className="w-3.5 h-3.5" />
               <span>[02] CADENCE</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("SECURITY")}
-              className={`px-4 py-2.5 uppercase border-l border-[#3E3E43] transition-all flex items-center gap-2 ${
-                activeTab === "SECURITY"
-                  ? "bg-[#EFFF4F] text-[#28282B] shadow-lemon-sm"
-                  : "text-[#A0A5B5] hover:bg-[#2C2C30] hover:text-white"
-              }`}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>[03] SECURITY & KEYS</span>
             </button>
           </div>
 
@@ -473,59 +458,6 @@ export default function SettingsPage() {
                     onChange={(e) => setCommunityMentions(e.target.checked)}
                     className="accent-[#EFFF4F] w-4 h-4 cursor-pointer"
                   />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 3: Security & Integrations */}
-          {activeTab === "SECURITY" && (
-            <div className="border border-[#3E3E43] bg-[#222225] p-6 space-y-5 rounded-2xl shadow-card font-mono text-xs">
-              <div className="border-b border-[#3E3E43] pb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-[#EFFF4F]" />
-                  <h2 className="font-bold text-white uppercase text-sm">DEVELOPER & CI/CD CREDENTIALS</h2>
-                </div>
-                <span className="text-[10px] text-emerald-400 font-bold">256-BIT ENCRYPTED</span>
-              </div>
-
-              <div className="space-y-4">
-                <div className="p-4 rounded-xl border border-[#3E3E43] bg-[#1A1A1D] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-white font-bold">
-                      <Code className="w-4 h-4 text-[#EFFF4F]" />
-                      <span>GitHub Personal Access Token</span>
-                    </div>
-                    <span className="text-[10px] text-[#A0A5B5] uppercase">SCOPES: `repo:status`, `read:org`</span>
-                  </div>
-
-                  <input
-                    type="password"
-                    value={githubToken}
-                    onChange={(e) => setGithubToken(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#3E3E43] bg-[#141416] text-white focus:outline-none focus:border-[#EFFF4F] font-mono text-xs"
-                  />
-                  <p className="text-[11px] text-[#5A5F70] font-sans leading-relaxed">
-                    Used strictly by NGTA's Automated Grader to fetch your test repo commit SHA, run Selenium/Playwright suites inside isolated test containers, and publish test pass badges.
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-[#3E3E43] bg-[#1A1A1D] flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <div className="text-white font-bold flex items-center gap-1.5">
-                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Supabase Multi-Factor Authentication (MFA)</span>
-                    </div>
-                    <p className="text-[11px] text-[#A0A5B5] font-sans">
-                      Protect your test certifications and candidate registry status with Authenticator App 2FA.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className="px-3.5 py-2 rounded-lg border border-[#3E3E43] bg-[#222225] text-[#EFFF4F] font-bold text-xs uppercase hover:border-[#EFFF4F]/50 transition-colors"
-                  >
-                    Configure
-                  </button>
                 </div>
               </div>
             </div>
