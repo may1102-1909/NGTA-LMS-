@@ -27,19 +27,19 @@ export default function LearnPlayerPage() {
   const router = useRouter();
   const courseId = params?.courseId as string;
 
-  const course = INITIAL_COURSES.find((c) => c.id === courseId) || INITIAL_COURSES[0];
+  const [course, setCourse] = useState<any>(null);
+  const [isLoadingCourse, setIsLoadingCourse] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const [isVerifyingEnrollment, setIsVerifyingEnrollment] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
-
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Gated Course Access: Verify user is logged in and has an active payment for this course
+  // Dynamic Course & Gated Enrollment Access: Fetch course from DB and verify enrollment
   useEffect(() => {
     let isMounted = true;
 
-    async function checkEnrollmentAccess() {
+    async function loadCourseAndCheckAccess() {
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -55,22 +55,97 @@ export default function LearnPlayerPage() {
         } = await supabase.auth.getUser();
 
         if (!user?.id) {
-          // User not logged in -> redirect to /courses
           if (isMounted) router.replace("/courses");
           return;
         }
 
         if (isMounted) setCurrentUserId(user.id);
 
-        // Query database to check if user has purchased this course
+        // 1. Fetch dynamic course record from database
+        let loadedCourse: any = null;
+        try {
+          const cRes = await fetch(`/api/courses?id=${courseId}&source=normalized`);
+          if (cRes.ok) {
+            const cData = await cRes.json();
+            const raw = cData.course || cData.normalizedCourse || cData.publishedCourse;
+            if (raw) {
+              const normModules = (raw.modules || []).map((m: any, mIdx: number) => {
+                if (Array.isArray(m.chapters) && m.chapters.length > 0) {
+                  return {
+                    id: m.id || `mod-${mIdx + 1}`,
+                    title: m.title || `Module ${mIdx + 1}`,
+                    chapters: m.chapters.map((chap: any, cIdx: number) => ({
+                      id: chap.id || `chap-${mIdx + 1}-${cIdx + 1}`,
+                      title: chap.title || `Chapter ${cIdx + 1}`,
+                      lessons: (chap.lessons || []).map((l: any, lIdx: number) => ({
+                        id: l.id || `les-${mIdx + 1}-${lIdx + 1}`,
+                        title: l.title || `Lesson ${lIdx + 1}`,
+                        type: l.video_type || l.videoType ? "video" : (l.type || "video"),
+                        videoType: l.video_type || l.videoType || "MP4_UPLOAD",
+                        videoUrl: (l.video_url || l.videoUrl || "").trim(),
+                        durationMinutes: Number(l.duration_minutes || l.durationMinutes || l.duration) || 15,
+                        pdfResourceUrl: l.pdf_resource_url || l.pdfResourceUrl || null,
+                        content: l.content || "",
+                        order: lIdx + 1,
+                      })),
+                    })),
+                  };
+                }
+                return {
+                  id: m.id || `mod-${mIdx + 1}`,
+                  title: m.title || `Module ${mIdx + 1}`,
+                  chapters: [
+                    {
+                      id: `${m.id || mIdx}-ch1`,
+                      title: "Lessons",
+                      lessons: (m.lessons || []).map((l: any, lIdx: number) => ({
+                        id: l.id || `les-${mIdx + 1}-${lIdx + 1}`,
+                        title: l.title || `Lesson ${lIdx + 1}`,
+                        type: l.video_type || l.videoType ? "video" : (l.type || "video"),
+                        videoType: l.video_type || l.videoType || "MP4_UPLOAD",
+                        videoUrl: (l.video_url || l.videoUrl || "").trim(),
+                        durationMinutes: Number(l.duration_minutes || l.durationMinutes || l.duration) || 15,
+                        pdfResourceUrl: l.pdf_resource_url || l.pdfResourceUrl || null,
+                        content: l.content || "",
+                        order: lIdx + 1,
+                      })),
+                    },
+                  ],
+                };
+              });
+
+              loadedCourse = {
+                id: raw.id,
+                title: raw.title,
+                slug: raw.slug || raw.id,
+                modules: normModules,
+              };
+            }
+          }
+        } catch (fetchErr) {
+          console.warn("Could not load dynamic course from DB:", fetchErr);
+        }
+
+        // Fallback to static catalog if DB record not found
+        if (!loadedCourse) {
+          const fallback = INITIAL_COURSES.find((c) => c.id === courseId || c.slug === courseId) || INITIAL_COURSES[0];
+          loadedCourse = fallback;
+        }
+
+        if (isMounted) {
+          setCourse(loadedCourse);
+          setIsLoadingCourse(false);
+        }
+
+        // 2. Query database to check if user has active enrollment for this course
+        const actualCourseId = loadedCourse.id;
         const res = await fetch(
-          `/api/payments/verify?courseId=${course.id}&userId=${user.id}`
+          `/api/payments/verify?courseId=${actualCourseId}&userId=${user.id}`
         );
 
         if (res.ok) {
           const data = await res.json();
           if (data.isEnrolled) {
-            // Also fetch student points dynamically
             try {
               const profRes = await fetch(`/api/student-profile?userId=${user.id}`);
               if (profRes.ok) {
@@ -81,10 +156,9 @@ export default function LearnPlayerPage() {
               }
             } catch {}
 
-            // Fetch persistent lesson progress from course_progress table
             try {
               const progRes = await fetch(
-                `/api/learn/progress?courseId=${course.id}&userId=${user.id}`
+                `/api/learn/progress?courseId=${actualCourseId}&userId=${user.id}`
               );
               if (progRes.ok) {
                 const progData = await progRes.json();
@@ -116,23 +190,37 @@ export default function LearnPlayerPage() {
       }
     }
 
-    checkEnrollmentAccess();
+    loadCourseAndCheckAccess();
     return () => {
       isMounted = false;
     };
-  }, [course.id, router]);
+  }, [courseId, router]);
 
-  const allLessons = course.modules.flatMap((m) =>
-    m.chapters.flatMap((c) => c.lessons)
-  );
+  const allLessons = course?.modules
+    ? course.modules.flatMap((m: any) =>
+        (m.chapters || []).flatMap((c: any) => c.lessons || [])
+      )
+    : [];
 
-  const [activeLessonId, setActiveLessonId] = useState<string>(allLessons[0]?.id || "les-1");
+  const [activeLessonId, setActiveLessonId] = useState<string>("");
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
   const [playbackTime, setPlaybackTime] = useState<number>(0);
   const [userPoints, setUserPoints] = useState<number>(0);
   const [pointsToast, setPointsToast] = useState<string | null>(null);
 
-  const activeLesson = allLessons.find((l) => l.id === activeLessonId) || allLessons[0];
+  useEffect(() => {
+    if (allLessons.length > 0 && (!activeLessonId || !allLessons.some((l: any) => l.id === activeLessonId))) {
+      setActiveLessonId(allLessons[0].id);
+    }
+  }, [allLessons, activeLessonId]);
+
+  const activeLesson = allLessons.find((l: any) => l.id === activeLessonId) || allLessons[0] || {
+    id: "empty",
+    title: "Lesson",
+    type: "video",
+    videoUrl: "",
+    durationMinutes: 15,
+  };
 
   const totalLessonsCount = allLessons.length;
   const progressPercentage =
@@ -258,7 +346,19 @@ export default function LearnPlayerPage() {
           <div className="relative aspect-video w-full bg-black flex items-center justify-center border-b border-[#3E3E43]">
             {activeLesson.type === "video" ? (
               (() => {
-                const url = activeLesson.videoUrl || "";
+                const url = (activeLesson.videoUrl || (activeLesson as any).video_url || "").trim();
+
+                if (!url) {
+                  return (
+                    <div className="flex flex-col items-center justify-center p-8 text-center space-y-3">
+                      <Video className="w-12 h-12 text-[#5A5F70]" />
+                      <p className="text-sm font-mono text-[#A0A5B5]">
+                        No video resource provided for this lesson yet.
+                      </p>
+                    </div>
+                  );
+                }
+
                 const isDrive = url.includes("drive.google.com");
                 const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
 
@@ -304,11 +404,13 @@ export default function LearnPlayerPage() {
                   <video
                     ref={videoRef}
                     controls
-                    src={url || "https://www.w3schools.com/html/mov_bbb.mp4"}
-                    className="w-full h-full object-contain"
+                    className="w-full rounded-2xl aspect-video bg-black"
                     onTimeUpdate={(e) => setPlaybackTime(e.currentTarget.currentTime)}
                     onEnded={() => handleMarkCompleted(activeLesson.id)}
-                  />
+                  >
+                    <source src={url} type="video/mp4" />
+                    Your browser does not support HTML5 video streaming.
+                  </video>
                 );
               })()
             ) : (
@@ -395,9 +497,9 @@ export default function LearnPlayerPage() {
           </div>
 
           <div className="overflow-y-auto divide-y divide-[#3E3E43] flex-1">
-            {course.modules.map((mod, modIdx) => {
-              const modLessons = mod.chapters.flatMap((c) => c.lessons);
-              const modCompleted = modLessons.filter((l) =>
+            {course.modules.map((mod: any, modIdx: number) => {
+              const modLessons = (mod.chapters || []).flatMap((c: any) => c.lessons || []);
+              const modCompleted = modLessons.filter((l: any) =>
                 completedLessonIds.includes(l.id)
               ).length;
               const isModAllDone = modCompleted === modLessons.length && modLessons.length > 0;
@@ -413,7 +515,7 @@ export default function LearnPlayerPage() {
                   <div className="text-xs font-semibold text-white mb-2">{mod.title}</div>
 
                   <div className="space-y-1 pl-2 font-mono text-xs">
-                    {modLessons.map((les) => {
+                    {modLessons.map((les: any) => {
                       const isCurrent = les.id === activeLessonId;
                       const isDone = completedLessonIds.includes(les.id);
 

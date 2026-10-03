@@ -41,8 +41,11 @@ interface LessonDraft {
   title: string;
   durationMinutes: number;
   videoType: VideoSourceOption;
+  video_type?: VideoSourceOption;
   videoUrl: string;
+  video_url?: string;
   pdfResourceUrl: string;
+  pdf_resource_url?: string;
   content: string;
   // Upload states
   isUploadingVideo?: boolean;
@@ -285,8 +288,10 @@ export default function NewCourseBuilderPage() {
           id: "les-1",
           title: "Introduction to Test Frameworks & W3C Standards",
           durationMinutes: 25,
-          videoType: "GOOGLE_DRIVE",
-          videoUrl: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view?usp=sharing",
+          videoType: "MP4_UPLOAD",
+          video_type: "MP4_UPLOAD",
+          videoUrl: "",
+          video_url: "",
           pdfResourceUrl: "",
           content: "Overview of enterprise testing architecture and parallel execution runners.",
         },
@@ -530,6 +535,38 @@ export default function NewCourseBuilderPage() {
     );
   };
 
+  const updateLesson = (modId: string, lesId: string, updates: Partial<LessonDraft>) => {
+    setModules((prev) =>
+      prev.map((m) =>
+        m.id === modId
+          ? {
+              ...m,
+              lessons: m.lessons.map((l) =>
+                l.id === lesId
+                  ? {
+                      ...l,
+                      ...updates,
+                      ...(updates.video_url || updates.videoUrl
+                        ? {
+                            videoUrl: updates.video_url || updates.videoUrl || "",
+                            video_url: updates.video_url || updates.videoUrl || "",
+                          }
+                        : {}),
+                      ...(updates.video_type || updates.videoType
+                        ? {
+                            videoType: (updates.video_type || updates.videoType || "MP4_UPLOAD") as VideoSourceOption,
+                            video_type: (updates.video_type || updates.videoType || "MP4_UPLOAD") as VideoSourceOption,
+                          }
+                        : {}),
+                    }
+                  : l
+              ),
+            }
+          : m
+      )
+    );
+  };
+
   // Lesson MP4 video upload handler (Direct Browser-to-Supabase Storage)
   const handleLessonVideoUpload = async (modId: string, lesId: string, file: File) => {
     if (!file) return;
@@ -579,27 +616,15 @@ export default function NewCourseBuilderPage() {
         },
       });
 
-      // 2. Update local state with resulting public URL
-      setModules((prev) =>
-        prev.map((m) =>
-          m.id === modId
-            ? {
-                ...m,
-                lessons: m.lessons.map((l) =>
-                  l.id === lesId
-                    ? {
-                        ...l,
-                        videoUrl: publicVideoUrl,
-                        videoType: "MP4_UPLOAD",
-                        isUploadingVideo: false,
-                        videoUploadProgress: 100,
-                      }
-                    : l
-                ),
-              }
-            : m
-        )
-      );
+      // 2. Update state immediately upon 100% upload completion
+      updateLesson(modId, lesId, {
+        video_url: publicVideoUrl,
+        videoUrl: publicVideoUrl,
+        video_type: "MP4_UPLOAD",
+        videoType: "MP4_UPLOAD",
+        isUploadingVideo: false,
+        videoUploadProgress: 100,
+      });
 
       // 3. Save URL Only in Prisma via Server Action createLesson
       // Pass ONLY the string publicVideoUrl back to the Server Action (no File / FormData)
@@ -614,7 +639,7 @@ export default function NewCourseBuilderPage() {
         videoType: "MP4_UPLOAD",
         videoUrl: publicVideoUrl,
         pdfResourceUrl: targetLesson?.pdfResourceUrl || null,
-      });
+      }).catch((e) => console.warn("Draft createLesson note:", e));
 
     } catch (err: any) {
       setErrorMessage(`Lesson MP4 upload error: ${err.message}`);
@@ -770,10 +795,14 @@ export default function NewCourseBuilderPage() {
           lessons: m.lessons.map((l, lIdx) => ({
             id: l.id,
             title: l.title,
-            durationMinutes: Number(l.durationMinutes) || 15,
-            videoType: l.videoType,
-            videoUrl: l.videoUrl || "",
-            pdfResourceUrl: l.pdfResourceUrl || null,
+            duration: Number(l.durationMinutes || (l as any).duration) || 15,
+            durationMinutes: Number(l.durationMinutes || (l as any).duration) || 15,
+            video_type: l.video_type || l.videoType || "MP4_UPLOAD",
+            videoType: l.video_type || l.videoType || "MP4_UPLOAD",
+            video_url: l.video_url || l.videoUrl || "",
+            videoUrl: l.video_url || l.videoUrl || "",
+            pdf_resource_url: l.pdf_resource_url || l.pdfResourceUrl || null,
+            pdfResourceUrl: l.pdf_resource_url || l.pdfResourceUrl || null,
             content: l.content,
             order: lIdx + 1,
           })),
@@ -803,6 +832,12 @@ export default function NewCourseBuilderPage() {
       }
 
       setSuccessResult(data.course);
+
+      // Automatically redirect straight to the new course page (/courses/${course.slug})
+      const targetSlug = data.course?.slug || data.normalizedCourse?.slug || data.slug || data.course?.id;
+      if (targetSlug) {
+        router.push(`/courses/${targetSlug}`);
+      }
     } catch (err: any) {
       setErrorMessage(err.message || "Failed to submit course. Please verify inputs.");
     } finally {

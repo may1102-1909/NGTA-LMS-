@@ -49,9 +49,59 @@ async function getAuthUserAndRole() {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    const slug = searchParams.get("slug");
     const status = searchParams.get("status");
     const instructorId = searchParams.get("instructorId");
     const source = searchParams.get("source"); // "normalized" | "all" | default
+
+    // Single course lookup by ID or Slug
+    if (id || slug) {
+      const identifier = id || slug || "";
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
+
+      let pc: any = null;
+      let nc: any = null;
+
+      if (isUuid) {
+        pc = await prisma.published_courses.findFirst({
+          where: { OR: [{ id: identifier }, { slug: identifier }] },
+          include: { instructor: true },
+        });
+        nc = await prisma.courses.findFirst({
+          where: { id: identifier },
+          include: {
+            modules: { orderBy: { order_index: "asc" }, include: { lessons: true } },
+            instructor: true,
+          },
+        });
+      } else {
+        pc = await prisma.published_courses.findFirst({
+          where: { slug: identifier },
+          include: { instructor: true },
+        });
+        if (pc?.id) {
+          nc = await prisma.courses.findFirst({
+            where: { id: pc.id },
+            include: {
+              modules: { orderBy: { order_index: "asc" }, include: { lessons: true } },
+              instructor: true,
+            },
+          });
+        }
+      }
+
+      if (!pc && !nc) {
+        return NextResponse.json({ error: "Course not found" }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        course: nc || pc,
+        publishedCourse: pc,
+        normalizedCourse: nc,
+      });
+    }
 
     if (source === "normalized") {
       const whereClause: any = {};
@@ -241,13 +291,15 @@ export async function POST(request: Request) {
             order_index: mIdx + 1,
             lessons: {
               create: (m.lessons || []).map((l: any) => {
-                let videoType = l.videoType;
+                let videoType = l.video_type || l.videoType;
+                const videoUrl = (l.video_url || l.videoUrl || "").trim();
+
                 if (!videoType) {
-                  if (l.videoUrl?.includes("drive.google.com")) {
+                  if (videoUrl.includes("drive.google.com")) {
                     videoType = "GOOGLE_DRIVE";
                   } else if (
-                    l.videoUrl?.includes("youtube.com") ||
-                    l.videoUrl?.includes("youtu.be")
+                    videoUrl.includes("youtube.com") ||
+                    videoUrl.includes("youtu.be")
                   ) {
                     videoType = "YOUTUBE";
                   } else {
@@ -257,10 +309,10 @@ export async function POST(request: Request) {
 
                 return {
                   title: l.title || "Lesson",
-                  duration_minutes: Number(l.durationMinutes) || 0,
+                  duration_minutes: Number(l.duration || l.duration_minutes || l.durationMinutes) || 0,
                   video_type: videoType,
-                  video_url: l.videoUrl || "",
-                  pdf_resource_url: l.pdfResourceUrl || l.resourcePdfUrl || null,
+                  video_url: videoUrl,
+                  pdf_resource_url: l.pdf_resource_url || l.pdfResourceUrl || l.resourcePdfUrl || null,
                 };
               }),
             },
@@ -289,7 +341,17 @@ export async function POST(request: Request) {
         instructor_id: instructorId,
         instructor_name: instructorName,
         status: "PENDING_APPROVAL",
-        modules: sanitizedModules,
+        modules: sanitizedModules.map((m: any) => ({
+          ...m,
+          lessons: (m.lessons || []).map((l: any) => ({
+            ...l,
+            videoUrl: (l.video_url || l.videoUrl || "").trim(),
+            video_url: (l.video_url || l.videoUrl || "").trim(),
+            videoType: l.video_type || l.videoType || "MP4_UPLOAD",
+            video_type: l.video_type || l.videoType || "MP4_UPLOAD",
+            pdfResourceUrl: l.pdf_resource_url || l.pdfResourceUrl || null,
+          })),
+        })),
         quiz_data: quizData,
         certificate_rule: certificateRule,
       },

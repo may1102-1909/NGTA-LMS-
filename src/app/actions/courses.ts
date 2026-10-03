@@ -3,7 +3,12 @@
 import { prisma } from "@/lib/prisma";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export type VideoSourceType = "MP4_UPLOAD" | "GOOGLE_DRIVE" | "YOUTUBE";
+import { createCourse as runCreateCourse, CourseCreatePayload } from "./courseActions";
+type VideoSourceType = "MP4_UPLOAD" | "GOOGLE_DRIVE" | "YOUTUBE";
+
+export async function createCourse(payload: CourseCreatePayload) {
+  return runCreateCourse(payload);
+}
 
 /**
  * Server Action: createLesson

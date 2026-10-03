@@ -19,6 +19,8 @@ import {
   Building,
   Lock,
   X,
+  Play,
+  Video,
 } from "lucide-react";
 import ChallengeStepLog from "@/components/gamification/ChallengeStepLog";
 import CredentialCard from "@/components/gamification/CredentialCard";
@@ -58,6 +60,9 @@ export interface CourseDetailData {
         type: string;
         durationMinutes: number;
         videoUrl?: string;
+        video_url?: string;
+        videoType?: string;
+        video_type?: string;
         pdfResourceUrl?: string | null;
       }>;
     }>;
@@ -85,6 +90,9 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [previewLesson, setPreviewLesson] = useState<any | null>(null);
+
+  const firstVideoLesson = course.modules?.flatMap((m) => m.chapters.flatMap((c) => c.lessons)).find((l) => l.videoUrl || (l as any).video_url);
 
   // Fetch existing successful payments for the logged-in user via Prisma endpoint
   useEffect(() => {
@@ -232,12 +240,24 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
 
             {/* Pricing Card */}
             <div className="lg:col-span-4 border border-[#3E3E43] bg-[#333336] p-6 space-y-5 shadow-card">
-              <div className="relative aspect-video overflow-hidden border border-[#3E3E43] bg-[#28282B] -mx-6 -mt-6 mb-2">
+              <div className="relative aspect-video overflow-hidden border border-[#3E3E43] bg-[#28282B] -mx-6 -mt-6 mb-2 group">
                 <img
                   src={course.thumbnailUrl}
                   alt={course.title}
                   className="w-full h-full object-cover"
                 />
+                {firstVideoLesson && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewLesson(firstVideoLesson)}
+                    className="absolute inset-0 bg-black/40 hover:bg-black/20 flex items-center justify-center transition-all group-hover:scale-105"
+                    title="Watch Course Preview"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-[#EFFF4F] text-[#28282B] flex items-center justify-center shadow-lemon font-bold">
+                      <Play className="w-5 h-5 fill-current ml-0.5" />
+                    </div>
+                  </button>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -387,7 +407,16 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                               {chap.lessons.map((les) => (
                                 <div
                                   key={les.id}
-                                  className="flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs"
+                                  onClick={() => {
+                                    if (isEnrolled) {
+                                      router.push(`/learn/${course.id}`);
+                                    } else if (les.videoUrl || les.video_url) {
+                                      setPreviewLesson(les);
+                                    }
+                                  }}
+                                  className={`flex items-center justify-between py-1.5 px-3 hover:bg-[#28282B] border border-transparent hover:border-[#3E3E43] transition-colors text-xs ${
+                                    isEnrolled || les.videoUrl || les.video_url ? "cursor-pointer" : ""
+                                  }`}
                                 >
                                   <div className="flex items-center gap-2 text-[#A0A5B5]">
                                     {isEnrolled ? (
@@ -399,15 +428,26 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
                                         <FileText className="w-3.5 h-3.5 text-[#5A5F70]" />
                                       )
                                     ) : (
-                                      <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                      (les.videoUrl || les.video_url) ? (
+                                        <PlayCircle className="w-3.5 h-3.5 text-[#EFFF4F]" />
+                                      ) : (
+                                        <Lock className="w-3.5 h-3.5 text-[#5A5F70]" />
+                                      )
                                     )}
-                                    <span className="font-medium">{les.title}</span>
+                                    <span className="font-medium text-white hover:text-[#EFFF4F] transition-colors">{les.title}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
                                     {!isEnrolled && (
-                                      <span className="text-[10px] font-mono text-[#5A5F70] uppercase">
-                                        Locked
-                                      </span>
+                                      (les.videoUrl || les.video_url) ? (
+                                        <span className="text-[10px] font-mono text-[#EFFF4F] border border-[#EFFF4F]/30 bg-[#EFFF4F]/10 px-1.5 py-0.5 uppercase font-bold flex items-center gap-1">
+                                          <Play className="w-2.5 h-2.5 fill-current" />
+                                          Preview
+                                        </span>
+                                      ) : (
+                                        <span className="text-[10px] font-mono text-[#5A5F70] uppercase">
+                                          Locked
+                                        </span>
+                                      )
                                     )}
                                     <span className="font-mono text-[11px] text-[#5A5F70]">
                                       {les.durationMinutes}m
@@ -624,6 +664,89 @@ export default function CourseDetailClient({ course }: CourseDetailClientProps) 
 
             <div className="font-mono text-[10px] text-center text-[#5A5F70]">
               256-Bit SSL Encrypted • Instant Access Upon Confirmation
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Zero-Mock Video Player Preview Modal */}
+      {previewLesson && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#1E1E22] border border-[#3E3E43] w-full max-w-4xl p-6 rounded-2xl space-y-4 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-[#3E3E43] pb-3">
+              <div className="space-y-0.5">
+                <span className="font-mono text-[10px] text-[#EFFF4F] uppercase tracking-wider">Lesson Preview</span>
+                <h3 className="text-white font-bold text-sm sm:text-base font-mono">{previewLesson.title}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewLesson(null)}
+                className="text-[#A0A5B5] hover:text-white p-1 rounded-md hover:bg-[#3E3E43] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="relative aspect-video w-full bg-black rounded-2xl overflow-hidden border border-[#3E3E43] flex items-center justify-center">
+              {(() => {
+                const url = (previewLesson.videoUrl || previewLesson.video_url || "").trim();
+
+                if (!url) {
+                  return (
+                    <div className="flex flex-col items-center justify-center p-8 text-center space-y-3">
+                      <Video className="w-12 h-12 text-[#5A5F70]" />
+                      <p className="text-sm font-mono text-[#A0A5B5]">
+                        No video resource provided for this lesson yet.
+                      </p>
+                    </div>
+                  );
+                }
+
+                if (url.includes("drive.google.com")) {
+                  const match =
+                    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                    url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                  const previewUrl =
+                    match && match[1]
+                      ? `https://drive.google.com/file/d/${match[1]}/preview`
+                      : url;
+
+                  return (
+                    <iframe
+                      src={previewUrl}
+                      className="w-full h-full border-0"
+                      allow="autoplay; encrypted-media; fullscreen"
+                      allowFullScreen
+                      title={previewLesson.title}
+                    />
+                  );
+                }
+
+                if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                  const ytMatch = url.match(/(?:youtu\.be\/|watch\?v=)([a-zA-Z0-9_-]+)/);
+                  const embedUrl =
+                    ytMatch && ytMatch[1]
+                      ? `https://www.youtube.com/embed/${ytMatch[1]}`
+                      : url;
+
+                  return (
+                    <iframe
+                      src={embedUrl}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={previewLesson.title}
+                    />
+                  );
+                }
+
+                return (
+                  <video controls className="w-full rounded-2xl aspect-video bg-black">
+                    <source src={url} type="video/mp4" />
+                    Your browser does not support HTML5 video streaming.
+                  </video>
+                );
+              })()}
             </div>
           </div>
         </div>

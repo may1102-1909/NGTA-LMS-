@@ -22,19 +22,29 @@ export default async function CourseDetailPage({ params }: PageProps) {
   let dbNormalizedCourse: any = null;
 
   try {
-    if (isUuid) {
-      // 1. Fetch exact course by ID or Slug from Supabase
+    // 1. Fetch exact course by ID or Slug dynamically from Supabase/Prisma
+    try {
       dbPublishedCourse = await prisma.published_courses.findFirst({
-        where: {
-          OR: [{ id: id }, { slug: id }],
-        },
+        where: isUuid
+          ? { OR: [{ id: id }, { slug: id }] }
+          : { slug: id },
         include: {
           instructor: true,
         },
       });
+    } catch {
+      dbPublishedCourse = await prisma.published_courses.findFirst({
+        where: { slug: id },
+        include: {
+          instructor: true,
+        },
+      }).catch(() => null);
+    }
 
+    const resolvedCourseId = dbPublishedCourse?.id || (isUuid ? id : null);
+    if (resolvedCourseId) {
       dbNormalizedCourse = await prisma.courses.findFirst({
-        where: { id: id },
+        where: { id: resolvedCourseId },
         include: {
           modules: {
             orderBy: { order_index: "asc" },
@@ -45,38 +55,15 @@ export default async function CourseDetailPage({ params }: PageProps) {
           instructor: true,
         },
       });
-    } else {
-      // Query published_courses by slug
-      dbPublishedCourse = await prisma.published_courses.findFirst({
-        where: { slug: id },
-        include: {
-          instructor: true,
-        },
-      });
-
-      // If found, fetch matching relational course record
-      const resolvedCourseId = dbPublishedCourse?.id;
-      if (resolvedCourseId) {
-        dbNormalizedCourse = await prisma.courses.findFirst({
-          where: { id: resolvedCourseId },
-          include: {
-            modules: {
-              orderBy: { order_index: "asc" },
-              include: {
-                lessons: true,
-              },
-            },
-            instructor: true,
-          },
-        });
-      }
     }
   } catch (err) {
     console.error("Error fetching course dynamically from Supabase/Prisma:", err);
   }
 
-  // Fallback to mock data only if not found in database (e.g., demo static courses)
-  const mockCourse = INITIAL_COURSES.find((c) => c.slug === id || c.id === id);
+  // Fallback to mock data ONLY if completely absent in database
+  const mockCourse = (!dbPublishedCourse && !dbNormalizedCourse)
+    ? INITIAL_COURSES.find((c) => c.slug === id || c.id === id)
+    : null;
 
   // 2. Return 404 if course ID/Slug does not exist in DB or mock catalog
   if (!dbPublishedCourse && !dbNormalizedCourse && !mockCourse) {
