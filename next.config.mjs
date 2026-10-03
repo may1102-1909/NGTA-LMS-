@@ -2,7 +2,29 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["images.unsplash.com"],
+    domains: [
+      "images.unsplash.com",
+      "lh3.googleusercontent.com",
+      "lh4.googleusercontent.com",
+      "lh5.googleusercontent.com",
+      "lh6.googleusercontent.com",
+      "wfgwknuyvqxhnpghjeed.supabase.co",
+      "api.dicebear.com",
+    ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
   async redirects() {
     return [
@@ -44,6 +66,26 @@ const nextConfig = {
       {
         source: "/course/:path*",
         destination: "/courses/:path*",
+        permanent: false,
+      },
+      {
+        source: "/profiole",
+        destination: "/profile",
+        permanent: false,
+      },
+      {
+        source: "/profiole/:path*",
+        destination: "/profile/:path*",
+        permanent: false,
+      },
+      {
+        source: "/profiles",
+        destination: "/profile",
+        permanent: false,
+      },
+      {
+        source: "/profiles/:path*",
+        destination: "/profile/:path*",
         permanent: false,
       },
     ];

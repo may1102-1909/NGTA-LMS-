@@ -19,12 +19,13 @@ import {
   Award,
   RefreshCw,
 } from "lucide-react";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 import GamerPersona3D from "@/components/GamerPersona3D";
 import { AVATAR_OPTIONS } from "@/lib/avatars";
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES">("PROFILE");
+  const [activeTab, setActiveTab] = useState<"PROFILE" | "PREFERENCES" | "SECURITY">("PROFILE");
+  const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState("Alex Vance");
   const [handle, setHandle] = useState("alex_sdet");
   const [avatarUrl, setAvatarUrl] = useState("/avatars/avatar-1.png");
@@ -43,18 +44,15 @@ export default function SettingsPage() {
 
   // Load profile from Supabase & API
   useEffect(() => {
+    let isMounted = true;
+
     async function loadStudentProfile() {
       try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!supabaseUrl || !supabaseAnonKey) return;
-
-        const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
+        if (user && isMounted) {
           setUserId(user.id);
           if (user.email) setEmail(user.email);
           const fullName =
@@ -62,33 +60,61 @@ export default function SettingsPage() {
             user.user_metadata?.name ||
             user.email?.split("@")[0] ||
             "";
-          if (fullName) setName(fullName);
+          if (fullName) {
+            setName(fullName);
+            setHandle(fullName.toLowerCase().replace(/[^a-z0-9_]/g, ""));
+          }
 
-          const res = await fetch(`/api/student-profile?userId=${user.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.profile) {
-              if (data.profile.username) setHandle(data.profile.username);
-              if (data.profile.avatar_url) setAvatarUrl(data.profile.avatar_url);
+          if (user.user_metadata?.avatar_url) {
+            setAvatarUrl(user.user_metadata.avatar_url);
+          }
+
+          try {
+            const res = await fetch(`/api/student-profile?userId=${user.id}`);
+            if (res.ok && isMounted) {
+              const data = await res.json();
+              if (data.profile) {
+                if (data.profile.full_name) setName(data.profile.full_name);
+                if (data.profile.username) setHandle(data.profile.username);
+                if (data.profile.avatar_url) setAvatarUrl(data.profile.avatar_url);
+                if (data.profile.email) setEmail(data.profile.email);
+                if (data.profile.bio) setBio(data.profile.bio);
+                if (data.profile.track) setTrack(data.profile.track);
+              }
             }
+          } catch (fetchErr) {
+            console.warn("Could not fetch student profile from API:", fetchErr);
           }
         }
       } catch (err) {
         console.warn("Could not load student profile in settings:", err);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     }
 
     loadStudentProfile();
 
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user && isMounted) {
+        loadStudentProfile();
+      }
+    });
+
     const handleProfileUpdate = (e: any) => {
-      if (e.detail) {
+      if (e.detail && isMounted) {
         if (e.detail.username) setHandle(e.detail.username);
         if (e.detail.avatar_url) setAvatarUrl(e.detail.avatar_url);
+        if (e.detail.full_name) setName(e.detail.full_name);
       }
     };
 
     window.addEventListener("student-profile-updated", handleProfileUpdate);
     return () => {
+      isMounted = false;
+      subscription.unsubscribe();
       window.removeEventListener("student-profile-updated", handleProfileUpdate);
     };
   }, []);
@@ -127,6 +153,15 @@ export default function SettingsPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 flex flex-col items-center justify-center space-y-4 font-mono text-xs text-white">
+        <RefreshCw className="w-8 h-8 text-[#EFFF4F] animate-spin" />
+        <span className="text-[#A0A5B5] tracking-widest uppercase">SYNCHRONIZING STUDENT PROFILE & 3D TELEMETRY...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
       {/* Top Breadcrumb & Page Header */}
@@ -143,7 +178,6 @@ export default function SettingsPage() {
             <span>SETTINGS & PERSONA</span>
             <Settings className="w-7 h-7 text-[#EFFF4F] shrink-0 animate-spin-slow" />
           </h1>
-
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">
@@ -155,6 +189,26 @@ export default function SettingsPage() {
           </Link>
         </div>
       </div>
+
+      {!userId && (
+        <div className="p-4 border border-[#EFFF4F]/30 bg-[#EFFF4F]/5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">
+          <div className="flex items-center gap-3">
+            <User className="w-5 h-5 text-[#EFFF4F] shrink-0" />
+            <div>
+              <span className="text-white font-bold block">GUEST MODE // NOT AUTHENTICATED</span>
+              <span className="text-[#A0A5B5] text-[11px] font-sans">
+                Sign in with Google to synchronize your personal candidate profile, 3D hologram avatar, and course certifications.
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: typeof window !== "undefined" ? window.location.href : "/profile" } })}
+            className="px-4 py-2 bg-[#EFFF4F] text-[#1E1E22] font-bold uppercase rounded-lg hover:bg-[#EFFF4F]/90 transition-all shrink-0 cursor-pointer shadow-lemon-sm"
+          >
+            Sign In with Google
+          </button>
+        </div>
+      )}
 
       {/* Main 2-Column Responsive Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

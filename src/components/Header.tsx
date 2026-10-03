@@ -190,6 +190,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
                     width={28}
                     height={28}
                     className="w-full h-full object-cover"
+                    unoptimized
                   />
                 ) : (
                   <span className="text-white text-[10px]">

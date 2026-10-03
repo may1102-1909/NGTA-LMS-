@@ -106,13 +106,26 @@ export async function GET(request: Request) {
     const safeProfile = profile
       ? {
           ...profile,
+          full_name: profileRecord?.full_name || profile.username,
+          email: profileRecord?.email || "",
           xp_points: profile.xp_points ?? 0,
           current_streak: profile.current_streak ?? 0,
+        }
+      : profileRecord
+      ? {
+          id: profileRecord.id,
+          user_id: profileRecord.user_id,
+          username: profileRecord.full_name?.replace(/\s+/g, "_") || profileRecord.email?.split("@")[0] || "Learner",
+          avatar_url: profileRecord.avatar_url || "/avatars/avatar-1.png",
+          full_name: profileRecord.full_name,
+          email: profileRecord.email,
+          xp_points: 0,
+          current_streak: 0,
         }
       : null;
 
     return NextResponse.json({
-      hasProfile: Boolean(profile),
+      hasProfile: Boolean(safeProfile),
       profile: safeProfile,
       xp_points: safeProfile?.xp_points ?? 0,
       current_streak: safeProfile?.current_streak ?? 0,

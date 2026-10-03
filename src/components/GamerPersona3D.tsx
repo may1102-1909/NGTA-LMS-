@@ -450,6 +450,7 @@ export default function GamerPersona3D({
                     height={112}
                     className="w-full h-full object-cover select-none"
                     priority
+                    unoptimized
                   />
 
                   {/* Scanline Overlay */}
