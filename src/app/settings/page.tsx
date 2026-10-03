@@ -551,7 +551,7 @@ export default function SettingsPage() {
             </div>
 
             <p className="text-xs text-[#A0A5B5] font-sans mb-4">
-              Real-time 3D simulation with dynamic WebGL holographic core, interactive mouse tilt, and click-to-flip whole persona avatar.
+              Real-time 3D simulation with dynamic WebGL holographic core, mouse perspective tilt, and live telemetry synchronization.
             </p>
 
             {/* Embedded 3D Gamer Persona Component */}
